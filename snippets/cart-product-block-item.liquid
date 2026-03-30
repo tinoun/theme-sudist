@@ -1,0 +1,134 @@
+{% comment %}
+  Snippet: cart-product-block-item.liquid
+  Description: Affiche un produit dans le bloc recommandé du mini-cart
+  Variables requises: product
+{% endcomment %}
+
+{% if product.available %}
+  <div class="cart-product-block-item" data-product-id="{{ product.id }}">
+    <a href="{{ product.url }}" class="cart-product-block-media">
+      {% if product.featured_image != blank %}
+        <img 
+          src="{{ product.featured_image | image_url: width: 120 }}" 
+          srcset="{{ product.featured_image | image_url: width: 120 }} 1x, {{ product.featured_image | image_url: width: 240 }} 2x"
+          alt="{{ product.title | escape }}"
+          width="60"
+          height="60"
+          loading="lazy"
+        >
+      {% else %}
+        <div class="cart-product-block-placeholder">
+          {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {% endif %}
+    </a>
+    
+    <div class="cart-product-block-details">
+      <a href="{{ product.url }}" class="cart-product-block-title heading-font">
+        {{ product.title }}
+      </a>
+      <div class="cart-product-block-price">
+        {% if product.compare_at_price > product.price %}
+          <span class="cart-product-block-price-compare line-through">
+            {{ product.compare_at_price | money }}
+          </span>
+        {% endif %}
+        <span class="cart-product-block-price-current">
+          {{ product.price | money }}
+        </span>
+      </div>
+    </div>
+    
+    <div class="cart-product-block-action">
+      {% if product.variants.size > 1 and product.has_only_default_variant == false %}
+        <button 
+          type="button"
+          class="button small-button cart-product-block-btn cart-product-block-variant-btn"
+          data-product-handle="{{ product.handle }}"
+          data-product-id="{{ product.id }}"
+          aria-label="Ajouter"
+        >
+          <span>Ajouter</span>
+        </button>
+      {% else %}
+        <button 
+          type="button"
+          class="button small-button cart-product-block-btn cart-product-block-add"
+          data-variant-id="{{ product.first_available_variant.id }}"
+          {% unless product.first_available_variant.available %}disabled{% endunless %}
+          aria-label="Ajouter"
+        >
+          {% if product.first_available_variant.available %}
+            <span>Ajouter</span>
+          {% else %}
+            <span>Épuisé</span>
+          {% endif %}
+        </button>
+      {% endif %}
+    </div>
+  </div>
+
+  {% comment %} Popup de sélection de variante (caché par défaut) {% endcomment %}
+  {% if product.variants.size > 1 and product.has_only_default_variant == false %}
+    <div class="cart-variant-popup" data-variant-popup="{{ product.id }}" style="display: none;">
+      <div class="cart-variant-popup-overlay" data-close-variant-popup></div>
+      <div class="cart-variant-popup-content">
+        <div class="cart-variant-popup-header">
+          <div class="cart-variant-popup-product">
+            {% if product.featured_image != blank %}
+              <img 
+                src="{{ product.featured_image | image_url: width: 80 }}" 
+                alt="{{ product.title | escape }}"
+                width="40"
+                height="40"
+              >
+            {% endif %}
+            <span class="cart-variant-popup-title heading-font">{{ product.title }}</span>
+          </div>
+          <button type="button" class="cart-variant-popup-close" data-close-variant-popup aria-label="Fermer">
+            {% render 'icons', icon: 'cross-icon' %}
+          </button>
+        </div>
+        <div class="cart-variant-popup-body">
+          {% for option in product.options_with_values %}
+            <div class="cart-variant-option">
+              <label class="cart-variant-option-label text-small">{{ option.name }}</label>
+              <div class="cart-variant-option-values">
+                {% for value in option.values %}
+                  {% assign option_index = 'option' | append: forloop.parentloop.index %}
+                  <button 
+                    type="button" 
+                    class="cart-variant-option-btn{% if forloop.first %} active{% endif %}"
+                    data-option-index="{{ forloop.parentloop.index }}"
+                    data-option-value="{{ value }}"
+                  >
+                    {{ value }}
+                  </button>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+          
+          <div class="cart-variant-popup-footer">
+            <div class="cart-variant-popup-price">
+              <span class="cart-variant-price" data-variant-price>{{ product.selected_or_first_available_variant.price | money }}</span>
+            </div>
+            <button 
+              type="button" 
+              class="button small-button cart-product-block-btn cart-variant-add-btn"
+              data-add-variant
+              data-product-id="{{ product.id }}"
+            >
+              <span>Ajouter</span>
+            </button>
+          </div>
+        </div>
+        
+        {% comment %} Données des variantes en JSON {% endcomment %}
+        <script type="application/json" data-product-variants="{{ product.id }}">
+          {{ product.variants | json }}
+        </script>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}

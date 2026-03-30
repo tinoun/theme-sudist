@@ -1,0 +1,736 @@
+{% comment %}
+  Section: Notre Atelier
+  Description: Section complète pour présenter votre atelier textile avec image, texte et valeurs
+  Compatible avec le thème King v2.0.5
+{% endcomment %}
+
+{% liquid
+  assign containerClass = ''
+  if section.settings.section_container_width == 'global'
+    assign containerClass = settings.container_width
+  else
+    assign containerClass = section.settings.section_container_width
+  endif
+
+  assign col_size = section.settings.desktop_image_size
+  if col_size == 'small'
+    assign col_image_size = 5
+    assign col_text_size = 7
+  elsif col_size == 'medium'
+    assign col_image_size = 6
+    assign col_text_size = 6
+  elsif col_size == 'large'
+    assign col_image_size = 7
+    assign col_text_size = 5
+  endif
+
+  assign image_size = section.settings.image_ratio
+  if image_size == 'landscape'
+    assign imageRatio = '70%'
+  elsif image_size == 'square'
+    assign imageRatio = '100%'
+  elsif image_size == 'portrait'
+    assign imageRatio = '130%'
+  else
+    if section.settings.image != blank
+      assign imageRatio = 1 | divided_by: section.settings.image.aspect_ratio | times: 100 | minus: 1 | append: '%'
+    else
+      assign imageRatio = 100 | append: '%'
+    endif
+  endif
+%}
+
+<div class="section-wrapper section-spacing scheme-{{ section.settings.color_scheme }} section-{{ section.settings.section_background }}">
+  <div class="{{ containerClass }}">
+    <div class="atelier-section--outer">
+      <div class="row no-gutters atelier-section--wrapper image--position-{{ section.settings.desktop_image_postition }}{% if section.settings.is_background_enabled %} content-background-enabled{% endif %}">
+        
+        {% comment %} Image Column {% endcomment %}
+        <div class="col-lg-{{ col_image_size }} col-md-{{ col_image_size }} col-sm-12 col-12">
+          <div class="atelier-section--image media-wrapper width-100 height-100">
+            <div class="media" style="--image_ratio: {{ imageRatio }}">
+              {%- if section.settings.image != blank -%}
+                {% render 'lazy-image', image: section.settings.image, source: 'atelier-section' %}
+              {%- else -%}
+                {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+            </div>
+            
+            {% comment %} Badge flottant optionnel {% endcomment %}
+            {% if section.settings.badge_text != blank %}
+              <div class="atelier-badge">
+                <span class="atelier-badge--text heading-font">{{ section.settings.badge_text }}</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        {% comment %} Content Column {% endcomment %}
+        <div class="col-lg-{{ col_text_size }} col-md-{{ col_text_size }} col-sm-12 col-12">
+          <div class="atelier-section--content {{ section.settings.content_padding }}-padding">
+            
+            {% comment %} Subheading {% endcomment %}
+            {% if section.settings.subheading != blank %}
+              <p class="atelier-section--subheading text-small" {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+                {{ section.settings.subheading }}
+              </p>
+            {% endif %}
+
+            {% comment %} Heading {% endcomment %}
+            {% if section.settings.heading != blank %}
+              <variety-heading>
+                {%- capture markersPrefix -%}
+                  <span class="markers-text {{ section.settings.markers_font }} {{ section.settings.markers_text }}">
+                {%- endcapture -%}
+                {%- capture markersSuffix -%}
+                  </span>
+                {%- endcapture -%}
+                <{{ section.settings.seo_heading }} class="atelier-section--heading {{ section.settings.heading_size }}" {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+                  {{ section.settings.heading | replace: "[", markersPrefix | replace: "]", markersSuffix | replace: "++", "<br>" }}
+                </{{ section.settings.seo_heading }}>
+              </variety-heading>
+            {% endif %}
+
+            {% comment %} Description {% endcomment %}
+            {% if section.settings.description != blank %}
+              <div class="atelier-section--desc rte {{ section.settings.description_size }}" {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+                {{ section.settings.description }}
+              </div>
+            {% endif %}
+
+            {% comment %} Valeurs/Points forts {% endcomment %}
+            {% assign value_blocks = section.blocks | where: "type", "value" %}
+            {% if value_blocks.size > 0 %}
+              <div class="atelier-values" {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+                {% for block in value_blocks %}
+                  <div class="atelier-value--item" {{ block.shopify_attributes }}>
+                    {% if block.settings.icon != blank %}
+                      <div class="atelier-value--icon">
+                        {{ block.settings.icon }}
+                      </div>
+                    {% elsif block.settings.icon_image != blank %}
+                      <div class="atelier-value--icon">
+                        <img src="{{ block.settings.icon_image | image_url: width: 60 }}" alt="{{ block.settings.title }}" width="30" height="30" loading="lazy">
+                      </div>
+                    {% else %}
+                      <div class="atelier-value--icon atelier-value--icon-default">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                      </div>
+                    {% endif %}
+                    <div class="atelier-value--content">
+                      {% if block.settings.title != blank %}
+                        <h4 class="atelier-value--title h6">{{ block.settings.title }}</h4>
+                      {% endif %}
+                      {% if block.settings.text != blank %}
+                        <p class="atelier-value--text text-small">{{ block.settings.text }}</p>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% comment %} Citation {% endcomment %}
+            {% assign quote_block = section.blocks | where: "type", "quote" | first %}
+            {% if quote_block %}
+              <blockquote class="atelier-quote" {{ quote_block.shopify_attributes }} {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+                <p class="atelier-quote--text text-large">« {{ quote_block.settings.quote }} »</p>
+                {% if quote_block.settings.author != blank %}
+                  <cite class="atelier-quote--author text-small">— {{ quote_block.settings.author }}</cite>
+                {% endif %}
+              </blockquote>
+            {% endif %}
+
+            {% comment %} Button {% endcomment %}
+            {% assign button_block = section.blocks | where: "type", "button" | first %}
+            {% if button_block and button_block.settings.btn_url != blank and button_block.settings.btn_text != blank %}
+              {% liquid
+                if button_block.settings.button_style == 'link'
+                  assign button_class = 'text-underline'
+                  assign show_as_link = true
+                else
+                  assign button_class = 'button' | append: ' ' | append: button_block.settings.button_size | append: ' ' | append: settings.button_animation_style
+                  assign show_as_link = false
+                endif
+              %}
+              <div class="atelier-section--button" {{ button_block.shopify_attributes }} {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+                <a href="{{ button_block.settings.btn_url }}" class="{{ button_class }} {{ button_block.settings.button_style }}-button">
+                  {% render 'button-appearance', button_text: button_block.settings.btn_text, icon: 'arrow-right', show_as_link: show_as_link %}
+                </a>
+              </div>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --top_spacing: {{ section.settings.top_space_desktop }}px;
+    --bottom_spacing: {{ section.settings.bottom_space_desktop }}px;
+    --text_alignment: {{ section.settings.alignment }};
+    --content_position: {{ section.settings.content_position }};
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--wrapper.image--position-right {
+    flex-direction: row-reverse;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--image {
+    position: relative;
+    border-radius: var(--card-radius, 20px);
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-badge {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: var(--color-highlight, var(--color-button-background));
+    color: var(--color-button-text);
+    padding: 12px 20px;
+    border-radius: 50px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-badge--text {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--content {
+    display: flex;
+    flex-direction: column;
+    justify-content: var(--content_position, center);
+    text-align: var(--text_alignment, left);
+    height: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--content.small-padding {
+    padding: 20px 30px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--content.medium-padding {
+    padding: 30px 50px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--content.large-padding {
+    padding: 40px 70px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--subheading {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-highlight, var(--color-link));
+    margin-bottom: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--heading {
+    margin-bottom: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--desc {
+    margin-bottom: 30px;
+    opacity: 0.9;
+  }
+
+  /* Valeurs */
+  #shopify-section-{{ section.id }} .atelier-values {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-value--item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    text-align: left;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-value--icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-card-background);
+    border-radius: 10px;
+    color: var(--color-highlight, var(--color-heading));
+  }
+
+  #shopify-section-{{ section.id }} .atelier-value--icon img,
+  #shopify-section-{{ section.id }} .atelier-value--icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-value--title {
+    margin-bottom: 5px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-value--text {
+    opacity: 0.75;
+    margin: 0;
+  }
+
+  /* Citation */
+  #shopify-section-{{ section.id }} .atelier-quote {
+    margin: 30px 0;
+    padding: 20px 25px;
+    border-left: 3px solid var(--color-highlight, var(--color-border));
+    background: var(--color-card-background);
+    border-radius: 0 var(--card-radius, 10px) var(--card-radius, 10px) 0;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-quote--text {
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-quote--author {
+    opacity: 0.7;
+    font-style: normal;
+  }
+
+  #shopify-section-{{ section.id }} .atelier-section--button {
+    margin-top: 10px;
+  }
+
+  @media only screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} {
+      --top_spacing: {{ section.settings.top_space_mobile }}px;
+      --bottom_spacing: {{ section.settings.bottom_space_mobile }}px;
+    }
+
+    #shopify-section-{{ section.id }} .atelier-section--content {
+      padding: 30px 15px !important;
+    }
+
+    #shopify-section-{{ section.id }} .atelier-values {
+      grid-template-columns: 1fr;
+    }
+
+    #shopify-section-{{ section.id }} .atelier-badge {
+      bottom: 15px;
+      left: 15px;
+      padding: 10px 15px;
+    }
+  }
+
+  {% if section.settings.section_visibility == 'large' %}
+    @media(max-width: 767px) {
+      #shopify-section-{{ section.id }} {
+        display: none !important;
+      }
+    }
+  {% elsif section.settings.section_visibility == 'small' %}
+    @media(min-width: 768px) {
+      #shopify-section-{{ section.id }} {
+        display: none !important;
+      }
+    }
+  {% endif %}
+</style>
+
+{% schema %}
+{
+  "name": "Notre Atelier",
+  "tag": "section",
+  "class": "section-notre-atelier",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.Overlay"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_visibility",
+      "label": "Visibilité de la section",
+      "default": "always",
+      "options": [
+        { "label": "Toujours", "value": "always" },
+        { "label": "Mobile uniquement", "value": "small" },
+        { "label": "Desktop uniquement", "value": "large" }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "primary",
+      "label": "Palette de couleurs"
+    },
+    {
+      "type": "select",
+      "id": "section_background",
+      "label": "Fond de section",
+      "default": "solid",
+      "options": [
+        { "label": "Uni", "value": "solid" },
+        { "label": "Dégradé", "value": "gradient" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_container_width",
+      "label": "Largeur du conteneur",
+      "default": "container-fullwidth",
+      "options": [
+        { "label": "Global", "value": "global" },
+        { "label": "Petit", "value": "container-sm" },
+        { "label": "Moyen", "value": "container-md" },
+        { "label": "Standard", "value": "container" },
+        { "label": "Pleine largeur", "value": "container-fullwidth" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image de l'atelier"
+    },
+    {
+      "type": "select",
+      "id": "desktop_image_postition",
+      "label": "Position de l'image",
+      "default": "left",
+      "options": [
+        { "label": "Gauche", "value": "left" },
+        { "label": "Droite", "value": "right" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "desktop_image_size",
+      "label": "Taille de l'image",
+      "default": "medium",
+      "options": [
+        { "label": "Petite", "value": "small" },
+        { "label": "Moyenne", "value": "medium" },
+        { "label": "Grande", "value": "large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Ratio de l'image",
+      "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Original" },
+        { "value": "landscape", "label": "Paysage (70%)" },
+        { "value": "square", "label": "Carré (100%)" },
+        { "value": "portrait", "label": "Portrait (130%)" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge sur l'image",
+      "info": "Ex: Made in France, Artisanal",
+      "default": "Made in France"
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "checkbox",
+      "id": "is_background_enabled",
+      "label": "Activer le fond du contenu",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Sous-titre",
+      "default": "Depuis 1985"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "Notre [Atelier]",
+      "label": "Titre",
+      "info": "Utilisez [ ] pour mettre en valeur un mot"
+    },
+    {
+      "type": "select",
+      "id": "markers_font",
+      "label": "Police des marqueurs",
+      "default": "accent-font",
+      "options": [
+        { "label": "Accent", "value": "accent-font" },
+        { "label": "Corps", "value": "body-font" },
+        { "label": "Titre", "value": "heading-font" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "markers_text",
+      "label": "Style des marqueurs",
+      "default": "highlight-color",
+      "options": [
+        { "label": "Aucun", "value": "no-markers" },
+        { "label": "Couleur accent", "value": "highlight-color" },
+        { "label": "Dégradé", "value": "highlight-gradient" },
+        { "label": "Contour", "value": "outline--text" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Taille du titre",
+      "default": "h2",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "seo_heading",
+      "label": "Balise SEO du titre",
+      "default": "h2",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "div", "label": "div" }
+      ]
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Niché au cœur de la région, notre atelier perpétue un savoir-faire textile transmis de génération en génération. Chaque pièce qui sort de nos mains raconte une histoire d'excellence et de passion.</p>"
+    },
+    {
+      "type": "select",
+      "id": "description_size",
+      "label": "Taille de la description",
+      "default": "text-large",
+      "options": [
+        { "label": "Petit", "value": "text-small" },
+        { "label": "Normal", "value": "text" },
+        { "label": "Moyen", "value": "text-medium" },
+        { "label": "Grand", "value": "text-large" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "default": "center",
+      "label": "Position verticale du contenu",
+      "options": [
+        { "value": "flex-start", "label": "Haut" },
+        { "value": "center", "label": "Centre" },
+        { "value": "flex-end", "label": "Bas" }
+      ]
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Alignement du texte",
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "content_padding",
+      "default": "medium",
+      "label": "Padding du contenu",
+      "options": [
+        { "value": "small", "label": "Petit" },
+        { "value": "medium", "label": "Moyen" },
+        { "value": "large", "label": "Grand" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "top_space_desktop",
+      "label": "Marge haute (desktop)",
+      "default": 70,
+      "min": 0,
+      "max": 150,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_desktop",
+      "label": "Marge basse (desktop)",
+      "default": 70,
+      "min": 0,
+      "max": 150,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "top_space_mobile",
+      "label": "Marge haute (mobile)",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_mobile",
+      "label": "Marge basse (mobile)",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Valeur / Point fort",
+      "settings": [
+        {
+          "type": "html",
+          "id": "icon",
+          "label": "Icône SVG",
+          "info": "Collez le code SVG de votre icône (optionnel)"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Ou image icône",
+          "info": "Alternative à l'icône SVG"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Savoir-faire"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Description",
+          "default": "40 ans d'expertise textile"
+        }
+      ]
+    },
+    {
+      "type": "quote",
+      "name": "Citation",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "quote",
+          "label": "Citation",
+          "default": "Chaque fil tissé raconte notre passion pour l'excellence."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Auteur",
+          "default": "Marie Dupont, Fondatrice"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Bouton",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "btn_text",
+          "default": "Découvrir notre histoire",
+          "label": "Texte du bouton"
+        },
+        {
+          "type": "url",
+          "id": "btn_url",
+          "label": "Lien"
+        },
+        {
+          "type": "select",
+          "id": "button_size",
+          "label": "Taille du bouton",
+          "default": "normal-button",
+          "options": [
+            { "label": "Normal", "value": "normal-button" },
+            { "label": "Petit", "value": "small-button" },
+            { "label": "Grand", "value": "large-button" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Style du bouton",
+          "default": "solid",
+          "options": [
+            { "value": "solid", "label": "Plein" },
+            { "value": "outline", "label": "Contour" },
+            { "value": "link", "label": "Lien" }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Notre Atelier",
+      "blocks": [
+        {
+          "type": "value",
+          "settings": {
+            "title": "Fabrication française",
+            "text": "100% de notre production en France"
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "Éco-responsable",
+            "text": "Matières certifiées et durables"
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "Artisanat",
+            "text": "Chaque pièce façonnée à la main"
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "Tradition",
+            "text": "Un savoir-faire depuis 1985"
+          }
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

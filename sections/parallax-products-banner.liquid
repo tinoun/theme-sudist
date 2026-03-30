@@ -1,0 +1,468 @@
+{%- if section.blocks.size > 0 -%}
+{{ 'parallax-products-banner.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'parallax-products-banner.js' | asset_url }}" defer></script>
+
+<div class="section-wrapper parallax-products-banner--wrapper">
+  <parallax-products-banner class="parallax-products-banner--items d-block">
+    {%- for block in section.blocks -%}
+      <div class="parallax-products-banner--item scheme-{{ block.settings.color_scheme }}" data-banner-item="true" id="parallax-products-banner--item-{{ block.id }}" {{ block.shopify_attributes }}>
+        <div class="parallax-products-banner--content-wrapper">
+          <div class="parallax-products-banner--content">
+            <div class="parallax-products-banner--content-card" data-content-card="true">
+              {%- if block.settings.sub_heading != blank or section.settings.show_cards_counter -%}
+                <div class="parallax-products-banner--content-card-head">
+                  <div class="parallax-products-banner--content-card-title heading-font">{{ block.settings.sub_heading }}</div>
+                  {%- if section.settings.show_cards_counter -%}
+                    <div class="parallax-products-banner--content-card-number">
+                      <span class="parallax-products-banner--content-card-number-text">{{ forloop.index }}</span>
+                      <span class="parallax-products-banner--content-card-number-text">/</span>
+                      <span class="parallax-products-banner--content-card-number-text">{{ section.blocks.size }}</span>
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+              {%- liquid 
+                assign show_button = false
+                if block.settings.button_text != blank and block.settings.button_link != blank
+                  assign show_button = true
+                endif
+              -%}
+              {%- if block.settings.heading != blank or block.settings.description != blank or show_button -%}
+                <div class="parallax-products-banner--content-card-body">
+                  {%- capture markersPrefix -%}
+                    <span class="markers-text {{ block.settings.markers_font }} {{ block.settings.markers_text }}">
+                  {%- endcapture -%}
+                  {%- capture markersSuffix -%}
+                    </span>
+                  {%- endcapture -%}
+                  <div class="parallax-products-banner--content-card-body-inner">
+                    {%- if block.settings.heading != blank -%}
+                      <{{ block.settings.seo_heading }} class="parallax-products-banner--content-card-body-heading heading-font {{ block.settings.heading_size }}" {% if settings.is_layout_animation %}data-saos="{{ settings.heading_animation }}" {% endif %}>
+                        {{ block.settings.heading | replace: "[", markersPrefix | replace: "]", markersSuffix | replace: "++", "<br>" }}
+                      </{{ block.settings.seo_heading }}>
+                    {%- endif -%}
+
+                    {% if block.settings.description != blank %}
+                      <p class="section--description {{ block.settings.description_size }}" {% if settings.is_layout_animation %}data-saos="slide-up" {% endif %}>
+                        {{ block.settings.description | newline_to_br }}
+                      </p>
+                    {% endif %}
+
+                    {%- if show_button -%}
+                      {%- liquid
+                        if block.settings.button_style == 'link'
+                          assign show_as_link = true 
+                          assign button_class = 'text-underline'
+                        else
+                          assign button_class = 'button' | append: ' ' | append: block.settings.button_size | append: ' ' | append: settings.button_animation_style
+                          assign show_as_link = false
+                        endif
+                      -%}
+                      <div class="parallax-products-banner--content-card-body-button">
+                        <a href="{{ block.settings.button_link }}" aria-label="{{ block.settings.button_text }}" class="button {{ button_class }} {{ block.settings.button_style }}-button">
+                          {% render 'button-appearance', button_text: block.settings.button_text, icon: 'arrow-right' show_as_link: show_as_link %}
+                        </a>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+              {%- if block.settings.product_list != blank -%}
+                <div class="parallax-products-banner--content-card-footer">
+                  <div class="parallax-products-banner--products-items">
+                    {%- for product in block.settings.product_list limit: 6 -%}
+                      <a href="{{ product.url }}" role="link" class="parallax-products-banner--product-item" aria-label="{{ product.title | escape }}" data-product-item="true">
+                        <div class="parallax-products-banner--product-media">
+                          <div class="media" style="--image_ratio: 100%">
+                            {%- if product.featured_media != blank -%}
+                              {{ product.featured_media | image_url: width: 1200 | image_tag: widths: '300, 600, 900, 1200', sizes: 'media(max-width: 767px) 100vw, 33vw' }}
+                            {%- else -%}
+                              {%- liquid 
+                                  capture product_placeholder
+                                    cycle cycleGroup: 1, 2, 3, 4
+                                  endcapture 
+                                %}
+                              {{ 'product-apparel-' | append: product_placeholder | placeholder_svg_tag: 'placeholder-svg' }}
+                            {%- endif -%}
+                          </div>
+                        </div>
+                        <div class="parallax-products--info{% if forloop.index > 4 %} left-align{% endif %}" data-item-info>
+                          <div class="product--title">
+                            <span class="product--title body-font text-xsmall">{{ product.title }}</span>
+                          </div>
+                        </div>
+                      </a>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+        <div class="parallax-products-banner--bg-image" data-bg-image="true">
+          {%- if block.settings.image != blank -%}
+            {%- render 'lazy-image', image: block.settings.image -%}
+          {%- else -%}
+            {% liquid
+              capture placeholderIndex
+                cycle cycleGroup: 1, 2
+              endcapture 
+            %}
+            {{ 'hero-apparel-' |append: placeholderIndex | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+          
+        </div>
+      </div>
+    {%- endfor -%}
+  </parallax-products-banner>
+</div>
+
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --blocks_count: {{ section.blocks.size }};
+  }
+  {% if section.settings.section_visibility == 'large' %}
+    @media(max-width: 767px) {
+      #shopify-section-{{ section.id }} {
+        display: none !important;
+      }
+    }
+    {% elsif section.settings.section_visibility == 'small' %}
+    @media(min-width: 768px) {
+      #shopify-section-{{ section.id }} {
+        display: none !important;
+      }
+    }
+  {% endif %}
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.parallax-products-banner.name",
+  "tag": "section",
+  "class": "section-parallax-products-banner",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.Overlay"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_visibility",
+      "label": "t:sections.all.section_visibility.label",
+      "default": "always",
+      "options": [
+        {
+          "label": "t:sections.all.section_visibility.always.label",
+          "value": "always"
+        },
+        {
+          "label": "t:sections.all.section_visibility.small.label",
+          "value": "small"
+        },
+        {
+          "label": "t:sections.all.section_visibility.large.label",
+          "value": "large"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cards_counter",
+      "default": true,
+      "label": "t:sections.parallax-products-banner.settings.show_cards_counter.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "parallax_products_banner",
+      "name": "t:sections.parallax-products-banner.blocks.parallax_products_banner.name",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "color_scheme",
+          "id": "color_scheme",
+          "default": "secondary",
+          "label": "t:sections.all.colors.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:sections.parallax-products-banner.blocks.parallax_products_banner.settings.image.label"
+        },
+        {
+          "type": "product_list",
+          "id": "product_list",
+          "label": "t:sections.parallax-products-banner.blocks.parallax_products_banner.settings.product_list.label",
+          "limit": 6
+        },
+        {
+          "type": "header",
+          "content": "t:settings_schema.global.settings.content.label"
+        },
+        {
+          "type": "text",
+          "id": "sub_heading",
+          "label": "t:sections.parallax-products-banner.blocks.parallax_products_banner.settings.sub_heading.label",
+          "default": "Sub heading"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "t:settings_schema.global.settings.heading.label",
+          "default": "Parallax products banner",
+          "info": "t:settings_schema.global.settings.heading.info"
+        },
+        {
+          "type": "select",
+          "id": "markers_font",
+          "label": "t:sections.all.markers_font.label",
+          "info": "t:sections.all.markers_font.info",
+          "default": "heading-font",
+          "options": [
+            {
+              "label": "t:sections.all.markers_font.accent-font.label",
+              "value": "accent-font"
+            },
+            {
+              "label": "t:sections.all.markers_font.body-font.label",
+              "value": "body-font"
+            },
+            {
+              "label": "t:sections.all.markers_font.heading-font.label",
+              "value": "heading-font"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "markers_text",
+          "label": "t:sections.all.markers_text.label",
+          "default": "highlight-gradient",
+          "options": [
+            {
+              "label": "t:sections.all.markers_text.no-markers.label",
+              "value": "no-markers"
+            },
+            {
+              "label": "t:sections.all.markers_text.highlight-color.label",
+              "value": "highlight-color"
+            },
+            {
+              "label": "t:sections.all.markers_text.highlight-gradient.label",
+              "value": "highlight-gradient"
+            },
+            {
+              "label": "t:sections.all.markers_text.outline--text.label",
+              "value": "outline--text"
+            },
+            {
+              "label": "t:sections.all.markers_text.text-background-cover.label",
+              "value": "text-background-cover"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "t:sections.all.heading_size.label",
+          "default": "h2",
+          "options": [
+            {
+              "value": "h1",
+              "label": "t:sections.all.heading_size.h1.label"
+            },
+            {
+              "value": "h2",
+              "label": "t:sections.all.heading_size.h2.label"
+            },
+            {
+              "value": "h3",
+              "label": "t:sections.all.heading_size.h3.label"
+            },
+            {
+              "value": "h4",
+              "label": "t:sections.all.heading_size.h4.label"
+            },
+            {
+              "value": "h5",
+              "label": "t:sections.all.heading_size.h5.label"
+            },
+            {
+              "value": "h6",
+              "label": "t:sections.all.heading_size.h6.label"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "seo_heading",
+          "label": "t:sections.all.seo_heading.label",
+          "info": "t:sections.all.seo_heading.info",
+          "default": "h2",
+          "options": [
+            {
+              "value": "h1",
+              "label": "H1"
+            },
+            {
+              "value": "h2",
+              "label": "H2"
+            },
+            {
+              "value": "h3",
+              "label": "H3"
+            },
+            {
+              "value": "h4",
+              "label": "H4"
+            },
+            {
+              "value": "h5",
+              "label": "H5"
+            },
+            {
+              "value": "h6",
+              "label": "H6"
+            },
+            {
+              "value": "div",
+              "label": "div"
+            },
+            {
+              "value": "span",
+              "label": "span"
+            },
+            {
+              "value": "p",
+              "label": "p"
+            }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "t:settings_schema.global.settings.description.label"
+        },
+        {
+          "type": "select",
+          "id": "description_size",
+          "label": "t:sections.all.description_size.label",
+          "default": "text",
+          "options": [
+            {
+              "label": "t:sections.all.description_size.text-xsmall.label",
+              "value": "text-xsmall"
+            },
+            {
+              "label": "t:sections.all.description_size.text-small.label",
+              "value": "text-small"
+            },
+            {
+              "label": "t:sections.all.description_size.text.label",
+              "value": "text"
+            },
+            {
+              "label": "t:sections.all.description_size.text-medium.label",
+              "value": "text-medium"
+            },
+            {
+              "label": "t:sections.all.description_size.text-large.label",
+              "value": "text-large"
+            },
+            {
+              "label": "t:sections.all.description_size.text-xlarge.label",
+              "value": "text-xlarge"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "t:sections.all.headers.button"
+        },
+        {
+          "type": "text",
+          "label": "t:settings_schema.global.settings.text.label",
+          "id": "button_text",
+          "default": "Button"
+        },
+        {
+          "type": "url",
+          "label": "t:settings_schema.global.settings.link.label",
+          "id": "button_link"
+        },
+        {
+          "type": "select",
+          "id": "button_size",
+          "label": "t:sections.all.button_size.label",
+          "default": "normal-button",
+          "options": [
+            {
+              "label": "t:sections.all.button_size.normal-button.label",
+              "value": "normal-button"
+            },
+            {
+              "label": "t:sections.all.button_size.small-button.label",
+              "value": "small-button"
+            },
+            {
+              "label": "t:sections.all.button_size.medium-button.label",
+              "value": "medium-button"
+            },
+            {
+              "label": "t:sections.all.button_size.large-button.label",
+              "value": "large-button"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "t:sections.all.button_style.label",
+          "default": "solid",
+          "options": [
+            {
+              "value": "solid",
+              "label": "t:sections.all.button_style.solid.label"
+            },
+            {
+              "value": "outline",
+              "label": "t:sections.all.button_style.outline.label"
+            },
+            {
+              "value": "link",
+              "label": "t:sections.all.button_style.link.label"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.parallax-products-banner.presets.name",
+      "blocks": [
+        {
+          "type": "parallax_products_banner",
+          "settings": {
+            "heading": "Parallax products banner 1"
+          }
+        },
+        {
+          "type": "parallax_products_banner",
+          "settings": {
+            "heading": "Parallax products banner 2"
+          }
+        },
+        {
+          "type": "parallax_products_banner",
+          "settings": {
+            "heading": "Parallax products banner 3"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

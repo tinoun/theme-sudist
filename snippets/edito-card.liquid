@@ -1,0 +1,250 @@
+{%- comment -%}
+  Snippet: edito-card.liquid
+  Description: Affiche une carte éditoriale (image ou vidéo) dans la grille de produits
+  Usage: {% render 'edito-card', block: block %}
+{%- endcomment -%}
+
+{%- assign media_type = block.settings.media_type -%}
+{%- assign content_position = block.settings.content_position | default: 'bottom-left' -%}
+{%- assign text_color = block.settings.text_color | default: 'light' -%}
+{%- assign overlay_opacity = block.settings.overlay_opacity | default: 30 -%}
+
+{%- assign has_link = false -%}
+{%- if block.settings.link != blank -%}
+  {%- assign has_link = true -%}
+{%- endif -%}
+
+{%- assign has_content = false -%}
+{%- if block.settings.title != blank or block.settings.subtitle != blank or block.settings.description != blank or block.settings.button_text != blank -%}
+  {%- assign has_content = true -%}
+{%- endif -%}
+
+{%- comment -%} Timer settings {%- endcomment -%}
+{%- assign enable_countdown = block.settings.enable_countdown -%}
+{%- assign countdown_date = block.settings.countdown_date -%}
+{%- assign countdown_label = block.settings.countdown_label | default: 'Offre expire dans' -%}
+{%- assign countdown_expired_text = block.settings.countdown_expired_text | default: 'Offre terminée' -%}
+{%- assign hide_when_expired = block.settings.hide_when_expired -%}
+
+{%- if enable_countdown and countdown_date != blank -%}
+  {%- assign has_content = true -%}
+{%- endif -%}
+
+{%- comment -%} Générer un ID unique pour le timer {%- endcomment -%}
+{%- assign timer_id = 'countdown-' | append: block.id -%}
+
+{%- comment -%} Border radius {%- endcomment -%}
+{%- assign border_radius = block.settings.border_radius | default: 'medium' -%}
+
+<div 
+  class="edito-card__wrapper edito-card__position--{{ content_position }} edito-card__text--{{ text_color }} edito-card__rounded--{{ border_radius }}{% if enable_countdown %} edito-card__has-countdown{% endif %}"
+  style="--edito-overlay-opacity: {{ overlay_opacity | divided_by: 100.0 }};"
+  {% if enable_countdown and countdown_date != blank %}
+    data-countdown-wrapper
+    data-countdown-date="{{ countdown_date }}"
+    data-hide-expired="{{ hide_when_expired }}"
+  {% endif %}
+>
+  {%- if has_link -%}
+    <a href="{{ block.settings.link }}" class="edito-card__link" aria-label="{{ block.settings.title | default: 'Voir plus' }}">
+  {%- endif -%}
+  
+  {%- comment -%} Media (Image ou Vidéo) {%- endcomment -%}
+  <div class="edito-card__media">
+    {%- if media_type == 'video' -%}
+      {%- comment -%} Vidéo Shopify {%- endcomment -%}
+      {%- if block.settings.video_shopify != blank -%}
+        <div class="edito-card__video-wrapper">
+          {{ block.settings.video_shopify | video_tag: 
+            autoplay: block.settings.video_autoplay, 
+            loop: block.settings.video_loop, 
+            muted: block.settings.video_muted, 
+            playsinline: true, 
+            controls: false,
+            class: 'edito-card__video'
+          }}
+        </div>
+      
+      {%- comment -%} Vidéo externe (YouTube/Vimeo) {%- endcomment -%}
+      {%- elsif block.settings.video_url != blank -%}
+        <div class="edito-card__video-wrapper edito-card__video-external">
+          {%- if block.settings.video_url.type == 'youtube' -%}
+            <iframe 
+              src="https://www.youtube.com/embed/{{ block.settings.video_url.id }}?autoplay=1&mute=1&loop=1&playlist={{ block.settings.video_url.id }}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+              class="edito-card__video edito-card__video-iframe"
+              frameborder="0"
+              allow="autoplay; encrypted-media"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          {%- elsif block.settings.video_url.type == 'vimeo' -%}
+            <iframe 
+              src="https://player.vimeo.com/video/{{ block.settings.video_url.id }}?autoplay=1&muted=1&loop=1&background=1&controls=0"
+              class="edito-card__video edito-card__video-iframe"
+              frameborder="0"
+              allow="autoplay; fullscreen"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          {%- endif -%}
+        </div>
+      
+      {%- comment -%} Placeholder si pas de vidéo {%- endcomment -%}
+      {%- else -%}
+        <div class="edito-card__placeholder">
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    
+    {%- comment -%} Image {%- endcomment -%}
+    {%- else -%}
+      {%- if block.settings.image != blank -%}
+        <picture class="edito-card__picture">
+          {%- if block.settings.image_mobile != blank -%}
+            <source 
+              media="(max-width: 767px)" 
+              srcset="{{ block.settings.image_mobile | image_url: width: 400 }} 400w,
+                      {{ block.settings.image_mobile | image_url: width: 600 }} 600w,
+                      {{ block.settings.image_mobile | image_url: width: 800 }} 800w"
+              sizes="(max-width: 767px) 100vw"
+            >
+          {%- endif -%}
+          <source 
+            media="(min-width: 768px)" 
+            srcset="{{ block.settings.image | image_url: width: 400 }} 400w,
+                    {{ block.settings.image | image_url: width: 600 }} 600w,
+                    {{ block.settings.image | image_url: width: 800 }} 800w,
+                    {{ block.settings.image | image_url: width: 1000 }} 1000w,
+                    {{ block.settings.image | image_url: width: 1200 }} 1200w"
+            sizes="(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw"
+          >
+          <img 
+            src="{{ block.settings.image | image_url: width: 800 }}"
+            alt="{{ block.settings.image.alt | default: block.settings.title | escape }}"
+            class="edito-card__image"
+            loading="lazy"
+            width="{{ block.settings.image.width }}"
+            height="{{ block.settings.image.height }}"
+          >
+        </picture>
+      {%- else -%}
+        <div class="edito-card__placeholder">
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+    
+    {%- comment -%} Overlay {%- endcomment -%}
+    {%- if overlay_opacity > 0 -%}
+      <div class="edito-card__overlay"></div>
+    {%- endif -%}
+  </div>
+  
+  {%- comment -%} Contenu texte {%- endcomment -%}
+  {%- if has_content -%}
+    <div class="edito-card__content">
+      {%- if block.settings.subtitle != blank -%}
+        <span class="edito-card__subtitle">{{ block.settings.subtitle }}</span>
+      {%- endif -%}
+      
+      {%- if block.settings.title != blank -%}
+        <h3 class="edito-card__title h5">{{ block.settings.title }}</h3>
+      {%- endif -%}
+      
+      {%- if block.settings.description != blank -%}
+        <p class="edito-card__description">{{ block.settings.description }}</p>
+      {%- endif -%}
+      
+      {%- comment -%} Compte à rebours {%- endcomment -%}
+      {%- if enable_countdown and countdown_date != blank -%}
+        <div class="edito-card__countdown" id="{{ timer_id }}" data-countdown data-end-date="{{ countdown_date }}" data-expired-text="{{ countdown_expired_text }}">
+          <span class="edito-card__countdown-label">{{ countdown_label }}</span>
+          <div class="edito-card__countdown-timer">
+            <div class="edito-card__countdown-item">
+              <span class="edito-card__countdown-value" data-days>00</span>
+              <span class="edito-card__countdown-unit">j</span>
+            </div>
+            <span class="edito-card__countdown-separator">:</span>
+            <div class="edito-card__countdown-item">
+              <span class="edito-card__countdown-value" data-hours>00</span>
+              <span class="edito-card__countdown-unit">h</span>
+            </div>
+            <span class="edito-card__countdown-separator">:</span>
+            <div class="edito-card__countdown-item">
+              <span class="edito-card__countdown-value" data-minutes>00</span>
+              <span class="edito-card__countdown-unit">m</span>
+            </div>
+            <span class="edito-card__countdown-separator">:</span>
+            <div class="edito-card__countdown-item">
+              <span class="edito-card__countdown-value" data-seconds>00</span>
+              <span class="edito-card__countdown-unit">s</span>
+            </div>
+          </div>
+          <span class="edito-card__countdown-expired hidden">{{ countdown_expired_text }}</span>
+        </div>
+      {%- endif -%}
+      
+      {%- if block.settings.button_text != blank -%}
+        <span class="edito-card__button button button--secondary">
+          {{ block.settings.button_text }}
+        </span>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+  
+  {%- if has_link -%}
+    </a>
+  {%- endif -%}
+</div>
+
+{%- if enable_countdown and countdown_date != blank -%}
+<script>
+(function() {
+  const countdown = document.getElementById('{{ timer_id }}');
+  if (!countdown) return;
+  
+  const endDate = new Date('{{ countdown_date }}').getTime();
+  const wrapper = countdown.closest('[data-countdown-wrapper]');
+  const hideExpired = wrapper?.dataset.hideExpired === 'true';
+  
+  const daysEl = countdown.querySelector('[data-days]');
+  const hoursEl = countdown.querySelector('[data-hours]');
+  const minutesEl = countdown.querySelector('[data-minutes]');
+  const secondsEl = countdown.querySelector('[data-seconds]');
+  const timerEl = countdown.querySelector('.edito-card__countdown-timer');
+  const labelEl = countdown.querySelector('.edito-card__countdown-label');
+  const expiredEl = countdown.querySelector('.edito-card__countdown-expired');
+  
+  function updateCountdown() {
+    const now = new Date().getTime();
+    const distance = endDate - now;
+    
+    if (distance < 0) {
+      // Timer expiré
+      if (hideExpired && wrapper) {
+        wrapper.closest('.edito-card')?.remove();
+      } else {
+        if (timerEl) timerEl.classList.add('hidden');
+        if (labelEl) labelEl.classList.add('hidden');
+        if (expiredEl) expiredEl.classList.remove('hidden');
+      }
+      return;
+    }
+    
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
+    if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+    if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+    if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+    
+    requestAnimationFrame(() => setTimeout(updateCountdown, 1000));
+  }
+  
+  updateCountdown();
+})();
+</script>
+{%- endif -%}

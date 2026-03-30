@@ -1,0 +1,1185 @@
+{%- liquid 
+  assign customClass = 'd-block'
+  assign imageRatio = 50
+  assign popup_mode = section.settings.popup_mode | default: 'standard'
+  assign enable_email_field = section.settings.enable_email_field | default: true
+  assign enable_glass_effect = section.settings.enable_glass_effect | default: false
+  
+  if section.settings.image_position == 'left' 
+    assign customClass = 'd-flex'
+    assign imageRatio = 85
+  elsif section.settings.image_position == 'right'
+    assign customClass = 'd-flex'
+    assign imageRatio = 85
+  endif
+
+  if section.settings.video != blank or section.settings.video_url != blank
+    if section.settings.video_position == 'left'
+      assign customClass = 'd-flex'
+    elsif section.settings.video_position == 'right'
+      assign customClass = 'd-flex'
+    endif
+  endif
+
+  if popup_mode == 'spin_wheel'
+    assign customClass = 'd-flex spin-wheel-layout'
+  endif
+
+  if enable_glass_effect
+    assign customClass = customClass | append: ' glass-effect'
+  endif
+-%}
+
+<newsletter-popup
+  class="{{ customClass }} newsletter-popup--content image-position-{{ section.settings.image_position }} video-position-{{ section.settings.video_position }} popup-mode-{{ popup_mode }} text-{{ section.settings.alignment }}"
+  id="newsletterPopup"
+  data-drawer="newsletter-popup"
+  data-section-id="{{ section.id }}"
+  data-popup-mode="{{ popup_mode }}"
+  {% if enable_glass_effect %}data-glass-effect="true"{% endif %}
+>
+  <input type="hidden" name="newsletterCookieValue" value="{% if section.settings.show_once_to_visitors %}30{% else %}{{ section.settings.newsletter_popup_cookie }}{% endif %}">
+
+  {%- comment -%} Image HTML {%- endcomment -%}
+  {%- capture imageHtml -%}
+    {%- if section.settings.image != blank -%}
+      <div class="newsletter-popup--image media-wrapper media-overlay">
+        <div class="media" style="--image_ratio:{{ imageRatio }}%">
+          {%- liquid
+            assign height = section.settings.image.width | divided_by: section.settings.image.aspect_ratio | round
+            assign sizes = '100vw'
+            assign widths = '180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2160, 2376, 2592, 2808, 3024'
+            echo section.settings.image | image_url: width: 3840 | image_tag: height: height, sizes: sizes, widths: widths, fetchpriority: 'high'
+          -%}
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- comment -%} Video HTML {%- endcomment -%}
+  {%- capture videoHtml -%}
+    {%- if section.settings.video_url != blank or section.settings.video != blank -%}
+      <div class="newsletter-popup--video media-wrapper">
+        <div class="media newsletter-video-container">
+          {%- if section.settings.video_url != blank -%}
+            {%- if section.settings.video_url.type == 'youtube' -%}
+              <iframe 
+                class="newsletter-video"
+                src="https://www.youtube.com/embed/{{ section.settings.video_url.id }}?autoplay={% if section.settings.video_autoplay %}1{% else %}0{% endif %}&mute={% if section.settings.video_muted %}1{% else %}0{% endif %}&loop={% if section.settings.video_loop %}1{% else %}0{% endif %}&playlist={{ section.settings.video_url.id }}&controls={% if section.settings.video_controls %}1{% else %}0{% endif %}&rel=0"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+              ></iframe>
+            {%- elsif section.settings.video_url.type == 'vimeo' -%}
+              <iframe 
+                class="newsletter-video"
+                src="https://player.vimeo.com/video/{{ section.settings.video_url.id }}?autoplay={% if section.settings.video_autoplay %}1{% else %}0{% endif %}&muted={% if section.settings.video_muted %}1{% else %}0{% endif %}&loop={% if section.settings.video_loop %}1{% else %}0{% endif %}&controls={% if section.settings.video_controls %}1{% else %}0{% endif %}"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+              ></iframe>
+            {%- endif -%}
+          {%- elsif section.settings.video != blank -%}
+            {{- section.settings.video | video_tag: 
+              autoplay: section.settings.video_autoplay, 
+              muted: section.settings.video_muted, 
+              loop: section.settings.video_loop, 
+              controls: section.settings.video_controls,
+              class: 'newsletter-video'
+            -}}
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- comment -%} Spin Wheel HTML - Version Camembert SVG sans texte {%- endcomment -%}
+  {%- capture spinWheelHtml -%}
+    {%- if popup_mode == 'spin_wheel' -%}
+      {%- assign active_segments = 0 -%}
+      {%- for i in (1..8) -%}
+        {%- assign segment_key = 'wheel_segment_' | append: i -%}
+        {%- if section.settings[segment_key] != blank -%}
+          {%- assign active_segments = active_segments | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+      
+      {%- if active_segments == 0 -%}
+        {%- assign active_segments = 6 -%}
+      {%- endif -%}
+
+      <div class="newsletter-popup--wheel">
+        <div class="spin-wheel-container">
+          <div class="spin-wheel-wrapper">
+            <div class="spin-wheel-svg-container" id="spinWheel-{{ section.id }}" data-segments="{{ active_segments }}">
+              <svg viewBox="0 0 100 100" class="spin-wheel-svg">
+                <circle cx="50" cy="50" r="8" fill="var(--color-button, #000)" class="spin-wheel-center-circle"/>
+              </svg>
+            </div>
+            
+            <div class="spin-wheel__pointer"></div>
+            <button type="button" class="spin-wheel__center" id="spinButton-{{ section.id }}">
+              {{ section.settings.wheel_spin_text | default: 'SPIN' }}
+            </button>
+          </div>
+          
+          <div class="spin-wheel-result" id="spinResult-{{ section.id }}">
+            <div class="spin-wheel-result__title"></div>
+            <div class="spin-wheel-result__prize"></div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- if section.settings.image_position == 'left' or section.settings.image_position == 'top' -%}
+    {{ imageHtml }}
+  {%- endif -%}
+  
+  {%- if section.settings.video_position == 'left' and popup_mode != 'spin_wheel' -%}
+    {{ videoHtml }}
+  {%- endif -%}
+
+  {%- if popup_mode == 'spin_wheel' -%}
+    {{ spinWheelHtml }}
+  {%- endif -%}
+
+  <div class="newsletter-popup--text">
+    
+    {%- if section.settings.video_position == 'top' and popup_mode != 'spin_wheel' -%}
+      {{ videoHtml }}
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <variety-heading class="newsletter-popup--heading-box">
+        {%- capture markersPrefix -%}
+          <span class="markers-text {{ section.settings.markers_font }} {{ section.settings.markers_text }}">
+        {%- endcapture -%}
+        {%- capture markersSuffix -%}
+          </span>
+        {%- endcapture -%}
+        <{{ section.settings.seo_heading | default: 'h5' }} class="newsletter-popup--heading heading-font {{ section.settings.heading_size | default: 'h5' }}">
+          {{ section.settings.heading | replace: "[", markersPrefix | replace: "]", markersSuffix | replace: "++", "<br>" }}
+        </{{ section.settings.seo_heading | default: 'h5' }}>
+      </variety-heading>
+    {%- endif -%}
+
+    {%- if section.settings.description != blank -%}
+      <p class="newsletter-popup--desc {{ section.settings.description_size }}">
+        {{ section.settings.description | newline_to_br }}
+      </p>
+    {%- endif -%}
+
+    {%- if section.settings.enable_timer and section.settings.timer_end_date != blank -%}
+      <div class="newsletter-timer" id="timer-{{ section.id }}" data-timer-end="{{ section.settings.timer_end_date }}">
+        <div class="newsletter-timer__item">
+          <span class="newsletter-timer__value" data-timer-days>00</span>
+          <span class="newsletter-timer__label">{{ section.settings.timer_label_days | default: 'Jours' }}</span>
+        </div>
+        <div class="newsletter-timer__item">
+          <span class="newsletter-timer__value" data-timer-hours>00</span>
+          <span class="newsletter-timer__label">{{ section.settings.timer_label_hours | default: 'Heures' }}</span>
+        </div>
+        <div class="newsletter-timer__item">
+          <span class="newsletter-timer__value" data-timer-minutes>00</span>
+          <span class="newsletter-timer__label">{{ section.settings.timer_label_minutes | default: 'Min' }}</span>
+        </div>
+        <div class="newsletter-timer__item">
+          <span class="newsletter-timer__value" data-timer-seconds>00</span>
+          <span class="newsletter-timer__label">{{ section.settings.timer_label_seconds | default: 'Sec' }}</span>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.enable_promo_code and section.settings.promo_code != blank -%}
+      <div class="newsletter-promo-code">
+        {%- if section.settings.promo_code_label != blank -%}
+          <span class="newsletter-promo-code__label">{{ section.settings.promo_code_label }}</span>
+        {%- endif -%}
+        <span class="newsletter-promo-code__value" id="promoCode-{{ section.id }}">{{ section.settings.promo_code }}</span>
+        <button 
+          type="button" 
+          class="newsletter-promo-code__copy" 
+          id="promoCopy-{{ section.id }}"
+          data-code="{{ section.settings.promo_code }}"
+          data-copy-text="{{ section.settings.promo_copy_text | default: 'Copier' }}"
+          data-copied-text="{{ section.settings.promo_copied_text | default: 'Copié !' }}"
+          aria-label="Copier le code promo"
+        >
+          {{ section.settings.promo_copy_text | default: 'Copier' }}
+        </button>
+      </div>
+    {%- endif -%}
+
+    {%- if enable_email_field and popup_mode != 'announcement' and popup_mode != 'spin_wheel' -%}
+      {%- form 'customer', class: 'newsletter-form pos-relative' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <div class="newsletter--form">
+          {%- if form.posted_successfully? -%}
+            <script>
+              localStorage.setItem('theme:popup-filled', 'true');
+            </script>
+          {%- endif -%}
+          <div class="form-group">
+            <input
+              id="Email-{{ section.id }}"
+              type="email"
+              name="contact[email]"
+              class="form-control input-sm"
+              value="{{ form.email }}"
+              aria-required="true"
+              autocorrect="off"
+              autocapitalize="off"
+              autocomplete="email"
+              {% if form.errors %}
+                autofocus
+                aria-invalid="true"
+                aria-describedby="Newsletter-error-{{ section.id }}"
+              {% elsif form.posted_successfully? %}
+                aria-describedby="Newsletter-success-{{ section.id }}"
+              {% endif %}
+              placeholder="{% if section.settings.placeholder != blank %}{{ section.settings.placeholder }}{% else %}{{ 'newsletter.label' | t }}{% endif %}"
+              pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)*[a-zA-Z]{2,}))$"
+              required
+            >
+          </div>
+          <button
+            type="submit"
+            name="commit"
+            id="Subscribe-{{ section.id }}"
+            class="button button-block"
+            aria-label="Newsletter"
+          >
+            <span>
+              {{ section.settings.button_text | default: 'Subscribe' }}
+            </span>
+          </button>
+        </div>
+        {%- if form.errors -%}
+          <div
+            class="form--message error"
+            id="Newsletter-error-{{ section.id }}"
+            tabindex="-1"
+          >
+            {{- 'newsletter.error' | t -}}
+          </div>
+        {%- endif -%}
+  
+        {%- if form.posted_successfully? -%}
+          <p
+            class="form--message success"
+            id="Newsletter-success-{{ section.id }}"
+            tabindex="-1"
+          >
+            {{- 'newsletter.success' | t -}}
+          </p>
+        {%- endif -%}
+      {%- endform -%}
+    {%- endif -%}
+
+    {%- if popup_mode == 'announcement' and section.settings.announcement_button_text != blank -%}
+      <a 
+        href="{{ section.settings.announcement_button_link }}" 
+        class="button button-block newsletter-announcement-btn"
+        data-popup-cta
+      >
+        {{ section.settings.announcement_button_text }}
+      </a>
+    {%- endif -%}
+
+  </div>
+
+  {%- if section.settings.image_position == 'right' -%}
+    {{ imageHtml }}
+  {%- endif -%}
+  
+  {%- if section.settings.video_position == 'right' and popup_mode != 'spin_wheel' -%}
+    {{ videoHtml }}
+  {%- endif -%}
+
+</newsletter-popup>
+
+{%- comment -%} Données JSON pour les segments {%- endcomment -%}
+{%- if popup_mode == 'spin_wheel' -%}
+<script type="application/json" id="wheelSegmentsData-{{ section.id }}">
+{
+  "segments": [
+    {%- assign first_segment = true -%}
+    {%- for i in (1..8) -%}
+      {%- assign segment_key = 'wheel_segment_' | append: i -%}
+      {%- assign code_key = 'wheel_code_' | append: i -%}
+      {%- assign probability_key = 'wheel_probability_' | append: i -%}
+      {%- assign color_key = 'wheel_color_' | append: i -%}
+      {%- if section.settings[segment_key] != blank -%}
+        {%- unless first_segment -%},{%- endunless -%}
+        {
+          "text": {{ section.settings[segment_key] | json }},
+          "code": {{ section.settings[code_key] | default: '' | json }},
+          "probability": {{ section.settings[probability_key] | default: 12 }},
+          "color": {{ section.settings[color_key] | default: '#cccccc' | json }}
+        }
+        {%- assign first_segment = false -%}
+      {%- endif -%}
+    {%- endfor -%}
+  ],
+  "labels": {
+    "winTitle": {{ section.settings.wheel_win_title | default: 'Félicitations !' | json }},
+    "loseTitle": {{ section.settings.wheel_lose_title | default: 'Dommage !' | json }},
+    "loseMessage": {{ section.settings.wheel_lose_message | default: 'Tentez votre chance une prochaine fois !' | json }},
+    "copyText": {{ section.settings.promo_copy_text | default: 'Copier' | json }},
+    "copiedText": {{ section.settings.promo_copied_text | default: 'Copié !' | json }}
+  }
+}
+</script>
+{%- endif -%}
+
+<style>
+
+  
+  /* ============================================
+     GLASS MORPHISM / LIQUID GLASS EFFECT
+     ============================================ */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 0 80px rgba(255, 255, 255, 0.05),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 0;
+  }
+
+  .glass-effect > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .glass-effect .newsletter-popup--heading,
+  .glass-effect .newsletter-popup--desc {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .glass-effect .newsletter-timer__value {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .glass-effect .newsletter-promo-code {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 2px dashed rgba(255, 255, 255, 0.4);
+  }
+
+  .glass-effect .newsletter-promo-code__value {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+  }
+
+  .glass-effect .form-control {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  }
+
+  .glass-effect .form-control::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  .glass-effect .button {
+    background: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .glass-effect .button:hover {
+    background: rgba(0, 0, 0, 0.7) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .glass-effect .spin-wheel-result {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* Timer Styles */
+  .newsletter-timer {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+  }
+
+  .newsletter-timer__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 50px;
+  }
+
+  .newsletter-timer__value {
+    font-size: 1.75rem;
+    font-weight: bold;
+    line-height: 1;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-background-contrast, rgba(0,0,0,0.05));
+    border-radius: 8px;
+  }
+
+  .newsletter-timer__label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+    opacity: 0.7;
+  }
+
+  .newsletter-timer--expired {
+    font-size: 1rem;
+    padding: 1rem;
+    text-align: center;
+    opacity: 0.7;
+  }
+
+  /* Video Styles */
+  .newsletter-popup--video {
+    flex-shrink: 0;
+  }
+
+  .newsletter-video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  .newsletter-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
+  }
+
+  .video-position-left .newsletter-popup--video,
+  .video-position-right .newsletter-popup--video {
+    width: 45%;
+    max-width: 300px;
+  }
+
+  .video-position-top .newsletter-popup--video {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .video-position-top .newsletter-video-container {
+    aspect-ratio: 16/9;
+    max-height: 200px;
+  }
+
+  /* Promo Code Styles */
+  .newsletter-promo-code {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.25rem 0;
+    padding: 1rem;
+    background: var(--color-background-contrast, rgba(0,0,0,0.05));
+    border: 2px dashed var(--color-border, rgba(0,0,0,0.15));
+    border-radius: 8px;
+  }
+
+  .newsletter-promo-code__label {
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+
+  .newsletter-promo-code__value {
+    font-family: monospace;
+    font-size: 1.25rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    padding: 0.25rem 0.5rem;
+    background: var(--color-button, #000);
+    color: var(--color-button-text, #fff);
+    border-radius: 4px;
+  }
+
+  .newsletter-promo-code__copy {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    background: transparent;
+    color: inherit;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .newsletter-promo-code__copy:hover {
+    background: var(--color-button, #000);
+    color: var(--color-button-text, #fff);
+    border-color: var(--color-button, #000);
+  }
+
+  .newsletter-promo-code__copy--copied {
+    background: var(--color-success, #28a745) !important;
+    color: #fff !important;
+    border-color: var(--color-success, #28a745) !important;
+  }
+
+  /* ============================================
+     SPIN WHEEL - CAMEMBERT SVG
+     ============================================ */
+  .spin-wheel-layout {
+    gap: 2rem;
+  }
+
+  .newsletter-popup--wheel {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .spin-wheel-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .spin-wheel-wrapper {
+    position: relative;
+    width: 300px;
+    height: 300px;
+  }
+
+  .spin-wheel-svg-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 
+      0 0 0 8px var(--color-button, #000), 
+      0 0 0 12px rgba(255, 255, 255, 0.3),
+      0 0 30px rgba(0, 0, 0, 0.4);
+    transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    overflow: hidden;
+  }
+
+  .glass-effect .spin-wheel-svg-container {
+    box-shadow: 
+      0 0 0 8px rgba(0, 0, 0, 0.5), 
+      0 0 0 12px rgba(255, 255, 255, 0.2),
+      0 0 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .spin-wheel-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .spin-wheel-segment {
+    transition: opacity 0.2s ease;
+  }
+
+  .spin-wheel-center-circle {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  .spin-wheel__pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 35px solid var(--color-button, #000);
+    z-index: 10;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+  }
+
+  .glass-effect .spin-wheel__pointer {
+    border-top-color: rgba(0, 0, 0, 0.7);
+  }
+
+  .spin-wheel__pointer::after {
+    content: '';
+    position: absolute;
+    top: -35px;
+    left: -8px;
+    width: 16px;
+    height: 16px;
+    background: var(--color-button, #000);
+    border-radius: 50%;
+  }
+
+  .glass-effect .spin-wheel__pointer::after {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .spin-wheel__center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(145deg, var(--color-button, #000), #333);
+    color: var(--color-button-text, #fff);
+    border: 5px solid #fff;
+    border-radius: 50%;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 
+      0 4px 15px rgba(0,0,0,0.3),
+      inset 0 2px 4px rgba(255,255,255,0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .glass-effect .spin-wheel__center {
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .spin-wheel__center:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 
+      0 6px 20px rgba(0,0,0,0.4),
+      inset 0 2px 4px rgba(255,255,255,0.2);
+  }
+
+  .spin-wheel__center:active {
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+
+  .spin-wheel__center--spinning {
+    pointer-events: none;
+    cursor: not-allowed;
+    animation: pulse 0.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  .spin-wheel__center--done {
+    background: linear-gradient(145deg, var(--color-success, #28a745), #1e7e34);
+    pointer-events: none;
+    font-size: 1.5rem;
+  }
+
+  .spin-wheel-result {
+    margin-top: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--color-background-contrast, rgba(0,0,0,0.05));
+    border-radius: 12px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-width: 300px;
+    border: 2px solid transparent;
+  }
+
+  .spin-wheel-result--visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .spin-wheel-result--win {
+    border-color: var(--color-success, #28a745);
+    background: rgba(40, 167, 69, 0.1);
+  }
+
+  .glass-effect .spin-wheel-result--win {
+    background: rgba(40, 167, 69, 0.2);
+    border-color: rgba(40, 167, 69, 0.5);
+  }
+
+  .spin-wheel-result--lose {
+    border-color: var(--color-border, rgba(0,0,0,0.15));
+  }
+
+  .spin-wheel-result__title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+  }
+
+  .spin-wheel-result__prize {
+    font-size: 1rem;
+  }
+
+  .spin-wheel-result__prize .newsletter-promo-code {
+    margin: 1rem 0 0 0;
+  }
+
+  .newsletter-announcement-btn {
+    margin-top: 1rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    .spin-wheel-layout {
+      flex-direction: column;
+    }
+
+    .spin-wheel-wrapper {
+      width: 260px;
+      height: 260px;
+    }
+
+    .spin-wheel__center {
+      width: 70px;
+      height: 70px;
+      font-size: 0.85rem;
+    }
+
+    .video-position-left .newsletter-popup--video,
+    .video-position-right .newsletter-popup--video {
+      width: 100%;
+      max-width: none;
+    }
+
+    .newsletter-timer {
+      gap: 0.5rem;
+    }
+
+    .newsletter-timer__value {
+      font-size: 1.25rem;
+      padding: 0.4rem 0.5rem;
+    }
+
+    .newsletter-timer__item {
+      min-width: 40px;
+    }
+  }
+</style>
+
+<script>
+(function() {
+  var sectionId = '{{ section.id }}';
+  var popupMode = '{{ popup_mode }}';
+  var enableTimer = {{ section.settings.enable_timer | default: false }};
+  var timerEndDate = '{{ section.settings.timer_end_date }}';
+  var hideOnExpiry = {{ section.settings.hide_popup_on_expiry | default: false }};
+  var cookieDays = {{ section.settings.newsletter_popup_cookie | default: 10 }};
+
+  function closePopupWithCookie(immediate) {
+    var newsletterCookieInput = document.querySelector('input[name="newsletterCookieValue"]');
+    var days = cookieDays;
+    if (newsletterCookieInput && newsletterCookieInput.value) {
+      days = parseInt(newsletterCookieInput.value) || cookieDays;
+    }
+    
+    var date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    if (typeof Cookies !== 'undefined') {
+      Cookies.set('is_newsletter_popup_closed', 'newsletter_popup_closed', { expires: date, path: '/' });
+    }
+    
+    var closeDelay = immediate === true ? 0 : 100;
+    
+    setTimeout(function() {
+      var popupModal = document.querySelector('popup-modal');
+      if (popupModal && typeof popupModal.modalPopupClose === 'function') {
+        popupModal.modalPopupClose('newsletterPopup');
+      }
+    }, closeDelay);
+  }
+
+  function initCtaButton() {
+    var ctaButton = document.querySelector('[data-popup-cta]');
+    if (ctaButton) {
+      ctaButton.addEventListener('click', function(e) {
+        var href = this.getAttribute('href');
+        if (href && href !== '#' && href !== '') {
+          setTimeout(function() {
+            closePopupWithCookie(true);
+          }, 50);
+        } else {
+          e.preventDefault();
+          closePopupWithCookie(false);
+        }
+      });
+    }
+  }
+
+  function initTimer() {
+    var timerContainer = document.getElementById('timer-' + sectionId);
+    if (!timerContainer || !timerEndDate) return;
+
+    var endDate = new Date(timerEndDate).getTime();
+    
+    if (isNaN(endDate)) {
+      console.warn('Date de fin du timer invalide:', timerEndDate);
+      return;
+    }
+
+    var timerInterval = null;
+
+    function updateTimer() {
+      var now = new Date().getTime();
+      var distance = endDate - now;
+
+      if (distance < 0) {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+        }
+        
+        timerContainer.innerHTML = '<div class="newsletter-timer--expired">Offre expirée</div>';
+        
+        if (hideOnExpiry) {
+          setTimeout(function() {
+            closePopupWithCookie(false);
+          }, 2000);
+        }
+        return;
+      }
+
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      var daysEl = timerContainer.querySelector('[data-timer-days]');
+      var hoursEl = timerContainer.querySelector('[data-timer-hours]');
+      var minutesEl = timerContainer.querySelector('[data-timer-minutes]');
+      var secondsEl = timerContainer.querySelector('[data-timer-seconds]');
+
+      if (daysEl) daysEl.textContent = days.toString().padStart(2, '0');
+      if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
+      if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
+      if (secondsEl) secondsEl.textContent = seconds.toString().padStart(2, '0');
+    }
+
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  function initPromoCodeCopy() {
+    var copyButton = document.getElementById('promoCopy-' + sectionId);
+    if (!copyButton) return;
+
+    copyButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      var code = this.getAttribute('data-code');
+      var copyText = this.getAttribute('data-copy-text');
+      var copiedText = this.getAttribute('data-copied-text');
+      var button = this;
+
+      copyToClipboard(code, function() {
+        button.textContent = copiedText;
+        button.classList.add('newsletter-promo-code__copy--copied');
+        
+        setTimeout(function() {
+          button.textContent = copyText;
+          button.classList.remove('newsletter-promo-code__copy--copied');
+        }, 2000);
+      });
+    });
+  }
+
+  function copyToClipboard(text, onSuccess) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(onSuccess).catch(function() {
+        fallbackCopyToClipboard(text, onSuccess);
+      });
+    } else {
+      fallbackCopyToClipboard(text, onSuccess);
+    }
+  }
+
+  function fallbackCopyToClipboard(text, onSuccess) {
+    var textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
+    textArea.style.top = '-9999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+      document.execCommand('copy');
+      if (onSuccess) onSuccess();
+    } catch (err) {
+      console.error('Erreur lors de la copie:', err);
+    }
+    
+    document.body.removeChild(textArea);
+  }
+
+  function createPieSlice(cx, cy, r, startAngle, endAngle) {
+    var startRad = (startAngle * Math.PI) / 180;
+    var endRad = (endAngle * Math.PI) / 180;
+    
+    var x1 = cx + r * Math.cos(startRad);
+    var y1 = cy + r * Math.sin(startRad);
+    var x2 = cx + r * Math.cos(endRad);
+    var y2 = cy + r * Math.sin(endRad);
+    
+    var largeArcFlag = endAngle - startAngle > 180 ? 1 : 0;
+    
+    return [
+      'M', cx, cy,
+      'L', x1, y1,
+      'A', r, r, 0, largeArcFlag, 1, x2, y2,
+      'Z'
+    ].join(' ');
+  }
+
+  function generatePieChart(svg, segments) {
+    var existingSegments = svg.querySelectorAll('.spin-wheel-segment');
+    existingSegments.forEach(function(seg) { seg.remove(); });
+
+    var segmentCount = segments.length;
+    var anglePerSegment = 360 / segmentCount;
+    var centerX = 50;
+    var centerY = 50;
+    var radius = 50;
+
+    segments.forEach(function(segment, index) {
+      var startAngle = index * anglePerSegment - 90;
+      var endAngle = startAngle + anglePerSegment;
+      
+      var path = createPieSlice(centerX, centerY, radius, startAngle, endAngle);
+      
+      var pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pathElement.setAttribute('d', path);
+      pathElement.setAttribute('fill', segment.color || '#cccccc');
+      pathElement.setAttribute('class', 'spin-wheel-segment');
+      pathElement.setAttribute('data-index', index);
+      
+      var centerCircle = svg.querySelector('.spin-wheel-center-circle');
+      if (centerCircle) {
+        svg.insertBefore(pathElement, centerCircle);
+      } else {
+        svg.appendChild(pathElement);
+      }
+    });
+  }
+
+  function initSpinWheel() {
+    if (popupMode !== 'spin_wheel') return;
+
+    var wheelContainer = document.getElementById('spinWheel-' + sectionId);
+    var spinButton = document.getElementById('spinButton-' + sectionId);
+    var resultContainer = document.getElementById('spinResult-' + sectionId);
+    var dataElement = document.getElementById('wheelSegmentsData-' + sectionId);
+    
+    if (!wheelContainer || !spinButton || !resultContainer) return;
+
+    var segments = [];
+    var labels = {
+      winTitle: 'Félicitations !',
+      loseTitle: 'Dommage !',
+      loseMessage: 'Tentez votre chance une prochaine fois !',
+      copyText: 'Copier',
+      copiedText: 'Copié !'
+    };
+
+    if (dataElement) {
+      try {
+        var data = JSON.parse(dataElement.textContent);
+        segments = (data.segments || []).filter(function(s) {
+          return s && s.text && s.text.trim() !== '';
+        });
+        if (data.labels) {
+          labels = Object.assign(labels, data.labels);
+        }
+      } catch (e) {
+        console.error('Erreur de parsing des données de la roue:', e);
+        return;
+      }
+    }
+    
+    if (segments.length === 0) {
+      console.warn('Aucun segment configuré pour la roue');
+      return;
+    }
+
+    var svg = wheelContainer.querySelector('.spin-wheel-svg');
+    if (svg) {
+      generatePieChart(svg, segments);
+    }
+
+    var isSpinning = false;
+    var currentRotation = 0;
+    var segmentCount = segments.length;
+    var segmentAngle = 360 / segmentCount;
+
+    function selectWeightedSegment() {
+      var totalProbability = segments.reduce(function(sum, seg) {
+        return sum + (seg.probability || 0);
+      }, 0);
+      
+      if (totalProbability === 0) {
+        return Math.floor(Math.random() * segments.length);
+      }
+      
+      var random = Math.random() * totalProbability;
+      
+      for (var i = 0; i < segments.length; i++) {
+        random -= (segments[i].probability || 0);
+        if (random <= 0) {
+          return i;
+        }
+      }
+      
+      return segments.length - 1;
+    }
+
+    if (typeof Cookies !== 'undefined' && Cookies.get('spin_wheel_played_' + sectionId) === 'true') {
+      spinButton.textContent = '✓';
+      spinButton.classList.add('spin-wheel__center--done');
+      return;
+    }
+
+    spinButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      if (isSpinning) return;
+      isSpinning = true;
+      spinButton.classList.add('spin-wheel__center--spinning');
+      spinButton.textContent = '...';
+
+      var winningSegmentIndex = selectWeightedSegment();
+      
+      var extraSpins = 5 + Math.floor(Math.random() * 3);
+      var randomOffset = (Math.random() - 0.5) * (segmentAngle * 0.6);
+      
+      var segmentCenter = winningSegmentIndex * segmentAngle + (segmentAngle / 2);
+      var targetRotation = (extraSpins * 360) + (360 - segmentCenter) + randomOffset;
+
+      currentRotation += targetRotation;
+      wheelContainer.style.transform = 'rotate(' + currentRotation + 'deg)';
+
+      setTimeout(function() {
+        isSpinning = false;
+        spinButton.classList.remove('spin-wheel__center--spinning');
+        spinButton.textContent = '✓';
+        spinButton.classList.add('spin-wheel__center--done');
+
+        var wonSegment = segments[winningSegmentIndex];
+        
+        var resultTitle = resultContainer.querySelector('.spin-wheel-result__title');
+        var resultPrize = resultContainer.querySelector('.spin-wheel-result__prize');
+
+        if (wonSegment.code && wonSegment.code.trim() !== '') {
+          resultContainer.classList.add('spin-wheel-result--win');
+          resultTitle.textContent = labels.winTitle;
+          
+          resultPrize.innerHTML = '';
+          
+          var strongEl = document.createElement('strong');
+          strongEl.textContent = wonSegment.text;
+          resultPrize.appendChild(strongEl);
+          
+          var promoDiv = document.createElement('div');
+          promoDiv.className = 'newsletter-promo-code';
+          
+          var codeSpan = document.createElement('span');
+          codeSpan.className = 'newsletter-promo-code__value';
+          codeSpan.textContent = wonSegment.code;
+          promoDiv.appendChild(codeSpan);
+          
+          var copyBtn = document.createElement('button');
+          copyBtn.type = 'button';
+          copyBtn.className = 'newsletter-promo-code__copy';
+          copyBtn.textContent = labels.copyText;
+          copyBtn.addEventListener('click', function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            var btn = this;
+            copyToClipboard(wonSegment.code, function() {
+              btn.textContent = labels.copiedText;
+              btn.classList.add('newsletter-promo-code__copy--copied');
+              setTimeout(function() {
+                btn.textContent = labels.copyText;
+                btn.classList.remove('newsletter-promo-code__copy--copied');
+              }, 2000);
+            });
+          });
+          promoDiv.appendChild(copyBtn);
+          
+          resultPrize.appendChild(promoDiv);
+        } else {
+          resultContainer.classList.add('spin-wheel-result--lose');
+          resultTitle.textContent = labels.loseTitle;
+          resultPrize.textContent = wonSegment.text || labels.loseMessage;
+        }
+
+        resultContainer.classList.add('spin-wheel-result--visible');
+
+        if (typeof Cookies !== 'undefined') {
+          Cookies.set('spin_wheel_played_' + sectionId, 'true', { expires: cookieDays, path: '/' });
+        }
+        
+      }, 5200);
+    });
+  }
+
+  function init() {
+    setTimeout(function() {
+      if (enableTimer) initTimer();
+      initPromoCodeCopy();
+      initSpinWheel();
+      initCtaButton();
+    }, 100);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>

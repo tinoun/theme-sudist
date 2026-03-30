@@ -1,0 +1,114 @@
+{{ 'age-verification.css' | asset_url | stylesheet_tag }}
+<age-verifier
+  class="age-verification--main scheme-{{ section.settings.color_scheme }}"
+  id="AgeVerifier"
+  data-drawer="age-verifier"
+  data-section-id="{{ section.id }}"
+>
+  {% if section.settings.background_image != blank %}
+    <div class="background--overlay-image">
+      {% render 'lazy-image', image: section.settings.background_image %}
+    </div>
+  {% endif %}
+  <div class="age-verification--content pos-relative width-100" data-age-verifier>
+    <div class="age-verification--content-box width-100 height-100">
+      <div class="age-verification--text">
+        {%- if section.settings.logo != blank -%}
+          <a class="age-verification--logo" href="/" aria-label="King Development">
+            <img
+              src="{{ section.settings.logo | image_url: width: '300' }}"
+              alt="{{ section.settings.logo.alt | default: shop.name | escape }}"
+            >
+          </a>
+        {% endif %}
+        {% if section.settings.heading != blank %}
+          {%- capture markersPrefix -%}
+            <span class="markers-text {{ section.settings.markers_font }} {{ section.settings.markers_text }}">
+          {%- endcapture -%}
+          {%- capture markersSuffix -%}
+            </span>
+          {%- endcapture -%}
+          <{{ section.settings.seo_heading }} class="age-verification--heading heading-font {{ section.settings.heading_size }}">
+            {{ section.settings.heading | replace: "[", markersPrefix | replace: "]", markersSuffix | replace: "++", "<br>" }}
+          </{{ section.settings.seo_heading }}>
+        {% endif %}
+        {% if section.settings.description != blank %}
+          <p class="age-verification--desc {{ section.settings.description_size }}">
+            {{ section.settings.description | newline_to_br }}
+          </p>
+        {% endif %}
+        {% if section.settings.sub_description != blank %}
+          <p class="age-verification--info text-small">
+            {{ section.settings.sub_description }}
+          </p>
+        {% endif %}
+      </div>
+    </div>
+    {% if section.settings.approve_btn_text != blank or section.settings.decline_btn_text != blank %}
+      <div class="age-verifiction--button button-group gap-0">
+        {% if section.settings.decline_btn_text != blank %}
+          <button class="button large-button secondary--button decline-age border-radius-none" data-decline-age>
+            <span>{{ section.settings.decline_btn_text }}</span>
+          </button>
+        {% endif %}
+        {% if section.settings.approve_btn_text != blank %}
+          <button class="button large-button submit-age border-radius-none" data-submit-age>
+            <span>{{ section.settings.approve_btn_text }}</span>
+          </button>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+  <div class="age-verification--content pos-relative width-100 hidden" data-age-declined>
+    <div class="age-verification--content-box width-100 height-100">
+      <div class="age-verification--text">
+        {%- if section.settings.logo != blank -%}
+          <a class="age-verification--logo" href="/" aria-label="King Development">
+            <img
+              src="{{ section.settings.logo | image_url: width: '300' }}"
+              alt="{{ section.settings.logo.alt | default: shop.name | escape }}"
+            >
+          </a>
+        {% endif %}
+        {% if section.settings.decline_heading != blank %}
+          {%- capture markersPrefix -%}
+            <span class="markers-text {{ section.settings.markers_font }} {{ section.settings.markers_text }}">
+          {%- endcapture -%}
+          {%- capture markersSuffix -%}
+            </span>
+          {%- endcapture -%}
+          <{{ section.settings.seo_heading }} class="age-verification--heading heading-font {{ section.settings.heading_size }}">
+            {{ section.settings.decline_heading | replace: "[", markersPrefix | replace: "]", markersSuffix | replace: "++", "<br>" }}
+          </{{ section.settings.seo_heading }}>
+        {% endif %}
+        {% comment %} <{{ section.settings.seo_heading }} class="age-verification--heading heading-font {{ section.settings.heading_size }}">
+          {{ section.settings.decline_heading }}
+        </{{ section.settings.seo_heading }}> {% endcomment %}
+        <p class="age-verification--desc {{ section.settings.description_size }}">
+          {{ section.settings.decline_description }}
+        </p>
+        <p class="age-verification--info text-small">
+          {{ section.settings.sub_description }}
+        </p>
+      </div>
+    </div>
+    <div class="age-verifiction--button">
+      <button class="button submit-age border-radius-none" data-submit-incorrect>
+        <span>{{ section.settings.age_decline_btn_text }}</span>
+      </button>
+    </div>
+  </div>
+</age-verifier>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if((!Shopify.designMode) && ('{{ section.settings.age_verification_display_mode }}' == 'enable')){
+      var age_Pop = Cookies.get('is_age_verified');
+      if (age_Pop != 'age_verified' && window.location.pathname.indexOf('/challenge') < 0) {
+        document.querySelector('[data-drawer="age-verifier"]').style.display = 'flex';
+        document.querySelector('[data-submit-age]').focus();
+      }
+    }
+  });
+</script>
+ 

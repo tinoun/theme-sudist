@@ -1,0 +1,125 @@
+{%- liquid
+  assign product_card_swatches = settings.enable_swatches
+  assign optionNameDowncase = option.name | downcase
+  assign optionInputName = 'option-' | append: index
+  assign forloop_index = index
+  assign color_option_names = settings.color_name | downcase
+
+  if settings.variants_style == 'color_swatch'
+    if color_option_names contains optionNameDowncase
+      assign isContainColor = true
+    else
+      assign isContainColor = false
+    endif
+  elsif settings.variants_style == 'varaint_image'
+    if color_option_names contains optionNameDowncase
+      assign isContainVariantImage = true
+    else
+      assign isContainVariantImage = false
+    endif
+  else
+    assign isContainColor = false
+    assign isContainVariantImage = false
+  endif
+%}
+<optionset class="product--options-set" data-optionset="{{ option.name }}">
+  {% if isContainColor or isContainVariantImage %}
+    {% render 'color-swatches',
+      product: product,
+      forloop_index: forloop_index,
+      option: option,
+      section: section,
+      source: 'main-product'
+    %}
+  {% else %}
+    <div class="product--options">
+      {% if source == 'main-product' %}
+        <div class="product--variants-title {{ settings.label_font }} text">
+          {{ option.name }}
+          {% if isContainColor or isContainVariantImage %}
+            <span class="body-font" data-selected-variant="{{ section.id }}-{{ product.id }}">| {{ option.selected_value }}</span>
+          {% endif %}
+        </div>
+      {% endif %}
+      <div class="product--variants-box">
+        <ul class="product--variants-list{% if isContainColor %} color-option {% elsif isContainVariantImage %} color-option variants-image {% else %} options-style-{{ settings.other_style }}{% endif %}">
+          {% for value in option.values %}
+            {% liquid
+              assign hide_unavailable = settings.hide_unavailable
+
+              assign valueVariant = value.variant
+
+              assign option_disabled = true
+              if value.available
+                assign option_disabled = false
+              endif
+
+              assign showStatus = false
+
+              if isContainVariantImage and valueVariant == blank
+                assign showStatus = true
+              endif
+
+              unless color_option_names contains optionNameDowncase
+                assign showStatus = true
+              endunless
+            %}
+
+            <li class="variant--item {{productAvialable}}" is="hover-li" title="{{ value }}">
+              <input
+                class="productOption{% if option_disabled %} disabled{% endif %}"
+                id="{{ optionInputName }}-{{ value }}"
+                type="radio"
+                name="{{ optionInputName }}"
+                value="{{ value }}"
+                {% if source == 'main-product' %}
+                  form="main-product-form-{{ section.id }}"
+                {% endif %}
+                {% if value == option.selected_value %}
+                  checked
+                {% endif %}
+                aria-labelledby="label-{{ value }}"
+                data-option-value-id="{{ value.id }}"
+              >
+              <label
+                for="{{ optionInputName }}-{{ value }}"
+                id="label-{{ value }}"
+                class="variant-item-name"
+                {% if isContainColor %}
+                  {% if value.swatch.image %}
+                    style="background-image:url({{ value.swatch.image | image_url: width: 70 }}); background-position:{{ value.swatch.image.presentation.focal_point }};"
+                  {% elsif value.swatch.color %}
+                    style="--swatch_color: rgb({{ value.swatch.color.rgb }})"
+                  {% else %}
+                    data-pallet-color="{{ value | downcase }}"
+                    style="--swatch_color: {{ value | downcase }}"
+                  {% endif %}
+                {% endif %}
+                {% if isContainVariantImage %}
+                  {% if value.variant.featured_media != blank %}
+                    style="background-image:url({{ value.variant.featured_media | image_url: width: '70' }})"
+                  {% else %}
+                    {% if value.swatch.image %}
+                      style="background-image:url({{ value.swatch.image | image_url: width: 70 }}); background-position:{{ value.swatch.image.presentation.focal_point }};"
+                    {% elsif value.swatch.color %}
+                      style="--swatch_color: rgb({{ value.swatch.color.rgb }})"
+                    {% else %}
+                      data-pallet-color="{{ value | downcase }}"
+                      style="--swatch_color: {{ value | downcase }}"
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              >
+                {% liquid
+                  if showStatus
+                    echo value
+                  endif
+                %}
+              </label>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+</optionset>

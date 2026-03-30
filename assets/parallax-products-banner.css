@@ -1,0 +1,182 @@
+.parallax-products-banner--items {
+  z-index: 1;
+  height: calc(120vh * var(--blocks_count));
+  position: sticky;
+  top: 0;
+  bottom: 0;
+  overflow: visible;
+}
+
+.parallax-products-banner--item {
+  z-index: 15;
+  height: 120vh;
+  padding-bottom: 0;
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+  background: var(--body_background);
+}
+
+.parallax-products-banner--bg-image {
+  z-index: 2;
+  width: 100vw;
+  height: 100%;
+  position: absolute;
+  inset: 0%;
+  overflow: hidden;
+}
+
+.parallax-products-banner--bg-image img {
+  object-fit: cover;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+/* .parallax-products-banner--content-card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 53em;
+  position: relative;
+  max-width: 550px;
+  background: var(--card_background);
+  border-radius: var(--card_radius);
+  overflow: hidden;
+  z-index: 1;
+} */
+
+.parallax-products-banner--content-card {
+  display: flex;
+  flex-direction: column;
+  height: 53em;
+  position: relative;
+  max-width: 550px;
+  background: var(--card_background);
+  border-radius: var(--card_radius);
+  overflow: hidden;
+  z-index: 1;
+  transition: all .45s;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.parallax-products-banner--content {
+  z-index: 1;
+  flex-flow: column;
+  justify-content: center;
+  padding: 6em 80px 6em;
+  display: flex;
+  position: fixed;
+  inset: 0%;
+}
+
+.parallax-products-banner--products-items {
+  display: grid;
+  grid-template-columns: repeat(var(--column_count, 6), 1fr);
+  gap: 5px;
+}
+
+.parallax-products-banner--product-item {
+  display: block;
+  position: relative;
+}
+
+.parallax-products-banner--product-media {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.parallax-products-banner--content-wrapper,
+.parallax-products-banner--bg-image img {
+  clip: rect(0, auto, auto, 0);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.parallax-products-banner--content-wrapper {
+  z-index: 10;
+  position: absolute;
+  inset: 0%;
+}
+
+.parallax-products-banner--content-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 30px;
+  border-bottom: 1px solid var(--border_color);
+}
+
+.parallax-products-banner--content-card-number {
+  color: var(--heading_color);
+}
+
+.parallax-products-banner--content-card-body {
+  display: flex;
+  padding: 30px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.parallax-products-banner--content-card-body-inner {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.parallax-products-banner--content-card-body-button {
+  margin-top: 30px;
+}
+
+.parallax-products-banner--content-card-footer {
+  padding: 30px;
+}
+
+.parallax-products--info {
+  position: absolute;
+  top: -30px;
+  display: flex;
+  align-items: center;
+  background: var(--secondary_button_background);
+  padding: 5px 10px;
+  pointer-events: none;
+  width: max-content;
+  opacity: 0;
+  transition: opacity .2s ease;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+  color: var(--secondary_button_text);
+  border-radius: 6px;
+}
+
+.parallax-products--info.left-align {
+  right: 100%;
+}
+
+@media (max-width:1280px) {
+  .parallax-products-banner--content-card {
+    height: 40em;
+    max-width: 500px;
+  }
+
+  .parallax-products-banner--content {
+    padding: 2em 40px 2em;
+  }
+}
+
+@media (max-width:1024px) {
+  .parallax-products-banner--content-card {
+    max-width: 400px;
+  }
+}
+
+@media (max-width:767px) {
+  .parallax-products-banner--content {
+    padding: 2em 20px 2em;
+  }
+
+  .parallax-products-banner--content-card {
+    height: 30em;
+  }
+}

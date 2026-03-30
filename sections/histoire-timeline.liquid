@@ -1,0 +1,526 @@
+{% comment %}
+  Section: Notre Histoire - Timeline
+  Description: Timeline verticale pour raconter l'histoire de votre atelier textile
+  Compatible avec le thème King v2.0.5
+{% endcomment %}
+
+{{ 'section-histoire-timeline.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign containerClass = ''
+  if section.settings.section_container_width == 'global'
+    assign containerClass = settings.container_width
+  else
+    assign containerClass = section.settings.section_container_width
+  endif
+%}
+
+<div class="section-wrapper section-spacing scheme-{{ section.settings.color_scheme }} section-{{ section.settings.section_background }}">
+  <div class="{{ containerClass }}">
+    
+    {% comment %} Section Header {% endcomment %}
+    {% if section.settings.heading != blank or section.settings.subheading != blank %}
+      <variety-heading class="section--header text-{{ section.settings.heading_alignment }}">
+        <div class="section--header-inner">
+          {% if section.settings.subheading != blank %}
+            <p class="section--subheading text-medium">{{ section.settings.subheading }}</p>
+          {% endif %}
+          {% if section.settings.heading != blank %}
+            <variety-heading>
+              {%- capture markersPrefix -%}
+              <span class="markers-text {{ section.settings.markers_font }} {{ section.settings.markers_text }}">
+              {%- endcapture -%}
+              {%- capture markersSuffix -%}
+              </span>
+              {%- endcapture -%}
+              <{{ section.settings.seo_heading }} class="section--heading heading-font {{ section.settings.heading_size }}" {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+                {{ section.settings.heading | replace: "[", markersPrefix | replace: "]", markersSuffix | replace: "++", "<br>" }}
+              </{{ section.settings.seo_heading }}>
+            </variety-heading>
+          {% endif %}
+          {% if section.settings.description != blank %}
+            <p class="section--description {{ section.settings.description_size }}">{{ section.settings.description }}</p>
+          {% endif %}
+        </div>
+      </variety-heading>
+    {% endif %}
+
+    {% comment %} Timeline {% endcomment %}
+    {% if section.blocks.size > 0 %}
+      <div class="histoire-timeline">
+        <div class="timeline-line"></div>
+        
+        {% for block in section.blocks %}
+          {% assign is_even = forloop.index | modulo: 2 %}
+          <div class="timeline-item {% if is_even == 0 %}timeline-item--right{% else %}timeline-item--left{% endif %}" {{ block.shopify_attributes }} {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+            
+            <div class="timeline-marker">
+              <span class="timeline-year heading-font">{{ block.settings.year }}</span>
+            </div>
+            
+            <div class="timeline-content">
+              {% if block.settings.image != blank %}
+                <div class="timeline-image media-wrapper">
+                  <div class="media" style="--image_ratio: 70%;">
+                    {% render 'lazy-image', image: block.settings.image, source: 'histoire-timeline' %}
+                  </div>
+                </div>
+              {% endif %}
+              
+              <div class="timeline-text">
+                {% if block.settings.title != blank %}
+                  <h3 class="timeline-title h5">{{ block.settings.title }}</h3>
+                {% endif %}
+                {% if block.settings.text != blank %}
+                  <div class="timeline-description text-medium rte">
+                    {{ block.settings.text }}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% comment %} CTA Button {% endcomment %}
+    {% if section.settings.btn_text != blank and section.settings.btn_url != blank %}
+      {% liquid
+        if section.settings.button_style == 'link'
+          assign button_class = 'text-underline'
+          assign show_as_link = true
+        else
+          assign button_class = 'button' | append: ' ' | append: section.settings.button_size | append: ' ' | append: settings.button_animation_style
+          assign show_as_link = false
+        endif
+      %}
+      <div class="section--btn text-{{ section.settings.heading_alignment }}" {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+        <a href="{{ section.settings.btn_url }}" class="{{ button_class }} {{ section.settings.button_style }}-button">
+          {% render 'button-appearance', button_text: section.settings.btn_text, icon: 'arrow-right', show_as_link: show_as_link %}
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --top_spacing: {{ section.settings.top_space_desktop }}px;
+    --bottom_spacing: {{ section.settings.bottom_space_desktop }}px;
+  }
+  
+  #shopify-section-{{ section.id }} .histoire-timeline {
+    position: relative;
+    max-width: 1000px;
+    margin: 40px auto 0;
+    padding: 20px 0;
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-border);
+    transform: translateX(-50%);
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 60px;
+    position: relative;
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-item--left {
+    flex-direction: row;
+    padding-right: calc(50% + 40px);
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-item--right {
+    flex-direction: row-reverse;
+    padding-left: calc(50% + 40px);
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-marker {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-year {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    background: var(--color-highlight, var(--color-button-background));
+    color: var(--color-button-text);
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-content {
+    background: var(--color-card-background);
+    border-radius: var(--card-radius, 20px);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-image .media {
+    border-radius: 0;
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-text {
+    padding: 25px;
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-title {
+    margin-bottom: 10px;
+  }
+  
+  #shopify-section-{{ section.id }} .timeline-description {
+    opacity: 0.85;
+  }
+  
+  #shopify-section-{{ section.id }} .section--btn {
+    margin-top: 40px;
+  }
+
+  @media only screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} {
+      --top_spacing: {{ section.settings.top_space_mobile }}px;
+      --bottom_spacing: {{ section.settings.bottom_space_mobile }}px;
+    }
+    
+    #shopify-section-{{ section.id }} .timeline-line {
+      left: 20px;
+    }
+    
+    #shopify-section-{{ section.id }} .timeline-item--left,
+    #shopify-section-{{ section.id }} .timeline-item--right {
+      flex-direction: column;
+      padding-left: 60px;
+      padding-right: 0;
+    }
+    
+    #shopify-section-{{ section.id }} .timeline-marker {
+      left: 20px;
+    }
+    
+    #shopify-section-{{ section.id }} .timeline-year {
+      width: 50px;
+      height: 50px;
+      font-size: 12px;
+    }
+    
+    #shopify-section-{{ section.id }} .timeline-item {
+      margin-bottom: 40px;
+    }
+  }
+  
+  {% if section.settings.section_visibility == 'large' %}
+    @media(max-width: 767px) {
+      #shopify-section-{{ section.id }} {
+        display: none !important;
+      }
+    }
+  {% elsif section.settings.section_visibility == 'small' %}
+    @media(min-width: 768px) {
+      #shopify-section-{{ section.id }} {
+        display: none !important;
+      }
+    }
+  {% endif %}
+</style>
+
+{% schema %}
+{
+  "name": "Histoire - Timeline",
+  "tag": "section",
+  "class": "section-histoire-timeline",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.Overlay"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_visibility",
+      "label": "Visibilité de la section",
+      "default": "always",
+      "options": [
+        { "label": "Toujours", "value": "always" },
+        { "label": "Mobile uniquement", "value": "small" },
+        { "label": "Desktop uniquement", "value": "large" }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "primary",
+      "label": "Palette de couleurs"
+    },
+    {
+      "type": "select",
+      "id": "section_background",
+      "label": "Fond de section",
+      "default": "solid",
+      "options": [
+        { "label": "Uni", "value": "solid" },
+        { "label": "Dégradé", "value": "gradient" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_container_width",
+      "label": "Largeur du conteneur",
+      "default": "container",
+      "options": [
+        { "label": "Global", "value": "global" },
+        { "label": "Petit", "value": "container-sm" },
+        { "label": "Moyen", "value": "container-md" },
+        { "label": "Standard", "value": "container" },
+        { "label": "Pleine largeur", "value": "container-fullwidth" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "En-tête de section"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Sous-titre",
+      "default": "Depuis 1985"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Notre [Histoire]",
+      "info": "Utilisez [ ] pour mettre en valeur un mot"
+    },
+    {
+      "type": "select",
+      "id": "markers_font",
+      "label": "Police des marqueurs",
+      "default": "accent-font",
+      "options": [
+        { "label": "Accent", "value": "accent-font" },
+        { "label": "Corps", "value": "body-font" },
+        { "label": "Titre", "value": "heading-font" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "markers_text",
+      "label": "Style des marqueurs",
+      "default": "highlight-color",
+      "options": [
+        { "label": "Aucun", "value": "no-markers" },
+        { "label": "Couleur accent", "value": "highlight-color" },
+        { "label": "Dégradé", "value": "highlight-gradient" },
+        { "label": "Contour", "value": "outline--text" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Taille du titre",
+      "default": "h2",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "seo_heading",
+      "label": "Balise SEO du titre",
+      "default": "h2",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "div", "label": "div" }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Découvrez les moments clés qui ont façonné notre atelier textile."
+    },
+    {
+      "type": "select",
+      "id": "description_size",
+      "label": "Taille de la description",
+      "default": "text-large",
+      "options": [
+        { "label": "Petit", "value": "text-small" },
+        { "label": "Normal", "value": "text" },
+        { "label": "Moyen", "value": "text-medium" },
+        { "label": "Grand", "value": "text-large" }
+      ]
+    },
+    {
+      "type": "text_alignment",
+      "id": "heading_alignment",
+      "label": "Alignement",
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Bouton"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Texte du bouton"
+    },
+    {
+      "type": "url",
+      "id": "btn_url",
+      "label": "Lien du bouton"
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "Taille du bouton",
+      "default": "normal-button",
+      "options": [
+        { "label": "Normal", "value": "normal-button" },
+        { "label": "Petit", "value": "small-button" },
+        { "label": "Grand", "value": "large-button" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Style du bouton",
+      "default": "solid",
+      "options": [
+        { "value": "solid", "label": "Plein" },
+        { "value": "outline", "label": "Contour" },
+        { "value": "link", "label": "Lien" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "top_space_desktop",
+      "label": "Marge haute (desktop)",
+      "default": 70,
+      "min": 0,
+      "max": 150,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_desktop",
+      "label": "Marge basse (desktop)",
+      "default": 70,
+      "min": 0,
+      "max": 150,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "top_space_mobile",
+      "label": "Marge haute (mobile)",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_mobile",
+      "label": "Marge basse (mobile)",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "Étape",
+      "settings": [
+        {
+          "type": "text",
+          "id": "year",
+          "label": "Année",
+          "default": "2020"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Une nouvelle étape"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Description",
+          "default": "<p>Décrivez ce moment important de votre histoire.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Histoire - Timeline",
+      "blocks": [
+        {
+          "type": "milestone",
+          "settings": {
+            "year": "1985",
+            "title": "La création",
+            "text": "<p>Notre atelier ouvre ses portes avec une vision : créer des textiles d'exception.</p>"
+          }
+        },
+        {
+          "type": "milestone",
+          "settings": {
+            "year": "2000",
+            "title": "L'expansion",
+            "text": "<p>Nous agrandissons notre atelier et accueillons de nouveaux artisans.</p>"
+          }
+        },
+        {
+          "type": "milestone",
+          "settings": {
+            "year": "2015",
+            "title": "L'engagement durable",
+            "text": "<p>Nous adoptons des pratiques éco-responsables pour un textile plus respectueux.</p>"
+          }
+        },
+        {
+          "type": "milestone",
+          "settings": {
+            "year": "2024",
+            "title": "Aujourd'hui",
+            "text": "<p>Notre savoir-faire continue de se transmettre de génération en génération.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

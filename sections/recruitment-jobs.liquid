@@ -1,0 +1,326 @@
+{% comment %}
+  ═══════════════════════════════════════════════════════════
+  Section : Recrutement — Offres d'emploi
+  ═══════════════════════════════════════════════════════════
+  Fichier : sections/recruitment-jobs.liquid
+  CSS    : assets/recruitment-jobs.css  (chargé automatiquement)
+
+  ✓ 100 % personnalisable via le Theme Editor
+  ✓ Chaque offre = 1 bloc "Poste" ajouté dans l'éditeur
+  ✓ Filtres par département (générés automatiquement)
+  ✓ Accordéon au clic pour la fiche de poste
+  ✓ Scroll-reveal + transitions fluides
+  ✓ Mobile-first & responsive
+  ✓ Accessible (ARIA, focus, keyboard)
+{% endcomment %}
+
+{{ 'recruitment-jobs.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #recruit-{{ section.id }} {
+    --top_spacing: {{ section.settings.top_spacing }}px;
+    --bottom_spacing: {{ section.settings.bottom_spacing }}px;
+    --heading_color: {{ section.settings.heading_color }};
+    --text_color: {{ section.settings.text_color }};
+    --body_background: {{ section.settings.color_bg }};
+    --body_alternate_background: {{ section.settings.card_bg }};
+    --border_color: {{ section.settings.border_color }};
+    --highlight_color: {{ section.settings.highlight_color }};
+  }
+{%- endstyle -%}
+
+<section id="recruit-{{ section.id }}" class="recruit section-wrapper" data-section-id="{{ section.id }}">
+  <div class="recruit__container section-spacing">
+
+    {%- comment -%} ── EN-TÊTE ── {%- endcomment -%}
+    <header class="recruit__header">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="recruit__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="recruit__title">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <div class="recruit__subtitle">{{ section.settings.subheading }}</div>
+      {%- endif -%}
+    </header>
+
+    {%- comment -%} ── FILTRES ── {%- endcomment -%}
+    {%- assign departments = '' -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'job' and block.settings.department != blank -%}
+        {%- unless departments contains block.settings.department -%}
+          {%- if departments != '' -%}{%- assign departments = departments | append: '|||' -%}{%- endif -%}
+          {%- assign departments = departments | append: block.settings.department -%}
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- assign dept_array = departments | split: '|||' -%}
+
+    {%- if dept_array.size > 1 -%}
+      <nav class="recruit__filters" aria-label="Filtrer par département">
+        <button class="recruit__filter-btn is-active" data-filter="all">Tous</button>
+        {%- for dept in dept_array -%}
+          <button class="recruit__filter-btn" data-filter="{{ dept | handleize }}">{{ dept }}</button>
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+
+    {%- comment -%} ── COMPTEUR ── {%- endcomment -%}
+    <p class="recruit__count">
+      <span class="recruit__count-num">{{ section.blocks.size }}</span>
+      <span class="recruit__count-label">poste{%- if section.blocks.size > 1 -%}s{%- endif %} ouvert{%- if section.blocks.size > 1 -%}s{%- endif -%}</span>
+    </p>
+
+    {%- comment -%} ── LISTE DES POSTES ── {%- endcomment -%}
+    <div class="recruit__list" role="list">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'job' -%}
+          {%- assign dept_handle = block.settings.department | handleize -%}
+          <article
+            class="recruit__card"
+            data-department="{{ dept_handle }}"
+            style="--i: {{ forloop.index0 }}"
+            {{ block.shopify_attributes }}
+            role="listitem"
+          >
+            <button
+              class="recruit__card-toggle"
+              aria-expanded="false"
+              aria-controls="job-detail-{{ block.id }}"
+            >
+              <div class="recruit__card-main">
+                <h3 class="recruit__card-title">{{ block.settings.title }}</h3>
+                <div class="recruit__card-meta">
+                  {%- if block.settings.department != blank -%}
+                    <span class="recruit__tag recruit__tag--dept">{{ block.settings.department }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.location != blank -%}
+                    <span class="recruit__tag">
+                      <svg class="recruit__icon" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 17s-6-4.35-6-8.5a6 6 0 1112 0C16 12.65 10 17 10 17z"/><circle cx="10" cy="8.5" r="2"/></svg>
+                      {{ block.settings.location }}
+                    </span>
+                  {%- endif -%}
+                  {%- if block.settings.contract != blank -%}
+                    <span class="recruit__tag">{{ block.settings.contract }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+              <span class="recruit__card-chevron" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+
+            <div id="job-detail-{{ block.id }}" class="recruit__card-detail" aria-hidden="true">
+              <div class="recruit__card-detail-inner">
+                {%- if block.settings.description != blank -%}
+                  <div class="recruit__card-description rte">{{ block.settings.description }}</div>
+                {%- endif -%}
+                {%- if block.settings.cta_link != blank -%}
+                  <a
+                    href="{{ block.settings.cta_link }}"
+                    class="recruit__cta"
+                    {% if block.settings.cta_new_tab %}target="_blank" rel="noopener"{% endif %}
+                  >
+                    {{ block.settings.cta_label | default: 'Postuler' }}
+                    <svg class="recruit__icon" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10h12m-4-4 4 4-4 4"/></svg>
+                  </a>
+                {%- endif -%}
+              </div>
+            </div>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.blocks.size == 0 -%}
+      <p class="recruit__empty">Aucune offre pour le moment — revenez bientôt !</p>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById('recruit-{{ section.id }}');
+  if (!root) return;
+
+  /* ── Accordéon ── */
+  root.querySelectorAll('.recruit__card-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var isOpen = btn.getAttribute('aria-expanded') === 'true';
+      var panel = document.getElementById(btn.getAttribute('aria-controls'));
+
+      /* fermer les autres */
+      root.querySelectorAll('.recruit__card-toggle[aria-expanded="true"]').forEach(function (o) {
+        if (o !== btn) {
+          o.setAttribute('aria-expanded', 'false');
+          var p = document.getElementById(o.getAttribute('aria-controls'));
+          if (p) { p.style.maxHeight = null; p.setAttribute('aria-hidden', 'true'); }
+        }
+      });
+
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      if (panel) {
+        if (!isOpen) {
+          panel.setAttribute('aria-hidden', 'false');
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        } else {
+          panel.style.maxHeight = null;
+          panel.setAttribute('aria-hidden', 'true');
+        }
+      }
+    });
+  });
+
+  /* ── Filtres ── */
+  root.querySelectorAll('.recruit__filter-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      root.querySelectorAll('.recruit__filter-btn').forEach(function (b) { b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      var f = btn.getAttribute('data-filter');
+      var visible = 0;
+      root.querySelectorAll('.recruit__card').forEach(function (c) {
+        var show = f === 'all' || c.getAttribute('data-department') === f;
+        c.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      var counter = root.querySelector('.recruit__count-num');
+      var label = root.querySelector('.recruit__count-label');
+      if (counter) counter.textContent = visible;
+      if (label) label.textContent = visible > 1 ? 'postes ouverts' : 'poste ouvert';
+    });
+  });
+
+  /* ── Scroll reveal ── */
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.06 });
+    root.querySelectorAll('.recruit__card').forEach(function (c) { obs.observe(c); });
+  } else {
+    root.querySelectorAll('.recruit__card').forEach(function (c) { c.classList.add('is-visible'); });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Recrutement — Offres",
+  "tag": "section",
+  "class": "recruit-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Sur-titre",
+      "default": "On recrute"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titre principal",
+      "default": "Rejoignez l'aventure"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Sous-titre",
+      "default": "<p>Découvrez nos opportunités et trouvez le poste qui vous correspond.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "top_spacing",
+      "label": "Espacement haut",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "bottom_spacing",
+      "label": "Espacement bas",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Couleurs"
+    },
+    {
+      "type": "color",
+      "id": "color_bg",
+      "label": "Fond de section",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Fond des cartes",
+      "default": "#f5f5f3"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Couleur des titres",
+      "default": "#1a1a2e"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Couleur du texte",
+      "default": "#3a3a4a"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Couleur des bordures",
+      "default": "#e4e2de"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Couleur d'accent (tags, marqueurs)",
+      "default": "#d62828"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "job",
+      "name": "Poste",
+      "settings": [
+        { "type": "text",     "id": "title",       "label": "Intitulé du poste",       "default": "Designer UX/UI" },
+        { "type": "text",     "id": "department",   "label": "Département",             "default": "Design" },
+        { "type": "text",     "id": "location",     "label": "Lieu",                    "default": "Paris, France" },
+        { "type": "text",     "id": "contract",     "label": "Type de contrat",         "default": "CDI" },
+        { "type": "richtext", "id": "description",  "label": "Fiche de poste (détail)", "default": "<p><strong>Missions :</strong></p><ul><li>Concevoir des interfaces centrées utilisateur</li><li>Collaborer avec les équipes produit et tech</li><li>Prototyper en haute fidélité</li></ul><p><strong>Profil :</strong></p><ul><li>3 + ans d'expérience</li><li>Maîtrise de Figma</li></ul>" },
+        { "type": "url",      "id": "cta_link",     "label": "Lien de candidature" },
+        { "type": "text",     "id": "cta_label",    "label": "Texte du bouton",         "default": "Postuler" },
+        { "type": "checkbox", "id": "cta_new_tab",  "label": "Ouvrir dans un nouvel onglet", "default": true }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Recrutement — Offres",
+      "blocks": [
+        { "type": "job", "settings": { "title": "Designer UX/UI",             "department": "Design", "location": "Paris",  "contract": "CDI" } },
+        { "type": "job", "settings": { "title": "Développeur·se Front-end",   "department": "Tech",   "location": "Remote", "contract": "CDI" } },
+        { "type": "job", "settings": { "title": "Customer Success Manager",   "department": "Ops",    "location": "Lyon",   "contract": "CDD" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

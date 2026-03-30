@@ -1,0 +1,1308 @@
+{% comment %}
+  =====================================================
+  SECTION COMPARAISON T-SHIRTS
+  
+  Section autonome réutilisable sur toutes les pages :
+  - Page d'accueil
+  - Pages produits
+  - Pages de collection
+  - Pages personnalisées
+  
+  Installation : 
+  Placez ce fichier dans /sections/tshirt-comparison.liquid
+  =====================================================
+{% endcomment %}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    /* 
+      TYPOGRAPHIE - Hérite du thème par défaut
+      Compatible avec : Dawn, Prestige, Impulse, Debut, Supply, Warehouse, etc.
+      Fallback sur les fonts système si les variables n'existent pas
+    */
+    --comp-font-heading: var(--font-heading-family, var(--heading-font-family, var(--font-stack-header, inherit)));
+    --comp-font-body: var(--font-body-family, var(--body-font-family, var(--font-stack-body, inherit)));
+    --comp-font-weight-heading: var(--font-heading-weight, var(--heading-font-weight, 700));
+    --comp-font-weight-body: var(--font-body-weight, var(--body-font-weight, 400));
+    
+    /* Couleurs de fond */
+    --comp-bg: {{ section.settings.bg_color }};
+    --comp-card-bg: {{ section.settings.card_bg_color }};
+    --comp-premium-bg: {{ section.settings.premium_card_bg }};
+    
+    /* Couleurs de texte */
+    --comp-text: {{ section.settings.text_color }};
+    --comp-text-muted: {{ section.settings.text_muted_color }};
+    --comp-premium-text: {{ section.settings.premium_text_color }};
+    
+    /* Couleurs d'accent */
+    --comp-accent: {{ section.settings.accent_color }};
+    --comp-accent-light: {{ section.settings.accent_color }}20;
+    
+    /* Couleurs des statuts */
+    --comp-bad: {{ section.settings.color_bad }};
+    --comp-medium: {{ section.settings.color_medium }};
+    --comp-good: {{ section.settings.color_good }};
+    
+    /* Barres de progression */
+    --comp-bar-bg: {{ section.settings.progress_bar_bg }};
+    --comp-bar-basic: {{ section.settings.progress_bar_basic }};
+    --comp-bar-standard: {{ section.settings.progress_bar_standard }};
+    --comp-bar-premium: {{ section.settings.progress_bar_premium }};
+    
+    /* Bordures et style */
+    --comp-border: {{ section.settings.border_color }};
+    --comp-border-radius: {{ section.settings.card_radius }}px;
+  }
+
+  .comparison-section-{{ section.id }} {
+    padding: {{ section.settings.padding_desktop }}px 0;
+    background: var(--comp-bg);
+    font-family: var(--comp-font-body);
+    font-weight: var(--comp-font-weight-body);
+    overflow: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .comparison-section-{{ section.id }} {
+      padding: {{ section.settings.padding_mobile }}px 0;
+    }
+  }
+
+  .comparison-container-{{ section.id }} {
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* === HEADER === */
+  .comp-header-{{ section.id }} {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .comp-badge-{{ section.id }} {
+    display: inline-block;
+    padding: 8px 20px;
+    background: var(--comp-accent);
+    color: var(--comp-premium-bg);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 30px;
+    margin-bottom: 20px;
+  }
+
+  .comp-title-{{ section.id }} {
+    font-family: var(--comp-font-heading);
+    font-weight: var(--comp-font-weight-heading);
+    font-size: clamp(26px, 5vw, 40px);
+    color: var(--comp-text);
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+  }
+
+  .comp-subtitle-{{ section.id }} {
+    font-size: 16px;
+    color: var(--comp-text-muted);
+    margin: 0 auto;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  /* === GRILLE / CARROUSEL === */
+  .comp-grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  @media (max-width: 900px) {
+    .comp-grid-{{ section.id }} {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding: 20px 20px 30px;
+      margin: 0 -20px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .comp-grid-{{ section.id }}::-webkit-scrollbar {
+      display: none;
+    }
+
+    .comp-card-{{ section.id }} {
+      flex: 0 0 85%;
+      max-width: 320px;
+      scroll-snap-align: center;
+    }
+
+    .comp-card--premium-{{ section.id }} {
+      order: -1;
+    }
+  }
+
+  /* Pagination mobile */
+  .comp-pagination-{{ section.id }} {
+    display: none;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 900px) {
+    .comp-pagination-{{ section.id }} {
+      display: flex;
+    }
+  }
+
+  .comp-dot-{{ section.id }} {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--comp-border);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .comp-dot-{{ section.id }}.active {
+    width: 24px;
+    border-radius: 4px;
+    background: var(--comp-accent);
+  }
+
+  /* === CARTES === */
+  .comp-card-{{ section.id }} {
+    background: var(--comp-card-bg);
+    border-radius: var(--comp-border-radius);
+    padding: 32px 28px;
+    position: relative;
+    border: 1px solid var(--comp-border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .comp-card-{{ section.id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+  }
+
+  .comp-card--basic-{{ section.id }} {
+    opacity: 0.9;
+  }
+
+  .comp-card--premium-{{ section.id }} {
+    background: var(--comp-premium-bg);
+    border: 2px solid var(--comp-accent);
+    box-shadow: 0 20px 60px {{ section.settings.accent_color }}30;
+  }
+
+  @media (min-width: 901px) {
+    .comp-card--premium-{{ section.id }} {
+      transform: scale(1.03);
+    }
+    
+    .comp-card--premium-{{ section.id }}:hover {
+      transform: scale(1.03) translateY(-4px);
+      box-shadow: 0 30px 80px {{ section.settings.accent_color }}40;
+    }
+  }
+
+  .comp-card--premium-{{ section.id }},
+  .comp-card--premium-{{ section.id }} * {
+    color: var(--comp-premium-text);
+  }
+
+  /* Ribbon */
+  .comp-ribbon-{{ section.id }} {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--comp-accent);
+    color: var(--comp-premium-bg);
+    padding: 8px 24px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: 20px;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px {{ section.settings.accent_color }}50;
+  }
+
+  /* Header carte */
+  .comp-card__header-{{ section.id }} {
+    text-align: center;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--comp-border);
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-card__header-{{ section.id }} {
+    border-bottom-color: {{ section.settings.premium_text_color }}20;
+  }
+
+  .comp-card__icon-{{ section.id }} {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: var(--comp-border);
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-card__icon-{{ section.id }} {
+    background: var(--comp-accent-light);
+  }
+
+  .comp-card__icon-{{ section.id }} svg {
+    width: 28px;
+    height: 28px;
+    stroke: var(--comp-text);
+    stroke-width: 1.5;
+    fill: none;
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-card__icon-{{ section.id }} svg {
+    stroke: var(--comp-accent);
+  }
+
+  .comp-card__title-{{ section.id }} {
+    font-family: var(--comp-font-heading);
+    font-weight: var(--comp-font-weight-heading);
+    font-size: 20px;
+    margin: 0 0 4px 0;
+    color: var(--comp-text);
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-card__title-{{ section.id }} {
+    color: var(--comp-premium-text);
+  }
+
+  .comp-card__price-{{ section.id }} {
+    font-size: 14px;
+    color: var(--comp-text-muted);
+    margin: 0;
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-card__price-{{ section.id }} {
+    color: {{ section.settings.premium_text_color }}99;
+  }
+
+  /* Features */
+  .comp-features-{{ section.id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+    flex-grow: 1;
+  }
+
+  .comp-feature-{{ section.id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid {{ section.settings.border_color }}50;
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-feature-{{ section.id }} {
+    border-bottom-color: {{ section.settings.premium_text_color }}15;
+  }
+
+  .comp-feature-{{ section.id }}:last-child {
+    border-bottom: none;
+  }
+
+  .comp-feature__icon-{{ section.id }} {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .comp-feature__icon-{{ section.id }} svg {
+    width: 12px;
+    height: 12px;
+    stroke-width: 3;
+  }
+
+  .comp-feature__icon--bad-{{ section.id }} {
+    background: {{ section.settings.color_bad }}15;
+  }
+  .comp-feature__icon--bad-{{ section.id }} svg { stroke: var(--comp-bad); }
+
+  .comp-feature__icon--medium-{{ section.id }} {
+    background: {{ section.settings.color_medium }}15;
+  }
+  .comp-feature__icon--medium-{{ section.id }} svg { stroke: var(--comp-medium); }
+
+  .comp-feature__icon--good-{{ section.id }} {
+    background: {{ section.settings.color_good }}15;
+  }
+  .comp-feature__icon--good-{{ section.id }} svg { stroke: var(--comp-good); }
+
+  .comp-card--premium-{{ section.id }} .comp-feature__icon--good-{{ section.id }} {
+    background: var(--comp-accent-light);
+  }
+  .comp-card--premium-{{ section.id }} .comp-feature__icon--good-{{ section.id }} svg { 
+    stroke: var(--comp-accent); 
+  }
+
+  .comp-feature__text-{{ section.id }} {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--comp-text);
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-feature__text-{{ section.id }} {
+    color: var(--comp-premium-text);
+  }
+
+  /* Barre de durabilité */
+  .comp-durability-{{ section.id }} {
+    margin-top: auto;
+    padding-top: 20px;
+  }
+
+  .comp-durability__header-{{ section.id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .comp-durability__label-{{ section.id }} {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--comp-text-muted);
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-durability__label-{{ section.id }} {
+    color: {{ section.settings.premium_text_color }}80;
+  }
+
+  .comp-durability__value-{{ section.id }} {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--comp-text);
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-durability__value-{{ section.id }} {
+    color: var(--comp-premium-text);
+  }
+
+  .comp-durability__bar-{{ section.id }} {
+    height: 8px;
+    background: var(--comp-bar-bg);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-durability__bar-{{ section.id }} {
+    background: {{ section.settings.premium_text_color }}20;
+  }
+
+  .comp-durability__fill-{{ section.id }} {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1.2s ease-out;
+    width: 0;
+  }
+
+  .comp-card--basic-{{ section.id }} .comp-durability__fill-{{ section.id }} {
+    background: var(--comp-bar-basic);
+  }
+
+  .comp-card--standard-{{ section.id }} .comp-durability__fill-{{ section.id }} {
+    background: var(--comp-bar-standard);
+  }
+
+  .comp-card--premium-{{ section.id }} .comp-durability__fill-{{ section.id }} {
+    background: var(--comp-bar-premium);
+  }
+
+  /* CTA Button */
+  .comp-cta-{{ section.id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 24px;
+    margin-top: 24px;
+    background: var(--comp-accent);
+    color: var(--comp-premium-bg) !important;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: calc(var(--comp-border-radius) / 2);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .comp-cta-{{ section.id }}:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px {{ section.settings.accent_color }}50;
+  }
+
+  .comp-cta-{{ section.id }} svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    transition: transform 0.3s ease;
+  }
+
+  .comp-cta-{{ section.id }}:hover svg {
+    transform: translateX(4px);
+  }
+
+  /* === SECTION LAVAGES === */
+  .comp-washings-{{ section.id }} {
+    margin-top: 50px;
+    padding: 40px;
+    background: var(--comp-card-bg);
+    border-radius: var(--comp-border-radius);
+    border: 1px solid var(--comp-border);
+  }
+
+  @media (max-width: 768px) {
+    .comp-washings-{{ section.id }} {
+      padding: 30px 20px;
+      margin: 30px 0 0;
+    }
+  }
+
+  .comp-washings__title-{{ section.id }} {
+    text-align: center;
+    font-family: var(--comp-font-heading);
+    font-weight: var(--comp-font-weight-heading);
+    font-size: 18px;
+    margin: 0 0 32px 0;
+    color: var(--comp-text);
+  }
+
+  .comp-washings__grid-{{ section.id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  @media (max-width: 600px) {
+    .comp-washings__grid-{{ section.id }} {
+      gap: 16px;
+    }
+  }
+
+  .comp-washing-{{ section.id }} {
+    text-align: center;
+  }
+
+  .comp-washing__visual-{{ section.id }} {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 12px;
+  }
+
+  @media (max-width: 600px) {
+    .comp-washing__visual-{{ section.id }} {
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+  .comp-washing__tshirt-{{ section.id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .comp-washing__tshirt--faded-{{ section.id }} svg {
+    fill: var(--comp-border);
+    opacity: 0.5;
+  }
+
+  .comp-washing__tshirt--worn-{{ section.id }} svg {
+    fill: var(--comp-text-muted);
+    opacity: 0.7;
+  }
+
+  .comp-washing__tshirt--perfect-{{ section.id }} svg {
+    fill: var(--comp-text);
+  }
+
+  .comp-washing__count-{{ section.id }} {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 6px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    border: 3px solid var(--comp-card-bg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  @media (max-width: 600px) {
+    .comp-washing__count-{{ section.id }} {
+      min-width: 26px;
+      height: 26px;
+      font-size: 10px;
+      border-width: 2px;
+    }
+  }
+
+  .comp-washing--basic-{{ section.id }} .comp-washing__count-{{ section.id }} {
+    background: var(--comp-bad);
+    color: #ffffff;
+  }
+
+  .comp-washing--standard-{{ section.id }} .comp-washing__count-{{ section.id }} {
+    background: var(--comp-medium);
+    color: #ffffff;
+  }
+
+  .comp-washing--premium-{{ section.id }} .comp-washing__count-{{ section.id }} {
+    background: var(--comp-accent);
+    color: var(--comp-premium-bg);
+  }
+
+  .comp-washing__label-{{ section.id }} {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 2px 0;
+    color: var(--comp-text);
+  }
+
+  @media (max-width: 600px) {
+    .comp-washing__label-{{ section.id }} {
+      font-size: 11px;
+    }
+  }
+
+  .comp-washing__desc-{{ section.id }} {
+    font-size: 12px;
+    color: var(--comp-text-muted);
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    .comp-washing__desc-{{ section.id }} {
+      font-size: 10px;
+    }
+  }
+
+  /* Animations */
+  @keyframes compFadeInUp-{{ section.id }} {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .comp-card-{{ section.id }} {
+    opacity: 0;
+  }
+
+  .comp-card-{{ section.id }}.is-visible {
+    animation: compFadeInUp-{{ section.id }} 0.5s ease-out forwards;
+  }
+
+  .comp-card-{{ section.id }}:nth-child(1).is-visible { animation-delay: 0.1s; }
+  .comp-card-{{ section.id }}:nth-child(2).is-visible { animation-delay: 0.2s; }
+  .comp-card-{{ section.id }}:nth-child(3).is-visible { animation-delay: 0.3s; }
+{%- endstyle -%}
+
+<section class="comparison-section-{{ section.id }}" id="comparison-{{ section.id }}">
+  <div class="comparison-container-{{ section.id }}">
+    
+    <!-- Header -->
+    <div class="comp-header-{{ section.id }}">
+      {% if section.settings.badge_text != blank %}
+        <span class="comp-badge-{{ section.id }}">{{ section.settings.badge_text }}</span>
+      {% endif %}
+      <h2 class="comp-title-{{ section.id }}">{{ section.settings.title }}</h2>
+      {% if section.settings.subtitle != blank %}
+        <p class="comp-subtitle-{{ section.id }}">{{ section.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Grille / Carrousel -->
+    <div class="comp-grid-{{ section.id }}" id="comp-carousel-{{ section.id }}">
+      
+      <!-- T-SHIRT BAS DE GAMME -->
+      <div class="comp-card-{{ section.id }} comp-card--basic-{{ section.id }}" data-card="0">
+        <div class="comp-card__header-{{ section.id }}">
+          <div class="comp-card__icon-{{ section.id }}">
+            <svg viewBox="0 0 24 24">
+              <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
+            </svg>
+          </div>
+          <h3 class="comp-card__title-{{ section.id }}">{{ section.settings.basic_title }}</h3>
+          <p class="comp-card__price-{{ section.id }}">{{ section.settings.basic_price }}</p>
+        </div>
+        
+        <ul class="comp-features-{{ section.id }}">
+          {% assign basic_features = section.settings.basic_features | split: '|' %}
+          {% assign basic_statuses = section.settings.basic_statuses | split: '|' %}
+          {% for feature in basic_features %}
+            {% assign status = basic_statuses[forloop.index0] | default: 'bad' | strip %}
+            <li class="comp-feature-{{ section.id }}">
+              <span class="comp-feature__icon-{{ section.id }} comp-feature__icon--{{ status }}-{{ section.id }}">
+                {% if status == 'bad' %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                {% elsif status == 'medium' %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                {% else %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                {% endif %}
+              </span>
+              <span class="comp-feature__text-{{ section.id }}">{{ feature | strip }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <div class="comp-durability-{{ section.id }}">
+          <div class="comp-durability__header-{{ section.id }}">
+            <span class="comp-durability__label-{{ section.id }}">{{ section.settings.durability_label }}</span>
+            <span class="comp-durability__value-{{ section.id }}">{{ section.settings.basic_durability }}%</span>
+          </div>
+          <div class="comp-durability__bar-{{ section.id }}">
+            <div class="comp-durability__fill-{{ section.id }}" data-width="{{ section.settings.basic_durability }}"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T-SHIRT CLASSIQUE -->
+      <div class="comp-card-{{ section.id }} comp-card--standard-{{ section.id }}" data-card="1">
+        <div class="comp-card__header-{{ section.id }}">
+          <div class="comp-card__icon-{{ section.id }}">
+            <svg viewBox="0 0 24 24">
+              <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
+            </svg>
+          </div>
+          <h3 class="comp-card__title-{{ section.id }}">{{ section.settings.standard_title }}</h3>
+          <p class="comp-card__price-{{ section.id }}">{{ section.settings.standard_price }}</p>
+        </div>
+        
+        <ul class="comp-features-{{ section.id }}">
+          {% assign standard_features = section.settings.standard_features | split: '|' %}
+          {% assign standard_statuses = section.settings.standard_statuses | split: '|' %}
+          {% for feature in standard_features %}
+            {% assign status = standard_statuses[forloop.index0] | default: 'medium' | strip %}
+            <li class="comp-feature-{{ section.id }}">
+              <span class="comp-feature__icon-{{ section.id }} comp-feature__icon--{{ status }}-{{ section.id }}">
+                {% if status == 'bad' %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                {% elsif status == 'medium' %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                {% else %}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                {% endif %}
+              </span>
+              <span class="comp-feature__text-{{ section.id }}">{{ feature | strip }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <div class="comp-durability-{{ section.id }}">
+          <div class="comp-durability__header-{{ section.id }}">
+            <span class="comp-durability__label-{{ section.id }}">{{ section.settings.durability_label }}</span>
+            <span class="comp-durability__value-{{ section.id }}">{{ section.settings.standard_durability }}%</span>
+          </div>
+          <div class="comp-durability__bar-{{ section.id }}">
+            <div class="comp-durability__fill-{{ section.id }}" data-width="{{ section.settings.standard_durability }}"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- T-SHIRT PREMIUM -->
+      <div class="comp-card-{{ section.id }} comp-card--premium-{{ section.id }}" data-card="2">
+        <span class="comp-ribbon-{{ section.id }}">{{ section.settings.premium_ribbon }}</span>
+        
+        <div class="comp-card__header-{{ section.id }}">
+          <div class="comp-card__icon-{{ section.id }}">
+            <svg viewBox="0 0 24 24">
+              <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
+            </svg>
+          </div>
+          <h3 class="comp-card__title-{{ section.id }}">{{ section.settings.premium_title }}</h3>
+          <p class="comp-card__price-{{ section.id }}">{{ section.settings.premium_price }}</p>
+        </div>
+        
+        <ul class="comp-features-{{ section.id }}">
+          {% assign premium_features = section.settings.premium_features | split: '|' %}
+          {% for feature in premium_features %}
+            <li class="comp-feature-{{ section.id }}">
+              <span class="comp-feature__icon-{{ section.id }} comp-feature__icon--good-{{ section.id }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
+              <span class="comp-feature__text-{{ section.id }}"><strong>{{ feature | strip }}</strong></span>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <div class="comp-durability-{{ section.id }}">
+          <div class="comp-durability__header-{{ section.id }}">
+            <span class="comp-durability__label-{{ section.id }}">{{ section.settings.durability_label }}</span>
+            <span class="comp-durability__value-{{ section.id }}">{{ section.settings.premium_durability }}%</span>
+          </div>
+          <div class="comp-durability__bar-{{ section.id }}">
+            <div class="comp-durability__fill-{{ section.id }}" data-width="{{ section.settings.premium_durability }}"></div>
+          </div>
+        </div>
+
+        {% if section.settings.show_cta %}
+        {% if section.settings.cta_url != blank %}
+          <a href="{{ section.settings.cta_url }}" class="comp-cta-{{ section.id }}">
+        {% else %}
+          <a href="#product-form" class="comp-cta-{{ section.id }}">
+        {% endif %}
+          {{ section.settings.cta_text }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <!-- Pagination mobile -->
+    <div class="comp-pagination-{{ section.id }}">
+      <button class="comp-dot-{{ section.id }} active" data-index="0" aria-label="Carte 1"></button>
+      <button class="comp-dot-{{ section.id }}" data-index="1" aria-label="Carte 2"></button>
+      <button class="comp-dot-{{ section.id }}" data-index="2" aria-label="Carte 3"></button>
+    </div>
+
+    <!-- Section Lavages -->
+    {% if section.settings.show_washings %}
+    <div class="comp-washings-{{ section.id }}">
+      <h4 class="comp-washings__title-{{ section.id }}">{{ section.settings.washings_title }}</h4>
+      <div class="comp-washings__grid-{{ section.id }}">
+        <div class="comp-washing-{{ section.id }} comp-washing--basic-{{ section.id }}">
+          <div class="comp-washing__visual-{{ section.id }}">
+            <div class="comp-washing__tshirt-{{ section.id }} comp-washing__tshirt--faded-{{ section.id }}">
+              <svg viewBox="0 0 24 24">
+                <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
+              </svg>
+            </div>
+            <span class="comp-washing__count-{{ section.id }}">{{ section.settings.basic_washings }}</span>
+          </div>
+          <p class="comp-washing__label-{{ section.id }}">{{ section.settings.basic_title }}</p>
+          <p class="comp-washing__desc-{{ section.id }}">{{ section.settings.basic_wash_desc }}</p>
+        </div>
+        
+        <div class="comp-washing-{{ section.id }} comp-washing--standard-{{ section.id }}">
+          <div class="comp-washing__visual-{{ section.id }}">
+            <div class="comp-washing__tshirt-{{ section.id }} comp-washing__tshirt--worn-{{ section.id }}">
+              <svg viewBox="0 0 24 24">
+                <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
+              </svg>
+            </div>
+            <span class="comp-washing__count-{{ section.id }}">{{ section.settings.standard_washings }}</span>
+          </div>
+          <p class="comp-washing__label-{{ section.id }}">{{ section.settings.standard_title }}</p>
+          <p class="comp-washing__desc-{{ section.id }}">{{ section.settings.standard_wash_desc }}</p>
+        </div>
+        
+        <div class="comp-washing-{{ section.id }} comp-washing--premium-{{ section.id }}">
+          <div class="comp-washing__visual-{{ section.id }}">
+            <div class="comp-washing__tshirt-{{ section.id }} comp-washing__tshirt--perfect-{{ section.id }}">
+              <svg viewBox="0 0 24 24">
+                <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>
+              </svg>
+            </div>
+            <span class="comp-washing__count-{{ section.id }}">{{ section.settings.premium_washings }}+</span>
+          </div>
+          <p class="comp-washing__label-{{ section.id }}">{{ section.settings.premium_title }}</p>
+          <p class="comp-washing__desc-{{ section.id }}">{{ section.settings.premium_wash_desc }}</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    const sectionId = '{{ section.id }}';
+    const section = document.getElementById('comparison-' + sectionId);
+    if (!section) return;
+
+    const carousel = document.getElementById('comp-carousel-' + sectionId);
+    const dots = section.querySelectorAll('.comp-dot-' + sectionId);
+    const cards = section.querySelectorAll('.comp-card-' + sectionId);
+
+    // Animation au scroll (Intersection Observer)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Animer les cartes
+          cards.forEach(card => card.classList.add('is-visible'));
+          
+          // Animer les barres de progression
+          setTimeout(() => {
+            const fills = section.querySelectorAll('.comp-durability__fill-' + sectionId);
+            fills.forEach(fill => {
+              fill.style.width = fill.dataset.width + '%';
+            });
+          }, 600);
+          
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    observer.observe(section);
+
+    // Carrousel mobile
+    if (carousel && dots.length) {
+      carousel.addEventListener('scroll', () => {
+        const card = carousel.querySelector('.comp-card-' + sectionId);
+        if (!card) return;
+        const cardWidth = card.offsetWidth + 16;
+        const index = Math.round(carousel.scrollLeft / cardWidth);
+        
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === index);
+        });
+      });
+
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+          const card = carousel.querySelector('.comp-card-' + sectionId);
+          if (!card) return;
+          const cardWidth = card.offsetWidth + 16;
+          carousel.scrollTo({ left: i * cardWidth, behavior: 'smooth' });
+        });
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Comparaison T-shirts",
+  "tag": "section",
+  "class": "section-tshirt-comparison",
+  "settings": [
+    {
+      "type": "header",
+      "content": "📝 En-tête"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge",
+      "default": "Pourquoi nous choisir"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "La qualité fait toute la différence"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sous-titre",
+      "default": "Comparez nos t-shirts premium avec les alternatives du marché"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Couleurs générales"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fond de section",
+      "default": "#fafaf9"
+    },
+    {
+      "type": "color",
+      "id": "card_bg_color",
+      "label": "Fond des cartes",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texte principal",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_muted_color",
+      "label": "Texte secondaire",
+      "default": "#6b7280"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Bordures",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "header",
+      "content": "✨ Couleurs Premium"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Couleur d'accent",
+      "default": "#c9a962",
+      "info": "Badge, bouton, ribbon, barre premium"
+    },
+    {
+      "type": "color",
+      "id": "premium_card_bg",
+      "label": "Fond carte Premium",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "premium_text_color",
+      "label": "Texte carte Premium",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "🚦 Couleurs des statuts"
+    },
+    {
+      "type": "color",
+      "id": "color_bad",
+      "label": "Mauvais (✗)",
+      "default": "#e74c3c"
+    },
+    {
+      "type": "color",
+      "id": "color_medium",
+      "label": "Moyen (—)",
+      "default": "#f39c12"
+    },
+    {
+      "type": "color",
+      "id": "color_good",
+      "label": "Bon (✓)",
+      "default": "#27ae60"
+    },
+    {
+      "type": "header",
+      "content": "📊 Barres de progression"
+    },
+    {
+      "type": "color",
+      "id": "progress_bar_bg",
+      "label": "Fond des barres",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "progress_bar_basic",
+      "label": "Barre Bas de gamme",
+      "default": "#e74c3c"
+    },
+    {
+      "type": "color",
+      "id": "progress_bar_standard",
+      "label": "Barre Classique",
+      "default": "#f39c12"
+    },
+    {
+      "type": "color",
+      "id": "progress_bar_premium",
+      "label": "Barre Premium",
+      "default": "#c9a962"
+    },
+    {
+      "type": "text",
+      "id": "durability_label",
+      "label": "Label durabilité",
+      "default": "Durabilité"
+    },
+    {
+      "type": "header",
+      "content": "📐 Style & Layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Largeur max du contenu",
+      "min": 900,
+      "max": 1400,
+      "step": 50,
+      "default": 1200,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Arrondi des cartes",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 20,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "label": "Espacement desktop",
+      "min": 40,
+      "max": 120,
+      "step": 10,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "label": "Espacement mobile",
+      "min": 30,
+      "max": 80,
+      "step": 10,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "👕 T-shirt Bas de gamme"
+    },
+    {
+      "type": "text",
+      "id": "basic_title",
+      "label": "Titre",
+      "default": "Bas de gamme"
+    },
+    {
+      "type": "text",
+      "id": "basic_price",
+      "label": "Fourchette de prix",
+      "default": "5€ - 15€"
+    },
+    {
+      "type": "textarea",
+      "id": "basic_features",
+      "label": "Caractéristiques",
+      "default": "Coton fin 150g/m², transparent|Se déforme au 1er lavage|Couture simple, finitions basiques|Production en masse, origine floue|Surstock permanent|Invendus détruits ou soldés",
+      "info": "Séparez par | (ex: Texte 1|Texte 2|Texte 3)"
+    },
+    {
+      "type": "textarea",
+      "id": "basic_statuses",
+      "label": "Statuts",
+      "default": "bad|bad|bad|bad|bad|bad",
+      "info": "Un par caractéristique: bad (✗), medium (—), good (✓)"
+    },
+    {
+      "type": "range",
+      "id": "basic_durability",
+      "label": "Durabilité (%)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 25
+    },
+    {
+      "type": "text",
+      "id": "basic_washings",
+      "label": "Nombre de lavages",
+      "default": "10"
+    },
+    {
+      "type": "text",
+      "id": "basic_wash_desc",
+      "label": "Description lavage",
+      "default": "Déformé et décoloré"
+    },
+    {
+      "type": "header",
+      "content": "👔 T-shirt Classique"
+    },
+    {
+      "type": "text",
+      "id": "standard_title",
+      "label": "Titre",
+      "default": "Classique"
+    },
+    {
+      "type": "text",
+      "id": "standard_price",
+      "label": "Fourchette de prix",
+      "default": "15€ - 30€"
+    },
+    {
+      "type": "textarea",
+      "id": "standard_features",
+      "label": "Caractéristiques",
+      "default": "Coton standard 150g/m²|Rétrécit légèrement|Coutures correctes, fil simple|Production en série|Stock et invendus fréquents|Invendus déstockés"
+    },
+    {
+      "type": "textarea",
+      "id": "standard_statuses",
+      "label": "Statuts",
+      "default": "medium|medium|medium|medium|medium|medium"
+    },
+    {
+      "type": "range",
+      "id": "standard_durability",
+      "label": "Durabilité (%)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 55
+    },
+    {
+      "type": "text",
+      "id": "standard_washings",
+      "label": "Nombre de lavages",
+      "default": "30"
+    },
+    {
+      "type": "text",
+      "id": "standard_wash_desc",
+      "label": "Description lavage",
+      "default": "Usure visible"
+    },
+    {
+      "type": "header",
+      "content": "⭐ T-shirt Premium"
+    },
+    {
+      "type": "text",
+      "id": "premium_ribbon",
+      "label": "Bandeau",
+      "default": "Notre choix"
+    },
+    {
+      "type": "text",
+      "id": "premium_title",
+      "label": "Titre",
+      "default": "Notre Premium"
+    },
+    {
+      "type": "text",
+      "id": "premium_price",
+      "label": "Prix",
+      "default": "À partir de 39€"
+    },
+    {
+      "type": "textarea",
+      "id": "premium_features",
+      "label": "Caractéristiques",
+      "default": "Coton peigné 220g/m² bio|Pré-rétréci, garde sa forme|Surpiqûres partout, double fil|Confectionné en Provence, coton bio certifié|Fabriqué à la commande, zéro gaspillage|Zéro stock, zéro invendu",
+      "info": "Toutes en vert/accent automatiquement"
+    },
+    {
+      "type": "range",
+      "id": "premium_durability",
+      "label": "Durabilité (%)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 95
+    },
+    {
+      "type": "text",
+      "id": "premium_washings",
+      "label": "Nombre de lavages",
+      "default": "100"
+    },
+    {
+      "type": "text",
+      "id": "premium_wash_desc",
+      "label": "Description lavage",
+      "default": "Comme neuf"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Afficher le bouton",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Texte du bouton",
+      "default": "Je choisis la qualité"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Lien du bouton",
+      "info": "Laissez vide pour ancrer vers le formulaire produit"
+    },
+    {
+      "type": "header",
+      "content": "🧺 Section Lavages"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_washings",
+      "label": "Afficher la section lavages",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "washings_title",
+      "label": "Titre",
+      "default": "Après combien de lavages ?"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparaison T-shirts",
+      "category": "Produit"
+    }
+  ]
+}
+{% endschema %}

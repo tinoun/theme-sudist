@@ -1,0 +1,814 @@
+{%- liquid  
+  assign size = 'small'
+  assign popup_mode = section.settings.popup_mode | default: 'standard'
+  
+  if section.settings.image != blank
+    if section.settings.image_position == 'top'
+      assign size = 'small'
+    elsif section.settings.image_position == 'left'
+      assign size = 'large'
+    elsif section.settings.image_position == 'right'
+      assign size = 'large'
+    endif
+  endif
+
+  if section.settings.video != blank or section.settings.video_url != blank
+    if section.settings.video_position == 'left' or section.settings.video_position == 'right'
+      assign size = 'large'
+    endif
+  endif
+
+  if popup_mode == 'spin_wheel'
+    assign size = 'large'
+  endif
+-%}
+
+{% render 'popup',
+  modal_name: 'newsletter',
+  modal_position: section.settings.popup_position,
+  modal_size: size,
+  popup_color_scheme: section.settings.color_scheme,
+  section: section
+%}
+
+<script type="text/javascript">
+  let login_customer_id = '';
+</script>
+{% if customer %}
+  <script type="text/javascript">
+    login_customer_id = '{{ customer.id }}';
+  </script>
+{% endif %}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --image_overlay_opacity: {{ section.settings.overlay_opacity }};
+  }
+</style>
+
+{% schema %}
+{
+  "name": "t:sections.newsletter-popup.name",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "class": "newsletter-popup",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Mode d'affichage"
+    },
+    {
+  "type": "header",
+  "content": "✨ Effet visuel"
+},
+{
+  "type": "checkbox",
+  "id": "enable_glass_effect",
+  "label": "Activer l'effet Liquid Glass",
+  "info": "Applique un effet de transparence et de flou moderne",
+  "default": false
+},
+    {
+      "type": "select",
+      "id": "popup_mode",
+      "label": "Type de popup",
+      "default": "standard",
+      "info": "Choisissez le type de popup à afficher",
+      "options": [
+        {
+          "label": "Standard (Newsletter)",
+          "value": "standard"
+        },
+        {
+          "label": "Annonce simple (sans email)",
+          "value": "announcement"
+        },
+        {
+          "label": "Roue de la fortune",
+          "value": "spin_wheel"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "newsletter_display_mode",
+      "label": "t:sections.newsletter-popup.settings.newsletter_display_mode.label",
+      "default": "enable",
+      "info": "t:sections.newsletter-popup.settings.newsletter_display_mode.info",
+      "options": [
+        {
+          "label": "t:sections.newsletter-popup.settings.newsletter_display_mode.enable.label",
+          "value": "enable"
+        },
+        {
+          "label": "t:sections.newsletter-popup.settings.newsletter_display_mode.test_mode.label",
+          "value": "test_mode"
+        }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "primary",
+      "label": "t:sections.all.colors.label"
+    },
+    {
+      "type": "select",
+      "id": "popup_position",
+      "label": "Position",
+      "default": "center",
+      "options": [
+        {
+          "label": "t:sections.newsletter-popup.settings.pop_position.center-left.label",
+          "value": "center-left",
+          "group": "Middle"
+        },
+        {
+          "label": "t:sections.newsletter-popup.settings.pop_position.center.label",
+          "value": "center",
+          "group": "Middle"
+        },
+        {
+          "label": "t:sections.newsletter-popup.settings.pop_position.center-right.label",
+          "value": "center-right",
+          "group": "Middle"
+        },
+        {
+          "label": "t:sections.newsletter-popup.settings.pop_position.bottom-left.label",
+          "value": "bottom-left",
+          "group": "Bottom"
+        },
+        {
+          "label": "t:sections.newsletter-popup.settings.pop_position.bottom-center.label",
+          "value": "bottom-center",
+          "group": "Bottom"
+        },
+        {
+          "label": "t:sections.newsletter-popup.settings.pop_position.bottom-right.label",
+          "value": "bottom-right",
+          "group": "Bottom"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "⏱️ Timer / Compte à rebours"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_timer",
+      "label": "Activer le compte à rebours",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "timer_end_date",
+      "label": "Date de fin",
+      "info": "Format: YYYY-MM-DD HH:MM (ex: 2025-12-31 23:59)",
+      "placeholder": "2025-12-31 23:59"
+    },
+    {
+      "type": "text",
+      "id": "timer_label_days",
+      "label": "Label jours",
+      "default": "Jours"
+    },
+    {
+      "type": "text",
+      "id": "timer_label_hours",
+      "label": "Label heures",
+      "default": "Heures"
+    },
+    {
+      "type": "text",
+      "id": "timer_label_minutes",
+      "label": "Label minutes",
+      "default": "Min"
+    },
+    {
+      "type": "text",
+      "id": "timer_label_seconds",
+      "label": "Label secondes",
+      "default": "Sec"
+    },
+    {
+      "type": "text",
+      "id": "timer_expired_message",
+      "label": "Message expiration",
+      "default": "Offre expirée"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_popup_on_expiry",
+      "label": "Masquer la popup à expiration",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "🏷️ Code Promo"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_promo_code",
+      "label": "Afficher un code promo",
+      "default": false,
+      "info": "Affiche un code avec bouton copier"
+    },
+    {
+      "type": "text",
+      "id": "promo_code",
+      "label": "Code promo",
+      "default": "WELCOME10"
+    },
+    {
+      "type": "text",
+      "id": "promo_code_label",
+      "label": "Label du code",
+      "default": "Votre code:"
+    },
+    {
+      "type": "text",
+      "id": "promo_copy_text",
+      "label": "Texte bouton copier",
+      "default": "Copier"
+    },
+    {
+      "type": "text",
+      "id": "promo_copied_text",
+      "label": "Texte après copie",
+      "default": "Copié !"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.headers.image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:settings_schema.global.settings.image.label"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Position image",
+      "default": "left",
+      "options": [
+        {
+          "label": "t:sections.newsletter-popup.settings.image_position.left.label",
+          "value": "left"
+        },
+        {
+          "label": "t:sections.newsletter-popup.settings.image_position.top.label",
+          "value": "top"
+        },
+        {
+          "label": "t:sections.newsletter-popup.settings.image_position.right.label",
+          "value": "right"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "default": 0,
+      "label": "t:settings_schema.global.settings.image_overlay_opacity.label",
+      "min": 0,
+      "max": 1,
+      "step": 0.1
+    },
+    {
+      "type": "header",
+      "content": "🎬 Vidéo"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Vidéo Shopify",
+      "info": "Uploadez une vidéo depuis la bibliothèque Shopify"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "URL vidéo externe",
+      "accept": ["youtube", "vimeo"],
+      "info": "YouTube ou Vimeo (priorité sur la vidéo Shopify)"
+    },
+    {
+      "type": "select",
+      "id": "video_position",
+      "label": "Position vidéo",
+      "default": "top",
+      "options": [
+        {
+          "label": "Gauche",
+          "value": "left"
+        },
+        {
+          "label": "Haut",
+          "value": "top"
+        },
+        {
+          "label": "Droite",
+          "value": "right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "video_autoplay",
+      "label": "Lecture automatique",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "video_muted",
+      "label": "Muet par défaut",
+      "default": true,
+      "info": "Requis pour l'autoplay sur la plupart des navigateurs"
+    },
+    {
+      "type": "checkbox",
+      "id": "video_loop",
+      "label": "Boucle",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "video_controls",
+      "label": "Afficher les contrôles",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "🎡 Roue de la fortune"
+    },
+    {
+      "type": "paragraph",
+      "content": "Configurez jusqu'à 8 segments. Activez le mode 'Roue de la fortune' ci-dessus pour l'utiliser."
+    },
+    {
+      "type": "text",
+      "id": "wheel_spin_text",
+      "label": "Texte du bouton central",
+      "default": "SPIN"
+    },
+    {
+      "type": "text",
+      "id": "wheel_win_title",
+      "label": "Titre de victoire",
+      "default": "Félicitations !"
+    },
+    {
+      "type": "text",
+      "id": "wheel_lose_title",
+      "label": "Titre sans gain",
+      "default": "Dommage !"
+    },
+    {
+      "type": "text",
+      "id": "wheel_lose_message",
+      "label": "Message sans gain",
+      "default": "Tentez votre chance une prochaine fois !"
+    },
+    {
+      "type": "text",
+      "id": "wheel_segment_1",
+      "label": "Segment 1 - Texte",
+      "default": "10% OFF"
+    },
+    {
+      "type": "text",
+      "id": "wheel_code_1",
+      "label": "Segment 1 - Code promo",
+      "default": "SPIN10"
+    },
+    {
+      "type": "color",
+      "id": "wheel_color_1",
+      "label": "Segment 1 - Couleur",
+      "default": "#e74c3c"
+    },
+    {
+      "type": "text",
+      "id": "wheel_segment_2",
+      "label": "Segment 2 - Texte",
+      "default": "Pas de chance"
+    },
+    {
+      "type": "text",
+      "id": "wheel_code_2",
+      "label": "Segment 2 - Code promo",
+      "info": "Laissez vide si pas de gain"
+    },
+    {
+      "type": "color",
+      "id": "wheel_color_2",
+      "label": "Segment 2 - Couleur",
+      "default": "#3498db"
+    },
+    {
+      "type": "text",
+      "id": "wheel_segment_3",
+      "label": "Segment 3 - Texte",
+      "default": "15% OFF"
+    },
+    {
+      "type": "text",
+      "id": "wheel_code_3",
+      "label": "Segment 3 - Code promo",
+      "default": "SPIN15"
+    },
+    {
+      "type": "color",
+      "id": "wheel_color_3",
+      "label": "Segment 3 - Couleur",
+      "default": "#2ecc71"
+    },
+    {
+      "type": "text",
+      "id": "wheel_segment_4",
+      "label": "Segment 4 - Texte",
+      "default": "Livraison gratuite"
+    },
+    {
+      "type": "text",
+      "id": "wheel_code_4",
+      "label": "Segment 4 - Code promo",
+      "default": "FREESHIP"
+    },
+    {
+      "type": "color",
+      "id": "wheel_color_4",
+      "label": "Segment 4 - Couleur",
+      "default": "#9b59b6"
+    },
+    {
+      "type": "text",
+      "id": "wheel_segment_5",
+      "label": "Segment 5 - Texte",
+      "default": "5% OFF"
+    },
+    {
+      "type": "text",
+      "id": "wheel_code_5",
+      "label": "Segment 5 - Code promo",
+      "default": "SPIN5"
+    },
+    {
+      "type": "color",
+      "id": "wheel_color_5",
+      "label": "Segment 5 - Couleur",
+      "default": "#f39c12"
+    },
+    {
+      "type": "text",
+      "id": "wheel_segment_6",
+      "label": "Segment 6 - Texte",
+      "default": "Pas de chance"
+    },
+    {
+      "type": "text",
+      "id": "wheel_code_6",
+      "label": "Segment 6 - Code promo"
+    },
+    {
+      "type": "color",
+      "id": "wheel_color_6",
+      "label": "Segment 6 - Couleur",
+      "default": "#1abc9c"
+    },
+    {
+      "type": "text",
+      "id": "wheel_segment_7",
+      "label": "Segment 7 - Texte",
+      "default": "20% OFF"
+    },
+    {
+      "type": "text",
+      "id": "wheel_code_7",
+      "label": "Segment 7 - Code promo",
+      "default": "SPIN20"
+    },
+    {
+      "type": "color",
+      "id": "wheel_color_7",
+      "label": "Segment 7 - Couleur",
+      "default": "#e67e22"
+    },
+    {
+      "type": "text",
+      "id": "wheel_segment_8",
+      "label": "Segment 8 - Texte",
+      "default": "Cadeau surprise"
+    },
+    {
+      "type": "text",
+      "id": "wheel_code_8",
+      "label": "Segment 8 - Code promo",
+      "default": "GIFT"
+    },
+    {
+      "type": "color",
+      "id": "wheel_color_8",
+      "label": "Segment 8 - Couleur",
+      "default": "#34495e"
+    },
+    {
+      "type": "header",
+      "content": "t:settings_schema.global.settings.content.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_email_field",
+      "label": "Activer le champ email",
+      "default": true,
+      "info": "Désactivez pour une popup d'annonce simple"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "t:settings_schema.global.settings.heading.label",
+      "default": "Join our newsletter",
+      "info": "t:settings_schema.global.settings.heading.info"
+    },
+    {
+      "type": "select",
+      "id": "markers_font",
+      "label": "t:sections.all.markers_font.label",
+      "info": "t:sections.all.markers_font.info",
+      "default": "accent-font",
+      "options": [
+        {
+          "label": "t:sections.all.markers_font.accent-font.label",
+          "value": "accent-font"
+        },
+        {
+          "label": "t:sections.all.markers_font.body-font.label",
+          "value": "body-font"
+        },
+        {
+          "label": "t:sections.all.markers_font.heading-font.label",
+          "value": "heading-font"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "markers_text",
+      "label": "t:sections.all.markers_text.label",
+      "default": "no-markers",
+      "options": [
+        {
+          "label": "t:sections.all.markers_text.no-markers.label",
+          "value": "no-markers"
+        },
+        {
+          "label": "t:sections.all.markers_text.highlight-color.label",
+          "value": "highlight-color"
+        },
+        {
+          "label": "t:sections.all.markers_text.highlight-gradient.label",
+          "value": "highlight-gradient"
+        },
+        {
+          "label": "t:sections.all.markers_text.outline--text.label",
+          "value": "outline--text"
+        },
+        {
+          "label": "t:sections.all.markers_text.text-background-cover.label",
+          "value": "text-background-cover"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "t:sections.all.heading_size.label",
+      "default": "h3",
+      "options": [
+        {
+          "value": "h3",
+          "label": "t:sections.all.heading_size.h3.label"
+        },
+        {
+          "value": "h4",
+          "label": "t:sections.all.heading_size.h4.label"
+        },
+        {
+          "value": "h5",
+          "label": "t:sections.all.heading_size.h5.label"
+        },
+        {
+          "value": "h6",
+          "label": "t:sections.all.heading_size.h6.label"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "seo_heading",
+      "label": "t:sections.all.seo_heading.label",
+      "info": "t:sections.all.seo_heading.info",
+      "default": "h2",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        },
+        {
+          "value": "h4",
+          "label": "H4"
+        },
+        {
+          "value": "h5",
+          "label": "H5"
+        },
+        {
+          "value": "h6",
+          "label": "H6"
+        },
+        {
+          "value": "div",
+          "label": "div"
+        },
+        {
+          "value": "span",
+          "label": "span"
+        },
+        {
+          "value": "p",
+          "label": "p"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "t:settings_schema.global.settings.description.label",
+      "default": "Subscribe to our newsletter and get the latest trending products."
+    },
+    {
+      "type": "select",
+      "id": "description_size",
+      "label": "t:sections.all.description_size.label",
+      "default": "text",
+      "options": [
+        {
+          "label": "t:sections.all.description_size.text-xsmall.label",
+          "value": "text-xsmall"
+        },
+        {
+          "label": "t:sections.all.description_size.text-small.label",
+          "value": "text-small"
+        },
+        {
+          "label": "t:sections.all.description_size.text.label",
+          "value": "text"
+        },
+        {
+          "label": "t:sections.all.description_size.text-medium.label",
+          "value": "text-medium"
+        },
+        {
+          "label": "t:sections.all.description_size.text-large.label",
+          "value": "text-large"
+        },
+        {
+          "label": "t:sections.all.description_size.text-xlarge.label",
+          "value": "text-xlarge"
+        }
+      ]
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "t:sections.all.heading_alignment.label",
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "t:sections.all.placeholder.label"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "t:sections.all.button_text.label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "header",
+      "content": "Bouton annonce (mode annonce)"
+    },
+    {
+      "type": "text",
+      "id": "announcement_button_text",
+      "label": "Texte du bouton",
+      "default": "Découvrir"
+    },
+    {
+      "type": "url",
+      "id": "announcement_button_link",
+      "label": "Lien du bouton"
+    },
+    {
+      "type": "header",
+      "content": "Paramètres d'affichage"
+    },
+    {
+      "type": "range",
+      "id": "newsletter_popup_delay",
+      "min": 1,
+      "max": 20,
+      "unit": "sec",
+      "label": "t:sections.newsletter-popup.settings.newsletter_popup_delay.label",
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_home_page",
+      "label": "t:sections.newsletter-popup.settings.show_on_home_page.label",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "disable_for_account_holders",
+      "label": "t:sections.newsletter-popup.settings.disable_for_account_holders.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_once_to_visitors",
+      "label": "t:sections.newsletter-popup.settings.show_once_to_visitors.label"
+    },
+    {
+      "type": "range",
+      "id": "newsletter_popup_cookie",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "label": "t:sections.newsletter-popup.settings.newsletter_popup_cookie.label",
+      "default": 10
+    }
+  ]
+}
+{% endschema %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Récupérer la valeur du cookie
+    var get_cookie_value = Cookies.get('is_newsletter_popup_closed');
+    
+    // CORRECTION: Si le cookie existe déjà, ne pas afficher la popup
+    if (get_cookie_value === 'newsletter_popup_closed') {
+      return; // Sortir immédiatement si la popup a déjà été fermée
+    }
+    
+    // CORRECTION: Si le formulaire a été rempli avec succès, définir le cookie et sortir
+    if (localStorage.getItem("theme:popup-filled") === "true") {
+      // Récupérer la valeur du cookie (nombre de jours)
+      var newsletterCookieInput = document.querySelector('input[name="newsletterCookieValue"]');
+      if (newsletterCookieInput && newsletterCookieInput.value) {
+        setCookieValue('newsletter_popup_closed', newsletterCookieInput.value);
+      } else {
+        // Valeur par défaut si l'input n'existe pas
+        setCookieValue('newsletter_popup_closed', '{{ section.settings.newsletter_popup_cookie }}');
+      }
+      return; // Sortir après avoir défini le cookie
+    }
+    
+    // Mode normal (pas en mode design Shopify)
+    if (!Shopify.designMode && '{{ section.settings.newsletter_display_mode }}' === 'enable') {
+      var show_newsletter_popup = true;
+      
+      // Vérifier si on doit afficher uniquement sur la page d'accueil
+      if ({{ section.settings.show_on_home_page }} && '{{ template.name }}' !== 'index') {
+        show_newsletter_popup = false;
+      }
+      
+      // Vérifier si on doit masquer pour les clients connectés
+      if ({{ section.settings.disable_for_account_holders }} && login_customer_id !== '') {
+        show_newsletter_popup = false;
+      }
+      
+      // Afficher la popup si toutes les conditions sont remplies
+      if (show_newsletter_popup && window.location.pathname.indexOf('/challenge') < 0) {
+        setTimeout(function () {
+          var popupModal = document.querySelector('popup-modal');
+          if (popupModal) {
+            popupModal.modalPopupOpen('data-newsletter-popup');
+          }
+        }, {{ section.settings.newsletter_popup_delay }}000);
+      }
+    }
+  });
+</script>

@@ -1,0 +1,837 @@
+{% comment %}
+  Section: Notre Savoir-Faire
+  Description: Carrousel présentant les étapes de fabrication ou compétences de votre atelier
+  Compatible avec le thème King v2.0.5
+{% endcomment %}
+
+{% liquid
+  assign containerClass = ''
+  if section.settings.section_container_width == 'global'
+    assign containerClass = settings.container_width
+  else
+    assign containerClass = section.settings.section_container_width
+  endif
+
+  assign image_size = section.settings.image_ratio
+  if image_size == 'landscape'
+    assign imageRatio = '70%'
+  elsif image_size == 'square'
+    assign imageRatio = '100%'
+  elsif image_size == 'portrait'
+    assign imageRatio = '130%'
+  else
+    assign imageRatio = '100%'
+  endif
+%}
+
+<div class="section-wrapper section-spacing scheme-{{ section.settings.color_scheme }} section-{{ section.settings.section_background }}">
+  <div class="{{ containerClass }}">
+    
+    {% comment %} Section Header {% endcomment %}
+    {% if section.settings.heading != blank or section.settings.subheading != blank %}
+      <variety-heading class="section--header text-{{ section.settings.heading_alignment }}">
+        <div class="section--header-inner">
+          {% if section.settings.subheading != blank %}
+            <p class="section--subheading text-small savoir-faire--subheading" {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+              {{ section.settings.subheading }}
+            </p>
+          {% endif %}
+          {% if section.settings.heading != blank %}
+            {%- capture markersPrefix -%}
+              <span class="markers-text {{ section.settings.markers_font }} {{ section.settings.markers_text }}">
+            {%- endcapture -%}
+            {%- capture markersSuffix -%}
+              </span>
+            {%- endcapture -%}
+            <{{ section.settings.seo_heading }} class="section--heading heading-font {{ section.settings.heading_size }}" {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+              {{ section.settings.heading | replace: "[", markersPrefix | replace: "]", markersSuffix | replace: "++", "<br>" }}
+            </{{ section.settings.seo_heading }}>
+          {% endif %}
+          {% if section.settings.description != blank %}
+            <p class="section--description {{ section.settings.description_size }}" {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+              {{ section.settings.description }}
+            </p>
+          {% endif %}
+        </div>
+      </variety-heading>
+    {% endif %}
+
+    {% comment %} Étapes / Carrousel {% endcomment %}
+    {% if section.blocks.size > 0 %}
+      <div class="savoir-faire--wrapper {% if section.settings.enable_slider %}savoir-faire--slider{% endif %} {% if section.settings.enable_swipe_mobile %}mobile-swipe{% endif %}">
+        
+        {% if section.settings.enable_slider %}
+          <swiper-slider 
+            class="savoir-faire--slider-container"
+            data-slides-desktop="{{ section.settings.columns_desktop }}"
+            data-slides-mobile="{{ section.settings.columns_mobile }}"
+            data-gap="{{ section.settings.gap }}"
+            data-autoplay="{{ section.settings.autoplay }}"
+            data-loop="{{ section.settings.loop }}"
+          >
+            <div class="swiper">
+              <div class="swiper-wrapper">
+        {% endif %}
+
+        {% for block in section.blocks %}
+          {% if section.settings.enable_slider %}
+            <div class="swiper-slide">
+          {% endif %}
+          
+          <div class="savoir-faire--item {% if section.settings.show_step_number %}has-step-number{% endif %}" {{ block.shopify_attributes }} {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+            
+            {% comment %} Numéro d'étape {% endcomment %}
+            {% if section.settings.show_step_number %}
+              <div class="savoir-faire--step-number heading-font">
+                <span>{{ forloop.index | prepend: '00' | slice: -2, 2 }}</span>
+              </div>
+            {% endif %}
+
+            {% comment %} Image {% endcomment %}
+            <div class="savoir-faire--image media-wrapper">
+              <div class="media" style="--image_ratio: {{ imageRatio }}">
+                {% if block.settings.image != blank %}
+                  {% render 'lazy-image', image: block.settings.image, source: 'savoir-faire' %}
+                {% else %}
+                  {% liquid
+                    capture placeholderIndex
+                      cycle image_placeholder: 1, 2, 3
+                    endcapture
+                  %}
+                  {{ 'detailed-apparel-' | append: placeholderIndex | placeholder_svg_tag: 'placeholder-svg' }}
+                {% endif %}
+              </div>
+              
+              {% comment %} Overlay optionnel {% endcomment %}
+              {% if section.settings.image_overlay %}
+                <div class="savoir-faire--overlay"></div>
+              {% endif %}
+            </div>
+
+            {% comment %} Contenu {% endcomment %}
+            <div class="savoir-faire--content">
+              {% if block.settings.icon != blank %}
+                <div class="savoir-faire--icon">
+                  {{ block.settings.icon }}
+                </div>
+              {% endif %}
+              
+              {% if block.settings.title != blank %}
+                <h3 class="savoir-faire--title {{ section.settings.card_title_size }}">{{ block.settings.title }}</h3>
+              {% endif %}
+              
+              {% if block.settings.text != blank %}
+                <p class="savoir-faire--text {{ section.settings.card_text_size }}">{{ block.settings.text }}</p>
+              {% endif %}
+
+              {% if block.settings.btn_text != blank and block.settings.btn_url != blank %}
+                <a href="{{ block.settings.btn_url }}" class="savoir-faire--link text-underline text-small">
+                  {{ block.settings.btn_text }}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+
+          {% if section.settings.enable_slider %}
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        {% if section.settings.enable_slider %}
+              </div>
+            </div>
+            
+            {% if section.settings.show_navigation %}
+              <div class="swiper-button-prev savoir-faire--nav"></div>
+              <div class="swiper-button-next savoir-faire--nav"></div>
+            {% endif %}
+            
+            {% if section.settings.show_pagination %}
+              <div class="swiper-pagination savoir-faire--pagination"></div>
+            {% endif %}
+          </swiper-slider>
+        {% endif %}
+        
+      </div>
+    {% endif %}
+
+    {% comment %} CTA Button {% endcomment %}
+    {% if section.settings.btn_text != blank and section.settings.btn_url != blank %}
+      {% liquid
+        if section.settings.button_style == 'link'
+          assign button_class = 'text-underline'
+          assign show_as_link = true
+        else
+          assign button_class = 'button' | append: ' ' | append: section.settings.button_size | append: ' ' | append: settings.button_animation_style
+          assign show_as_link = false
+        endif
+      %}
+      <div class="section--btn text-{{ section.settings.heading_alignment }}" {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
+        <a href="{{ section.settings.btn_url }}" class="{{ button_class }} {{ section.settings.button_style }}-button">
+          {% render 'button-appearance', button_text: section.settings.btn_text, icon: 'arrow-right', show_as_link: show_as_link %}
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --top_spacing: {{ section.settings.top_space_desktop }}px;
+    --bottom_spacing: {{ section.settings.bottom_space_desktop }}px;
+    --columns_desktop: {{ section.settings.columns_desktop }};
+    --columns_mobile: {{ section.settings.columns_mobile }};
+    --card_gap: {{ section.settings.gap }}px;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--subheading {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-highlight, var(--color-link));
+    margin-bottom: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--wrapper {
+    display: grid;
+    grid-template-columns: repeat(var(--columns_desktop), 1fr);
+    gap: var(--card_gap);
+    margin-top: 40px;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--slider {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--item {
+    position: relative;
+    background: var(--color-card-background);
+    border-radius: var(--card-radius, 20px);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--step-number {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 3;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-highlight, var(--color-button-background));
+    color: var(--color-button-text);
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--image {
+    position: relative;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--image .media {
+    transition: transform 0.5s ease;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--item:hover .savoir-faire--image .media {
+    transform: scale(1.05);
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.4) 100%);
+    z-index: 1;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--content {
+    padding: 25px;
+    text-align: {{ section.settings.card_alignment }};
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+    background: var(--color-body-alternate-background);
+    border-radius: 12px;
+    color: var(--color-highlight, var(--color-heading));
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--title {
+    margin-bottom: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--text {
+    opacity: 0.8;
+    margin-bottom: 15px;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-highlight, var(--color-link));
+    transition: gap 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--link:hover {
+    gap: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .section--btn {
+    margin-top: 40px;
+  }
+
+  /* Slider styles */
+  #shopify-section-{{ section.id }} .savoir-faire--slider-container {
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    background: var(--color-slider-icon-background);
+    border: 1px solid var(--color-slider-icon-border);
+    border-radius: var(--button-radius, 50%);
+    color: var(--color-slider-icon-color);
+    z-index: 10;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--nav:hover {
+    background: var(--color-highlight, var(--color-button-background-hover));
+    color: var(--color-button-text-hover);
+  }
+
+  #shopify-section-{{ section.id }} .swiper-button-prev {
+    left: -20px;
+  }
+
+  #shopify-section-{{ section.id }} .swiper-button-next {
+    right: -20px;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--pagination {
+    margin-top: 25px;
+    text-align: center;
+  }
+
+  @media only screen and (max-width: 767px) {
+    #shopify-section-{{ section.id }} {
+      --top_spacing: {{ section.settings.top_space_mobile }}px;
+      --bottom_spacing: {{ section.settings.bottom_space_mobile }}px;
+    }
+
+    #shopify-section-{{ section.id }} .savoir-faire--wrapper:not(.savoir-faire--slider) {
+      grid-template-columns: repeat(var(--columns_mobile), 1fr);
+    }
+
+    #shopify-section-{{ section.id }} .savoir-faire--nav {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .savoir-faire--content {
+      padding: 20px;
+    }
+  }
+
+  {% if section.settings.section_visibility == 'large' %}
+    @media(max-width: 767px) {
+      #shopify-section-{{ section.id }} {
+        display: none !important;
+      }
+    }
+  {% elsif section.settings.section_visibility == 'small' %}
+    @media(min-width: 768px) {
+      #shopify-section-{{ section.id }} {
+        display: none !important;
+      }
+    }
+  {% endif %}
+</style>
+
+<script>
+  {% if section.settings.enable_slider %}
+  document.addEventListener('DOMContentLoaded', function() {
+    const swiperContainer = document.querySelector('#shopify-section-{{ section.id }} .swiper');
+    if (swiperContainer && typeof Swiper !== 'undefined') {
+      new Swiper(swiperContainer, {
+        slidesPerView: {{ section.settings.columns_mobile }},
+        spaceBetween: {{ section.settings.gap }},
+        loop: {{ section.settings.loop }},
+        autoplay: {% if section.settings.autoplay %}{ delay: 5000, disableOnInteraction: false }{% else %}false{% endif %},
+        pagination: {
+          el: '#shopify-section-{{ section.id }} .swiper-pagination',
+          clickable: true
+        },
+        navigation: {
+          nextEl: '#shopify-section-{{ section.id }} .swiper-button-next',
+          prevEl: '#shopify-section-{{ section.id }} .swiper-button-prev'
+        },
+        breakpoints: {
+          768: {
+            slidesPerView: {{ section.settings.columns_desktop }},
+            spaceBetween: {{ section.settings.gap }}
+          }
+        }
+      });
+    }
+  });
+  {% endif %}
+</script>
+
+{% schema %}
+{
+  "name": "Savoir-Faire",
+  "tag": "section",
+  "class": "section-savoir-faire",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.Overlay"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_visibility",
+      "label": "Visibilité de la section",
+      "default": "always",
+      "options": [
+        { "label": "Toujours", "value": "always" },
+        { "label": "Mobile uniquement", "value": "small" },
+        { "label": "Desktop uniquement", "value": "large" }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "primary",
+      "label": "Palette de couleurs"
+    },
+    {
+      "type": "select",
+      "id": "section_background",
+      "label": "Fond de section",
+      "default": "solid",
+      "options": [
+        { "label": "Uni", "value": "solid" },
+        { "label": "Dégradé", "value": "gradient" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "section_container_width",
+      "label": "Largeur du conteneur",
+      "default": "container",
+      "options": [
+        { "label": "Global", "value": "global" },
+        { "label": "Petit", "value": "container-sm" },
+        { "label": "Moyen", "value": "container-md" },
+        { "label": "Standard", "value": "container" },
+        { "label": "Pleine largeur", "value": "container-fullwidth" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "En-tête de section"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Sous-titre",
+      "default": "L'excellence artisanale"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Titre",
+      "default": "Notre [Savoir-Faire]",
+      "info": "Utilisez [ ] pour mettre en valeur un mot"
+    },
+    {
+      "type": "select",
+      "id": "markers_font",
+      "label": "Police des marqueurs",
+      "default": "accent-font",
+      "options": [
+        { "label": "Accent", "value": "accent-font" },
+        { "label": "Corps", "value": "body-font" },
+        { "label": "Titre", "value": "heading-font" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "markers_text",
+      "label": "Style des marqueurs",
+      "default": "highlight-color",
+      "options": [
+        { "label": "Aucun", "value": "no-markers" },
+        { "label": "Couleur accent", "value": "highlight-color" },
+        { "label": "Dégradé", "value": "highlight-gradient" },
+        { "label": "Contour", "value": "outline--text" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Taille du titre",
+      "default": "h2",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "seo_heading",
+      "label": "Balise SEO du titre",
+      "default": "h2",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "div", "label": "div" }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "De la sélection des matières à la finition, découvrez les étapes qui font la qualité de nos créations."
+    },
+    {
+      "type": "select",
+      "id": "description_size",
+      "label": "Taille de la description",
+      "default": "text-large",
+      "options": [
+        { "label": "Petit", "value": "text-small" },
+        { "label": "Normal", "value": "text" },
+        { "label": "Moyen", "value": "text-medium" },
+        { "label": "Grand", "value": "text-large" }
+      ]
+    },
+    {
+      "type": "text_alignment",
+      "id": "heading_alignment",
+      "label": "Alignement de l'en-tête",
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Grille / Carrousel"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_slider",
+      "label": "Activer le carrousel",
+      "default": false,
+      "info": "Si désactivé, affichage en grille"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Colonnes (desktop)",
+      "default": 4,
+      "min": 2,
+      "max": 6,
+      "step": 1
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Colonnes (mobile)",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Espacement entre cartes",
+      "default": 20,
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_swipe_mobile",
+      "label": "Swipe horizontal mobile",
+      "default": true,
+      "info": "Si carrousel désactivé"
+    },
+    {
+      "type": "header",
+      "content": "Options du carrousel"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "Afficher les flèches",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "Afficher la pagination",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Lecture automatique",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Boucle infinie",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Cartes"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_step_number",
+      "label": "Afficher le numéro d'étape",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Ratio des images",
+      "default": "square",
+      "options": [
+        { "value": "landscape", "label": "Paysage (70%)" },
+        { "value": "square", "label": "Carré (100%)" },
+        { "value": "portrait", "label": "Portrait (130%)" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "image_overlay",
+      "label": "Overlay sur l'image",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "card_alignment",
+      "label": "Alignement du contenu",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Gauche" },
+        { "value": "center", "label": "Centre" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "card_title_size",
+      "label": "Taille des titres de carte",
+      "default": "h5",
+      "options": [
+        { "value": "h4", "label": "H4" },
+        { "value": "h5", "label": "H5" },
+        { "value": "h6", "label": "H6" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "card_text_size",
+      "label": "Taille du texte des cartes",
+      "default": "text",
+      "options": [
+        { "label": "Petit", "value": "text-small" },
+        { "label": "Normal", "value": "text" },
+        { "label": "Moyen", "value": "text-medium" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Bouton de section"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Texte du bouton"
+    },
+    {
+      "type": "url",
+      "id": "btn_url",
+      "label": "Lien du bouton"
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "Taille du bouton",
+      "default": "normal-button",
+      "options": [
+        { "label": "Normal", "value": "normal-button" },
+        { "label": "Petit", "value": "small-button" },
+        { "label": "Grand", "value": "large-button" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Style du bouton",
+      "default": "solid",
+      "options": [
+        { "value": "solid", "label": "Plein" },
+        { "value": "outline", "label": "Contour" },
+        { "value": "link", "label": "Lien" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Espacement"
+    },
+    {
+      "type": "range",
+      "id": "top_space_desktop",
+      "label": "Marge haute (desktop)",
+      "default": 70,
+      "min": 0,
+      "max": 150,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_desktop",
+      "label": "Marge basse (desktop)",
+      "default": 70,
+      "min": 0,
+      "max": 150,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "top_space_mobile",
+      "label": "Marge haute (mobile)",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    },
+    {
+      "type": "range",
+      "id": "bottom_space_mobile",
+      "label": "Marge basse (mobile)",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "step": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Étape / Compétence",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "html",
+          "id": "icon",
+          "label": "Icône SVG (optionnel)",
+          "info": "Affichée dans le contenu de la carte"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titre",
+          "default": "Sélection des matières"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Nous sélectionnons avec soin les meilleurs tissus pour garantir qualité et durabilité."
+        },
+        {
+          "type": "text",
+          "id": "btn_text",
+          "label": "Texte du lien (optionnel)"
+        },
+        {
+          "type": "url",
+          "id": "btn_url",
+          "label": "URL du lien"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Savoir-Faire",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "title": "Sélection des matières",
+            "text": "Nous choisissons des tissus certifiés, privilégiant les fibres naturelles et durables."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Coupe & Patronage",
+            "text": "Nos patrons sont dessinés à la main pour un tombé parfait et un confort optimal."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Assemblage artisanal",
+            "text": "Chaque pièce est assemblée par nos artisans avec une attention minutieuse aux détails."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Finitions & Contrôle",
+            "text": "Un contrôle qualité rigoureux garantit l'excellence de chaque création qui sort de notre atelier."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

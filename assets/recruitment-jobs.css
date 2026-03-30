@@ -1,0 +1,463 @@
+/* ═══════════════════════════════════════════════════════
+   Recruitment Jobs — recruitment-jobs.css
+   Adapté aux variables et conventions du thème
+   Mobile-first · Responsive · Accessible
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Section wrapper — hérite du thème ───────────────── */
+.recruit.section-wrapper {
+  background: var(--body_background);
+  color: var(--text_color);
+}
+
+.recruit.section-gradient {
+  background: var(--body_background_gradient);
+}
+
+.recruit .section-spacing {
+  padding-top: var(--top_spacing);
+  padding-bottom: var(--bottom_spacing);
+}
+
+/* ── Container ───────────────────────────────────────── */
+.recruit__container {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+/* ── Header — pattern .section--header du thème ──────── */
+.recruit__header {
+  text-align: center;
+  padding-bottom: 20px;
+  display: block;
+  position: relative;
+}
+
+.recruit__eyebrow {
+  display: inline-block;
+  font-size: var(--small_text);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--highlight_color, var(--heading_color));
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.recruit__eyebrow::after {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: var(--highlight_color, var(--heading_color));
+  margin: 0.5rem auto 0;
+  border-radius: 2px;
+}
+
+.recruit__title {
+  font-size: var(--h2, clamp(1.75rem, 5vw, 2.75rem));
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--heading_color);
+  margin-bottom: 0.75rem;
+}
+
+.recruit__subtitle {
+  font-size: var(--medium_text, 1rem);
+  line-height: 1.6;
+  color: var(--text_color);
+  opacity: 0.75;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.recruit__subtitle p {
+  margin: 0;
+}
+
+/* ── Filtres ─────────────────────────────────────────── */
+.recruit__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+}
+
+.recruit__filter-btn {
+  appearance: none;
+  border: 1px solid var(--border_color);
+  background: transparent;
+  color: var(--text_color);
+  opacity: 0.7;
+  font-family: inherit;
+  font-size: var(--small_text, 0.82rem);
+  font-weight: 500;
+  padding: 0.45rem 1rem;
+  border-radius: var(--button_radius, 100px);
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+.recruit__filter-btn:hover {
+  border-color: var(--heading_color);
+  color: var(--heading_color);
+  opacity: 1;
+}
+
+.recruit__filter-btn.is-active {
+  background: var(--button_background);
+  border-color: var(--button_border);
+  color: var(--button_text);
+  opacity: 1;
+}
+
+/* ── Compteur ────────────────────────────────────────── */
+.recruit__count {
+  font-size: var(--small_text, 0.82rem);
+  color: var(--text_color);
+  opacity: 0.6;
+  margin-bottom: 1.25rem;
+}
+
+.recruit__count-num {
+  font-weight: 700;
+  color: var(--heading_color);
+  opacity: 1;
+}
+
+/* ── Liste ───────────────────────────────────────────── */
+.recruit__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ── Card — pattern .horizontal--product-card du thème ─ */
+.recruit__card {
+  background: var(--body_alternate_background, var(--body_background));
+  border: 1px solid transparent;
+  border-radius: var(--card_radius);
+  overflow: hidden;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    opacity 0.5s ease,
+    border-color 0.4s linear;
+
+  /* scroll reveal */
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.recruit__card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: calc(var(--i, 0) * 60ms);
+}
+
+/* ── Toggle button ───────────────────────────────────── */
+.recruit__card-toggle {
+  appearance: none;
+  border: none;
+  background: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: var(--text_color);
+  transition: background 0.2s ease-out;
+}
+
+.recruit__card-toggle:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.recruit__card-toggle:focus-visible {
+  outline: 2px solid var(--heading_color);
+  outline-offset: -2px;
+  border-radius: var(--card_radius);
+}
+
+.recruit__card-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.recruit__card-title {
+  font-size: var(--text, 1.05rem);
+  font-weight: 600;
+  color: var(--heading_color);
+  margin-bottom: 0.45rem;
+  line-height: 1.3;
+}
+
+.recruit__card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+/* ── Tags — pattern .product--badge du thème ─────────── */
+.recruit__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: var(--small_text, 0.76rem);
+  font-weight: 500;
+  color: var(--text_color);
+  opacity: 0.65;
+  background: var(--body_background);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.recruit__tag--dept {
+  background: var(--highlight_color, var(--heading_color));
+  color: var(--body_background);
+  opacity: 1;
+  font-weight: 600;
+  font-size: var(--small_text, 0.72rem);
+  text-transform: uppercase;
+  padding: 4px 8px;
+  line-height: 1.2;
+  border-radius: 4px;
+}
+
+.recruit__icon {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* ── Chevron — pattern .product-accordion--icon ──────── */
+.recruit__card-chevron {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--body_background);
+  border: 1px solid var(--border_color);
+  transition: transform 0.3s ease, background 0.3s, color 0.3s, border-color 0.3s;
+  color: var(--text_color);
+  opacity: 0.6;
+}
+
+.recruit__card-toggle[aria-expanded="true"] .recruit__card-chevron {
+  transform: rotate(180deg);
+  background: var(--heading_color);
+  border-color: var(--heading_color);
+  color: var(--body_background);
+  opacity: 1;
+}
+
+/* ── Detail panel (accordéon) ────────────────────────── */
+.recruit__card-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.recruit__card-detail-inner {
+  padding: 0 1.25rem 1.4rem;
+  border-top: 1px solid var(--border_color);
+  padding-top: 1.15rem;
+}
+
+/* ── Description (rte) ───────────────────────────────── */
+.recruit__card-description {
+  font-size: var(--medium_text, 0.92rem);
+  line-height: 1.7;
+  color: var(--text_color);
+}
+
+.recruit__card-description p {
+  margin-bottom: 0.75rem;
+}
+
+.recruit__card-description p:last-child {
+  margin-bottom: 0;
+}
+
+.recruit__card-description strong {
+  color: var(--heading_color);
+  font-weight: 600;
+}
+
+.recruit__card-description ul {
+  padding-left: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.recruit__card-description li {
+  margin-bottom: 0.3rem;
+}
+
+.recruit__card-description li::marker {
+  color: var(--highlight_color, var(--heading_color));
+}
+
+/* ── CTA — calqué sur .button du thème ───────────────── */
+.recruit__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.15rem;
+  padding: 12px 25px;
+  font-family: var(--button_font_family, inherit);
+  font-size: 16px;
+  font-weight: var(--button_font_weight, 600);
+  font-style: var(--button_font_style, normal);
+  text-transform: var(--button_text_transform, none);
+  text-decoration: none;
+  text-align: center;
+  line-height: 1;
+  min-height: 46px;
+  min-width: 120px;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+  border-radius: var(--button_radius);
+  background: var(--button_background);
+  border: 1px solid var(--button_border);
+  color: var(--button_text);
+  transition: 0.2s ease-out;
+}
+
+.recruit__cta:active {
+  transform: translateY(0);
+}
+
+.recruit__cta:focus-visible {
+  outline: 2px solid var(--heading_color);
+  outline-offset: 3px;
+}
+
+/* ── Empty state ─────────────────────────────────────── */
+.recruit__empty {
+  text-align: center;
+  font-size: var(--medium_text, 1rem);
+  color: var(--text_color);
+  opacity: 0.6;
+  padding: 3rem 1rem;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+   Breakpoints alignés sur le thème :
+   767px / 768px / 992px / 1025px / 1200px / 1441px
+   ═══════════════════════════════════════════════════════ */
+
+@media (min-width: 768px) {
+  .recruit__header {
+    padding-bottom: 30px;
+  }
+
+  .recruit__card-toggle {
+    padding: 1.3rem 1.5rem;
+  }
+
+  .recruit__card-detail-inner {
+    padding: 0 1.5rem 1.6rem;
+    padding-top: 1.3rem;
+  }
+
+  .recruit__card-title {
+    font-size: var(--h6, 1.12rem);
+  }
+
+  .recruit__cta {
+    min-height: 56px;
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 992px) {
+  .recruit__header {
+    padding-bottom: 30px;
+  }
+
+  .recruit__container {
+    max-width: 880px;
+  }
+
+  .recruit__card-toggle {
+    padding: 1.4rem 1.75rem;
+  }
+
+  .recruit__card-detail-inner {
+    padding: 0 1.75rem 1.75rem;
+    padding-top: 1.4rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .recruit__card:hover {
+    border-color: var(--border_color);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  /* hover CTA identique au .button:hover du thème */
+  .recruit__cta:hover {
+    background: var(--button_background_hover);
+    border-color: var(--button_border_hover);
+    color: var(--button_text_hover);
+  }
+}
+
+@media (max-width: 767px) {
+  .recruit__card-toggle {
+    padding: 1rem;
+  }
+
+  .recruit__card-detail-inner {
+    padding: 0 1rem 1.2rem;
+    padding-top: 1rem;
+  }
+
+  .recruit__card-title {
+    font-size: 0.95rem;
+  }
+
+  .recruit__cta {
+    font-size: 12px;
+    min-height: 40px;
+    padding: 10px 20px;
+  }
+
+  .recruit__card-chevron {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (max-width: 575px) {
+  .recruit__cta {
+    min-width: 98px;
+  }
+}
+
+@media (max-width: 360px) {
+  .recruit__cta {
+    font-size: 12px;
+    min-height: 38px;
+    padding: 7px 10px;
+  }
+}

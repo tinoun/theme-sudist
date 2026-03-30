@@ -1,0 +1,653 @@
+{% if section.index <= 2 %}
+  {{ 'announcement.css' | asset_url | preload_tag: as: 'style' }}
+{% endif %}
+{{ 'announcement.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign social_icons = true
+  if settings.social_facebook_link == blank and settings.social_instagram_link == blank and settings.social_youtube_link == blank and settings.social_tiktok_link == blank and settings.social_twitter_link == blank and settings.social_pinterest_link == blank and settings.social_snapchat_link == blank and settings.social_tumblr_link == blank and settings.social_vimeo_link == blank
+    assign social_icons = false
+  endif
+
+  assign isBlockSize = false
+  if section.blocks.size > 1
+    assign isBlockSize = true
+  endif
+%}
+
+{% if section.blocks.size > 0 %}
+  {% capture announcement_headings %}
+    {% for block in section.blocks %}
+      {%- if block.settings.heading != blank -%}
+        <div class="announcement-bar--item swiper-slide" {{ block.shopify_attributes }}>
+          <p class="announcement-bar--text text-center {{ section.settings.text_size }}"
+             {% if block.settings.font_family != blank %}
+               style="font-family: {{ block.settings.font_family.family }}, {{ block.settings.font_family.fallback_families }} !important;"
+             {% endif %}>
+            {{ block.settings.heading }}
+          </p>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endcapture %}
+{% endif %}
+
+{% if section.settings.show_announcement_bar_home_page == false or template.name == 'index' %}
+  <div
+    class="announcement-bar--main section-wrapper scheme-{{ section.settings.color_scheme }} section-{{ section.settings.section_background }} {{ request.page_type }} {% if section.settings.enable_liquid_glass %}liquid-glass-effect{% endif %}"
+    data-announcement-wrapper
+    style="
+      {% if section.settings.custom_bg_color != blank %}
+        background-color: {{ section.settings.custom_bg_color }} !important;
+      {% endif %}
+      {% if section.settings.custom_text_color != blank %}
+        color: {{ section.settings.custom_text_color }} !important;
+      {% endif %}
+    "
+  >
+    <div class="container-fullwidth">
+      {% if section.settings.enable_social_icons
+        or section.settings.show_info
+        or section.settings.show_store_locator
+        or announcement_headings != blank
+        or section.settings.show_custom_links
+      %}
+        <announcement-bar class="announcement-bar--wrapper">
+          {% if section.settings.enable_social_icons or section.settings.show_info %}
+            <div class="announcement-bar--left">
+              {% if section.settings.enable_social_icons %}
+                <div class="social--icons announcement-bar-icons">
+                  {% render 'social-icons' %}
+                </div>
+              {% endif %}
+              {% if section.settings.show_info %}
+                <div class="contact-information">
+                  {{ section.settings.contact_text }}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          {% if section.blocks.size > 0 and announcement_headings != blank %}
+            <div class="announcement-bar--middle {% if section.settings.enable_marquee %}announcement-marquee{% endif %}">
+              {% if section.settings.enable_marquee %}
+                {%- comment -%} Mode défilant (Marquee) {%- endcomment -%}
+                <div class="marquee-wrapper" data-marquee-speed="{{ section.settings.marquee_speed }}">
+                  <div class="marquee-content">
+                    {% for i in (1..3) %}
+                      {{ announcement_headings }}
+                    {% endfor %}
+                  </div>
+                </div>
+              {% elsif isBlockSize %}
+                {%- comment -%} Mode slider normal {%- endcomment -%}
+                <swiper-content data-resize="false">
+                  <div
+                    class="announcement-bar--slide-outer swiper"
+                    data-swiper='
+                      {
+                        "loop": true,
+                        "centeredSlides": true,
+                        "speed": 800,
+                        "slidesPerView": 1,
+                        {% if section.settings.auto_rotate %}
+                        "autoplay":  {
+                          "delay": {{ section.settings.change_slides_speed | times: 1000 }}
+                        },
+                        {% endif %}
+                        "grabCursor": true
+                      }
+                    '
+                  >
+                    <div class="announcement-bar--slide-wrapper swiper-wrapper is-slider">
+                      {{ announcement_headings }}
+                    </div>
+                  </div>
+                </swiper-content>
+              {% else %}
+                {%- comment -%} Mode statique {%- endcomment -%}
+                <div class="announcement-bar--slide-wrapper">
+                  {{ announcement_headings }}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          {% if section.settings.show_store_locator or section.settings.show_location_and_language or section.settings.show_custom_links %}
+            <div class="announcement-bar--right">
+              
+              {%- comment -%} Liens personnalisés avec icônes {%- endcomment -%}
+              {% if section.settings.show_custom_links %}
+                <div class="announcement-custom-links">
+                  {% if section.settings.stores_link != blank %}
+                    <a href="{{ section.settings.stores_link }}" class="announcement-link">
+                      {% render 'icons', icon: 'store' %}
+                      <span class="text-small">{{ section.settings.stores_text | default: 'Boutiques' }}</span>
+                    </a>
+                  {% endif %}
+
+                  {% if section.settings.returns_link != blank %}
+                    <a href="{{ section.settings.returns_link }}" class="announcement-link">
+                      {% render 'icons', icon: 'return' %}
+                      <span class="text-small">{{ section.settings.returns_text | default: 'Retours & Échanges' }}</span>
+                    </a>
+                  {% endif %}
+
+                  {% if section.settings.custom_link_1 != blank %}
+                    <a href="{{ section.settings.custom_link_1 }}" class="announcement-link">
+                      {% if section.settings.custom_icon_1 != blank %}
+                        {% render 'icons', icon: section.settings.custom_icon_1 %}
+                      {% endif %}
+                      <span class="text-small">{{ section.settings.custom_text_1 }}</span>
+                    </a>
+                  {% endif %}
+
+                  {% if section.settings.custom_link_2 != blank %}
+                    <a href="{{ section.settings.custom_link_2 }}" class="announcement-link">
+                      {% if section.settings.custom_icon_2 != blank %}
+                        {% render 'icons', icon: section.settings.custom_icon_2 %}
+                      {% endif %}
+                      <span class="text-small">{{ section.settings.custom_text_2 }}</span>
+                    </a>
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if section.settings.show_store_locator %}
+                <button is="store-locator-context" type="button" class="list-inline store--details cursor-pointer">
+                  {% render 'icons', icon: 'store' %}
+                  <span class="text-small">{{ section.settings.locator_text }}</span>
+                </button>
+              {% endif %}
+
+              {% if section.settings.show_location_and_language %}
+                {% if settings.is_country_selector or settings.is_language_selector %}
+                  <localization-context
+                    type="button"
+                    is="localization-context"
+                    class="localization-form cursor-pointer"
+                    tabindex="0"
+                    data-size="{{ localization.available_countries.size }}"
+                  >
+                    <div class="localization--current-locale">
+                      {% render 'icons', icon: 'globe' %}
+                      <span class="text-small">
+                        {%- if settings.is_country_selector -%}
+                          {{- localization.country.currency.symbol }}
+                          {{ localization.country.currency.iso_code -}}
+                        {%- endif -%}
+                        {%- if settings.is_language_selector -%}
+                          {%- if settings.is_country_selector %} / {% endif -%}
+                          {{- localization.language.iso_code | upcase -}}
+                        {%- endif -%}
+                      </span>
+                    </div>
+                  </localization-context>
+                {% endif %}
+              {% endif %}
+            </div>
+          {% endif %}
+        </announcement-bar>
+      {% endif %}
+    </div>
+    
+    {%- comment -%} Effet Liquid Glass sous la barre {%- endcomment -%}
+    {% if section.settings.enable_liquid_glass %}
+      <div class="liquid-glass-border"></div>
+    {% endif %}
+  </div>
+{% endif %}
+
+<style>
+  /* Texte défilant (Marquee) */
+  .announcement-marquee {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .marquee-wrapper {
+    display: flex;
+    width: 100%;
+  }
+
+  .marquee-content {
+    display: flex;
+    animation: marquee var(--marquee-speed, 20s) linear infinite;
+    white-space: nowrap;
+  }
+
+  .marquee-content .announcement-bar--item {
+    flex-shrink: 0;
+    padding: 0 2rem;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-33.333%);
+    }
+  }
+
+  .announcement-marquee:hover .marquee-content {
+    animation-play-state: paused;
+  }
+
+  /* Liens personnalisés */
+  .announcement-custom-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .announcement-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.3s ease;
+  }
+
+  .announcement-link:hover {
+    opacity: 0.7;
+  }
+
+  .announcement-link svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Effet Liquid Glass */
+  .liquid-glass-effect {
+    position: relative;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .liquid-glass-border {
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.3) 25%, 
+      rgba(255, 255, 255, 0.5) 50%, 
+      rgba(255, 255, 255, 0.3) 75%, 
+      transparent 100%
+    );
+    animation: liquidFlow 3s ease-in-out infinite;
+    filter: blur(2px);
+  }
+
+  @keyframes liquidFlow {
+    0%, 100% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    50% {
+      transform: translateX(100%);
+      opacity: 1;
+    }
+  }
+
+  /* Glass effect alternatif - plus prononcé */
+  .liquid-glass-effect.glass-strong {
+    backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 768px) {
+    .announcement-custom-links {
+      gap: 1rem;
+    }
+
+    .announcement-link span {
+      display: none;
+    }
+
+    .marquee-content .announcement-bar--item {
+      padding: 0 1rem;
+    }
+  }
+</style>
+
+<script>
+  class AnnouncementBar extends HTMLElement {
+    constructor() {
+      super();
+      this.currentScrollTop = 0;
+      this.updateAnnouncementHeight();
+      this.updateDynamicAnnouncementHeight();
+      this.initMarquee();
+      
+      window.addEventListener('scroll', this.updateDynamicAnnouncementHeight.bind(this), false);
+
+      const resizeObserver = new ResizeObserver(this.updateDynamicAnnouncementHeight.bind(this));
+      resizeObserver.observe(this.closest('[data-announcement-wrapper]'));
+    }
+
+    initMarquee() {
+      const marqueeWrapper = this.querySelector('[data-marquee-speed]');
+      if (marqueeWrapper) {
+        const speed = marqueeWrapper.getAttribute('data-marquee-speed') || 20;
+        const marqueeContent = marqueeWrapper.querySelector('.marquee-content');
+        if (marqueeContent) {
+          marqueeContent.style.setProperty('--marquee-speed', `${speed}s`);
+        }
+      }
+    }
+
+    updateAnnouncementHeight() {
+      const announcementWrapper = this.closest('[data-announcement-wrapper]');
+      if (announcementWrapper) {
+        const announcementBarHeight = announcementWrapper.offsetHeight;
+        document.body.style.setProperty('--announcement_height', `${announcementBarHeight}px`);
+      }
+    }
+
+    updateDynamicAnnouncementHeight() {
+      const announcementWrapper = this.closest('[data-announcement-wrapper]');
+      if (announcementWrapper) {
+        const announcementBarHeight = announcementWrapper.offsetHeight;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        const dynamicHeight = scrollTop > announcementBarHeight ? 0 : Math.max(announcementBarHeight - scrollTop, 0);
+        document.body.style.setProperty('--dynamic_announcement_height', `${dynamicHeight}px`);
+
+        this.currentScrollTop = scrollTop;
+      }
+    }
+  }
+  customElements.define('announcement-bar', AnnouncementBar);
+</script>
+
+{%- schema -%}
+{
+  "name": "t:sections.announcement-bar.name",
+  "tag": "section",
+  "class": "section-announcement-bar",
+  "max_blocks": 5,
+  "disabled_on": {
+    "groups": ["footer", "custom.Overlay"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "primary",
+      "label": "t:sections.all.colors.label"
+    },
+    {
+      "type": "color",
+      "id": "custom_bg_color",
+      "label": "Couleur de fond personnalisée",
+      "info": "Remplace la couleur du schéma si définie"
+    },
+    {
+      "type": "color",
+      "id": "custom_text_color",
+      "label": "Couleur de texte personnalisée",
+      "info": "Remplace la couleur du schéma si définie"
+    },
+    {
+      "type": "select",
+      "id": "section_background",
+      "label": "t:sections.all.section_background.label",
+      "default": "solid",
+      "options": [
+        {
+          "label": "t:sections.all.section_background.solid.label",
+          "value": "solid"
+        },
+        {
+          "label": "t:sections.all.section_background.gradient.label",
+          "value": "gradient"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_liquid_glass",
+      "label": "Activer l'effet Liquid Glass",
+      "info": "Ajoute un effet de verre liquide sous la barre d'annonce",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement_bar_home_page",
+      "label": "t:sections.announcement-bar.settings.show_announcement_bar_home_page.label",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "t:sections.all.description_size.label",
+      "default": "text",
+      "options": [
+        {
+          "label": "t:sections.all.description_size.text-xsmall.label",
+          "value": "text-xsmall"
+        },
+        {
+          "label": "t:sections.all.description_size.text-small.label",
+          "value": "text-small"
+        },
+        {
+          "label": "t:sections.all.description_size.text.label",
+          "value": "text"
+        },
+        {
+          "label": "t:sections.all.description_size.text-medium.label",
+          "value": "text-medium"
+        },
+        {
+          "label": "t:sections.all.description_size.text-large.label",
+          "value": "text-large"
+        },
+        {
+          "label": "t:sections.all.description_size.text-xlarge.label",
+          "value": "text-xlarge"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Animation du texte"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_marquee",
+      "label": "Activer le défilement automatique",
+      "info": "Le texte défile en continu de droite à gauche",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "label": "Vitesse de défilement",
+      "default": 20,
+      "info": "S'applique uniquement si le défilement est activé"
+    },
+    {
+      "type": "header",
+      "content": "t:settings_schema.global.settings.slides.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "t:sections.announcement-bar.settings.auto_rotate.label",
+      "default": true,
+      "info": "S'applique uniquement si le défilement automatique est désactivé"
+    },
+    {
+      "type": "range",
+      "id": "change_slides_speed",
+      "min": 3,
+      "max": 9,
+      "step": 2,
+      "unit": "s",
+      "label": "t:sections.announcement-bar.settings.change_slides_speed.label",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "t:settings_schema.global.settings.desktop_settings.content"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_social_icons",
+      "label": "t:sections.announcement-bar.settings.enable_social_icons.label",
+      "info": "t:sections.announcement-bar.settings.enable_social_icons.info",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_info",
+      "label": "t:sections.announcement-bar.settings.show_info.label",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "contact_text",
+      "default": "Need help",
+      "label": "t:sections.announcement-bar.settings.contact_text.label"
+    },
+    {
+      "type": "header",
+      "content": "Liens personnalisés avec icônes"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_custom_links",
+      "label": "Afficher les liens personnalisés",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "stores_link",
+      "label": "Lien vers les boutiques"
+    },
+    {
+      "type": "text",
+      "id": "stores_text",
+      "label": "Texte du lien boutiques",
+      "default": "Nos boutiques"
+    },
+    {
+      "type": "url",
+      "id": "returns_link",
+      "label": "Lien retours & échanges"
+    },
+    {
+      "type": "text",
+      "id": "returns_text",
+      "label": "Texte retours & échanges",
+      "default": "Retours & Échanges"
+    },
+    {
+      "type": "url",
+      "id": "custom_link_1",
+      "label": "Lien personnalisé 1"
+    },
+    {
+      "type": "text",
+      "id": "custom_text_1",
+      "label": "Texte du lien 1"
+    },
+    {
+      "type": "text",
+      "id": "custom_icon_1",
+      "label": "Icône 1",
+      "info": "Nom de l'icône (ex: 'help', 'shipping', 'phone')"
+    },
+    {
+      "type": "url",
+      "id": "custom_link_2",
+      "label": "Lien personnalisé 2"
+    },
+    {
+      "type": "text",
+      "id": "custom_text_2",
+      "label": "Texte du lien 2"
+    },
+    {
+      "type": "text",
+      "id": "custom_icon_2",
+      "label": "Icône 2",
+      "info": "Nom de l'icône (ex: 'help', 'shipping', 'phone')"
+    },
+    {
+      "type": "header",
+      "content": "Options standard"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_store_locator",
+      "label": "t:sections.announcement-bar.settings.show_store_locator.label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "locator_text",
+      "default": "Stores",
+      "label": "t:sections.announcement-bar.settings.locator_text.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_location_and_language",
+      "label": "t:sections.announcement-bar.settings.show_location_and_language.label",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "t:sections.announcement-bar.blocks.announcement.name",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "t:settings_schema.global.settings.text.label",
+          "default": "Announcement text here"
+        },
+        {
+          "type": "font_picker",
+          "id": "font_family",
+          "label": "Police de caractères",
+          "default": "assistant_n4",
+          "info": "Choisissez une police personnalisée pour ce texte"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Barre d'annonce améliorée",
+      "blocks": [
+        {
+          "type": "announcement"
+        }
+      ]
+    }
+  ]
+}
+{%- endschema -%}
+

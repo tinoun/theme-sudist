@@ -1,0 +1,60 @@
+<script>
+  window.Samita = window.Samita || {}
+  Samita.Wholesale = Samita.Wholesale || {}
+  Samita.Wholesale.overrideOptions = Samita.Wholesale.overrideOptions || {}
+  Samita.Wholesale.overrideOptions.selectors = Samita.Wholesale.overrideOptions.selectors || {}
+  Samita.Wholesale.overrideOptions.selectors.product = {
+    "element" : [".product--wrapper"],
+    "form": [ "[samitaWS-product-form]",".main-product-form"],
+    "price": [ ".product--pricing"],
+    "unitPrice": "[samitaWS-product-unit-price], .product--pricing .product--actual-price"
+  }
+  Samita.Wholesale.overrideOptions.selectors.collection = {
+    "productLink": "[samitaWS-collection-product-link], a.product--title",
+    "price": ["[samitaWS-collection-product-price]",".product--pricing"],
+    "unitPrice": "[samitaWS-product-unit-price], .product--pricing .product--actual-price"
+  }
+  Samita.Wholesale.overrideOptions.selectors.cart = {
+    "form": ["[samitaWS-checkout-form]",".main--cart-render"],
+    "page": [{
+        "lineItem": {
+          "key": ".cart-product-item",
+          "quantity": {
+              "wrapper": "[samitaWS-cart-line-item-qty-wrapper], .cart-quantity",
+              "input": "[samitaWS-cart-line-item-qty], .ajax-quantity",
+              "decrease": "[samitaWS-cart-line-item-qty-decrease], .quantity--down, [name=\"minus\"]",
+              "increase": "[samitaWS-cart-line-item-qty-increase], .quantity--up,[name=\"plus\"]",
+          },
+          "removeButton": "[samitaWS-cart-line-item-remove-button], cart-remove-button button",
+          "price": "[samitaWS-cart-product-main-price], .cart-product-details-content .product--pricing",
+          "unitPrice": "[samitaWS-cart-line-item-unit-price], .cart-product-details-content .product--pricing",
+          "priceEnd": "[samitaWS-cart-product-price-end], .cart-product-total .product--actual-price",
+          "totalPrice": "[samitaWS-cart-line-item-total-price], .cart-product-total .product--actual-price"
+        },
+        "subtotalPrice": "[samitaWS-cart-subtotal-price], .cart-summary-price-item .cart-summary-price-amount, .cart-summary-price .cart-summary-price-amount",
+        "checkoutBtn": "button[name=\"checkout\"]"
+    }],
+    "drawerForm": [
+        "[samitaWS-drawer-form]","#CartDrawer"],
+    "drawer": [
+        {
+          "lineItem": {
+              "key": ".cart-product-item",
+              "quantity": {
+                  "wrapper": "[samitaWS-drawer-line-item-qty-wrapper], .cart-quantity",
+                  "input": "[samitaWS-drawer-line-item-qty], .ajax-quantity",
+                  "decrease": "[samitaWS-drawer-line-item-qty-decrease], .quantity--down, [name=\"minus\"]",
+                  "increase": "[samitaWS-drawer-line-item-qty-increase], .quantity--up, [name=\"plus\"]"
+              },
+              "removeButton": "[samitaWS-drawer-line-item-remove-button], cart-remove-button button",
+              "price": "[samitaWS-drawer-product-main-price], .cart-product-total .product--actual-price",
+              "unitPrice": "[samitaWS-drawer-line-item-unit-price], .cart-product-total .product--actual-price",
+              "priceEnd": "[samitaWS-cart-product-price-end], .cart-product-total .product--actual-price",
+              "totalPrice": "[samitaWS-drawer-line-item-total-price], .cart-product-total .product--actual-price"
+          },
+          "subtotalPrice": "[samitaWS-drawer-line-item-subtotal-price], .cart-summary-price-item .cart-summary-price-amount, .cart-summary-price .cart-summary-price-amount",
+          "checkoutBtn": "[samitaWS-drawer-checkout-btn], button[name=\"checkout\"]"
+        }
+    ]
+  }
+</script>

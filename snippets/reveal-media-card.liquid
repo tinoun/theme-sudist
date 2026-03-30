@@ -1,0 +1,158 @@
+{% liquid
+  assign image_size = section.settings.image_ratio
+  if image_size == 'square'
+    assign imageRatio = '100%'
+  elsif image_size == 'portrait'
+    assign imageRatio = '130%'
+  endif
+  %}
+{% if block != blank %}
+            {% if block.type == 'product' %}
+              {% assign product = block.settings.product  %}
+              <{% if product != blank %}a href="{{ product.url }}"{% else %}div{% endif %} class="revealing-card--img">
+                  <div class="media" style="--image_ratio:{{ imageRatio }};"> 
+                      {% if product.featured_media != blank %}
+                        {% for media in product.media %}
+                          {% case media.media_type %}
+                              {% when 'image' %}
+                                {% render 'lazy-image' , image: product.featured_media.preview_image %}
+                                {% break %}
+                              {%- when 'video' -%}
+                                {%- liquid
+                                  if media.preview_image.aspect_ratio
+                                    assign media_aspect_ratio = media.preview_image.aspect_ratio
+                                  endif
+                                -%}
+
+                                {%- liquid
+                                  if media.preview_image.aspect_ratio
+                                    assign media_aspect_ratio = media.preview_image.aspect_ratio
+                                  endif
+                                -%}
+                                <deferred-media-video
+                                  class="deferred-media"
+                                  class="deferred-media autoplay-status-true"
+                                  id="deffered-{{ media.media_type }}"
+                                  data-type="{{ media.media_type }}"
+                                >
+                                  <template>
+                                    {{
+                                      media
+                                      | media_tag:
+                                        loading: 'lazy',
+                                        class: 'no-js-hidden',
+                                        autoplay: true,
+                                        loop: true,
+                                        mute:true,
+                                        controls: false,
+                                        preload: 'none'
+                                    }}
+                                  </template>
+                                </deferred-media-video>
+                                {%  break  %} 
+                              {%- when 'external_video' -%}
+                                {% render 'lazy-image' , image: product.featured_media.preview_image %}
+                              {%- when 'model' -%}
+                                {% render 'lazy-image' , image: product.featured_media.preview_image %}
+                                {%  break %}
+                            {% endcase %}
+                        {% endfor %}
+                      {% else %}
+                        {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      {% endif %}
+                  </div>
+                </{% if product != blank %}a{% else %}div{% endif %}>
+                <div class="revealing-card--info">
+                  <div class="revealing-card--detail">
+                    <{% if product != blank %}a href="{{ product.url }}"{% else %}div{% endif %} class="revealing-title">
+                       {% if product != blank %}
+                        {{ product.title }}
+                      {% else %}
+                        {{ 'onboarding.product_title' | t }}                    
+                      {% endif %}
+                    </{% if product != blank %}a{% else %}div{% endif %}>
+                    <div class="revealing-product-price">
+                      {% if product != blank %}
+                        {% assign current_variant = product.selected_or_first_available_variant %}
+                      {% render 'product-card-price', product: product, section: section, currentVariant: current_variant %}
+                      {% else %}
+                      <span class="revealing--actual-price heading-font">{{ 1999 | money_with_currency }}</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                 {% if product != blank %}
+                   <quick-view class="revealing-card--detail-btn" id="QuickView-{{ section.id }}-{{ product.id }}" data-product-url="{{ product.url }}" data-product-id="{{ product.id }}"> 
+                      <a href="{{ product.url }}" class="product-quickview-button product--icon" aria-label="Quick view of {{ product.title | escape }}" is="hover-link" data-handle="{{ product.handle }}" product-quickview-btn>
+                        {% render 'icons', icon: 'quick-view' %}
+                      </a>
+                    </quick-view>
+                  {% endif %}
+                </div>  
+            {% elsif block.type == 'image' %}
+               <div class="revealing-card--img">
+                    <div class="media" style="--image_ratio:{{ imageRatio }};">
+                    {% if block.settings.image != blank %}
+                        {% render 'lazy-image' , image: block.settings.image %}
+                    {% else %}
+                        {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                    {% endif %}
+                    </div> 
+                </div>
+                {% if block.settings.text != blank %}
+                    <{% if block.settings.link != blank %}a href="{{ block.settings.link }}"{% else %}div{% endif %} class="revealing-card--info">
+                        <div class="revealing-card--detail">
+                            <div class="revealing-title">{{ block.settings.text }}</div>
+                    </div>
+                    {% if block.settings.link != blank %}
+                      <button class="revealing-card--detail-btn button">
+                          <span class="revealing-card--detail-btn-arrows d-flex">
+                          <svg width="6" height="9" viewBox="0 0 6 9" fill="none">
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M1.02492 7.62982L4.14871 4.50594L1.02492 1.38213C0.948925 1.30747 0.888477 1.21849 0.84706 1.12033C0.805644 1.02218 0.784079 0.91679 0.783611 0.810255C0.783143 0.703721 0.803782 0.598149 0.844335 0.499634C0.884888 0.401119 0.944552 0.311613 1.01988 0.236281C1.09522 0.160949 1.18472 0.101284 1.28324 0.0607313C1.38175 0.0201783 1.48732 -0.000460042 1.59386 7.77861e-06C1.70039 0.000475599 1.80578 0.0220403 1.90393 0.063457C2.00209 0.104874 2.09107 0.165322 2.16574 0.241312L5.64153 3.71702C6.1524 4.24696 6.08494 4.85147 5.64304 5.29339L2.16579 8.77062C2.01405 8.91972 1.80957 9.00284 1.59685 9.00191C1.38412 9.00097 1.18038 8.91606 1.02996 8.76564C0.879536 8.61522 0.794617 8.41147 0.793683 8.19875C0.792749 7.98602 0.875875 7.78154 1.02497 7.6298L1.02492 7.62982Z" fill="currentColor"/>
+                          </svg>
+                          </span>
+                      </button>
+                    {% endif %}
+                    </{% if block.settings.link != blank %}a{% else %}div{% endif %}>
+                {% endif %}
+            {% elsif block.type == 'video' %}
+                <div class="revealing-card--img">
+                    <div class="media" style="--image_ratio:{{ imageRatio }};">
+                        {% if block.settings.video != blank %}
+                            {{ block.settings.video | video_tag: image_size: '1100x', class: 'media-gallery--video', autoplay: true, loop: true, mute: true, controls: false, preload: 'none' }}
+                        {% else %}
+                            {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% if block.settings.text != blank %}
+                   <{% if block.settings.link != blank %}a href="{{ block.settings.link }}"{% else %}div{% endif %} class="revealing-card--info">
+                        <div class="revealing-card--detail">
+                            <div class="revealing-title">{{ block.settings.text }}</div>
+                    </div>
+                    {% if block.settings.link != blank %}
+                      <button class="revealing-card--detail-btn button">
+                          <span class="revealing-card--detail-btn-arrows d-flex">
+                          <svg width="6" height="9" viewBox="0 0 6 9" fill="none">
+                              <path fill-rule="evenodd" clip-rule="evenodd" d="M1.02492 7.62982L4.14871 4.50594L1.02492 1.38213C0.948925 1.30747 0.888477 1.21849 0.84706 1.12033C0.805644 1.02218 0.784079 0.91679 0.783611 0.810255C0.783143 0.703721 0.803782 0.598149 0.844335 0.499634C0.884888 0.401119 0.944552 0.311613 1.01988 0.236281C1.09522 0.160949 1.18472 0.101284 1.28324 0.0607313C1.38175 0.0201783 1.48732 -0.000460042 1.59386 7.77861e-06C1.70039 0.000475599 1.80578 0.0220403 1.90393 0.063457C2.00209 0.104874 2.09107 0.165322 2.16574 0.241312L5.64153 3.71702C6.1524 4.24696 6.08494 4.85147 5.64304 5.29339L2.16579 8.77062C2.01405 8.91972 1.80957 9.00284 1.59685 9.00191C1.38412 9.00097 1.18038 8.91606 1.02996 8.76564C0.879536 8.61522 0.794617 8.41147 0.793683 8.19875C0.792749 7.98602 0.875875 7.78154 1.02497 7.6298L1.02492 7.62982Z" fill="currentColor"/>
+                          </svg>
+                          </span>
+                      </button>
+                    {% endif %}
+                    </{% if block.settings.link != blank %}a{% else %}div{% endif %}>
+                {% endif %}
+            {% endif %}
+          {% else %}
+            <div class="revealing-card--img">
+              <div class="media" style="--image_ratio:{{ imageRatio }};">
+                {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              </div>
+            </div>
+            <div class="revealing-card--info">
+              <div class="revealing-card--detail">
+                <div class="revealing-title"> {{ 'onboarding.product_title' | t }}</div>
+                <div class="revealing-product-price">
+                  <span class="revealing--actual-price heading-font">{{ 1999 | money_with_currency }}</span>
+                </div>
+              </div>  
+            </div>
+          {% endif %}

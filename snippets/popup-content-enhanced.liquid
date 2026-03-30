@@ -1,0 +1,149 @@
+{%- comment -%}
+  Snippet: popup-content-enhanced.liquid
+  Ce snippet doit être inclus dans votre snippet popup.liquid existant
+  pour afficher le contenu enrichi (timer, vidéo, code promo, roue de la fortune)
+{%- endcomment -%}
+
+{%- liquid
+  assign popup_mode = section.settings.popup_mode | default: 'standard'
+  assign enable_timer = section.settings.enable_timer
+  assign enable_promo_code = section.settings.enable_promo_code
+  assign enable_email_field = section.settings.enable_email_field
+-%}
+
+{%- comment -%} Video Section {%- endcomment -%}
+{%- if section.settings.video != blank or section.settings.video_url != blank -%}
+  <div class="newsletter-video-wrapper newsletter-video--{{ section.settings.video_position }}">
+    {%- if section.settings.video_url != blank -%}
+      {%- if section.settings.video_url.type == 'youtube' -%}
+        <iframe 
+          class="newsletter-video"
+          src="https://www.youtube.com/embed/{{ section.settings.video_url.id }}?autoplay={{ section.settings.video_autoplay | default: 1 }}&mute={{ section.settings.video_muted | default: 1 }}&loop={{ section.settings.video_loop | default: 1 }}&playlist={{ section.settings.video_url.id }}&controls={{ section.settings.video_controls | default: 0 }}"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      {%- elsif section.settings.video_url.type == 'vimeo' -%}
+        <iframe 
+          class="newsletter-video"
+          src="https://player.vimeo.com/video/{{ section.settings.video_url.id }}?autoplay={{ section.settings.video_autoplay | default: 1 }}&muted={{ section.settings.video_muted | default: 1 }}&loop={{ section.settings.video_loop | default: 1 }}&controls={{ section.settings.video_controls | default: 0 }}"
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      {%- endif -%}
+    {%- elsif section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: 
+        autoplay: section.settings.video_autoplay, 
+        muted: section.settings.video_muted, 
+        loop: section.settings.video_loop, 
+        controls: section.settings.video_controls,
+        class: 'newsletter-video'
+      }}
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{%- comment -%} Timer Section {%- endcomment -%}
+{%- if enable_timer and section.settings.timer_end_date != blank -%}
+  <div class="newsletter-timer" data-timer-end="{{ section.settings.timer_end_date }}">
+    <div class="newsletter-timer__item">
+      <span class="newsletter-timer__value" data-timer-days>00</span>
+      <span class="newsletter-timer__label">{{ section.settings.timer_label_days | default: 'Jours' }}</span>
+    </div>
+    <div class="newsletter-timer__item">
+      <span class="newsletter-timer__value" data-timer-hours>00</span>
+      <span class="newsletter-timer__label">{{ section.settings.timer_label_hours | default: 'Heures' }}</span>
+    </div>
+    <div class="newsletter-timer__item">
+      <span class="newsletter-timer__value" data-timer-minutes>00</span>
+      <span class="newsletter-timer__label">{{ section.settings.timer_label_minutes | default: 'Min' }}</span>
+    </div>
+    <div class="newsletter-timer__item">
+      <span class="newsletter-timer__value" data-timer-seconds>00</span>
+      <span class="newsletter-timer__label">{{ section.settings.timer_label_seconds | default: 'Sec' }}</span>
+    </div>
+  </div>
+{%- endif -%}
+
+{%- comment -%} Promo Code Section {%- endcomment -%}
+{%- if enable_promo_code or popup_mode == 'promo_code' -%}
+  {%- if section.settings.promo_code != blank -%}
+    <div class="newsletter-promo-code">
+      {%- if section.settings.promo_code_label != blank -%}
+        <span class="newsletter-promo-code__label">{{ section.settings.promo_code_label }}</span>
+      {%- endif -%}
+      <span class="newsletter-promo-code__value">{{ section.settings.promo_code }}</span>
+      <button 
+        type="button" 
+        class="newsletter-promo-code__copy" 
+        data-code="{{ section.settings.promo_code }}"
+        aria-label="Copier le code promo"
+      >
+        {{ section.settings.promo_copy_text | default: 'Copier' }}
+      </button>
+    </div>
+  {%- endif -%}
+{%- endif -%}
+
+{%- comment -%} Spin Wheel Section {%- endcomment -%}
+{%- if popup_mode == 'spin_wheel' -%}
+  <div class="spin-wheel-container">
+    <div class="spin-wheel-wrapper">
+      <div class="spin-wheel">
+        {%- assign wheel_segments = '' -%}
+        {%- for i in (1..8) -%}
+          {%- assign segment_key = 'wheel_segment_' | append: i -%}
+          {%- assign color_key = 'wheel_color_' | append: i -%}
+          {%- assign segment_text = section.settings[segment_key] -%}
+          {%- assign segment_color = section.settings[color_key] -%}
+          
+          {%- if segment_text != blank -%}
+            {%- assign segment_angle = 360.0 | divided_by: 8 -%}
+            {%- assign rotation = segment_angle | times: i | minus: segment_angle -%}
+            
+            <div 
+              class="spin-wheel__segment" 
+              style="background-color: {{ segment_color }}; transform: rotate({{ rotation }}deg);"
+              data-segment="{{ i }}"
+            >
+              <span class="spin-wheel__segment-text">{{ segment_text }}</span>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <div class="spin-wheel__pointer"></div>
+      <button type="button" class="spin-wheel__center">
+        {{ section.settings.wheel_spin_text | default: 'SPIN' }}
+      </button>
+    </div>
+    
+    <div class="spin-wheel-result">
+      <div class="spin-wheel-result__title"></div>
+      <div class="spin-wheel-result__prize"></div>
+    </div>
+  </div>
+{%- endif -%}
+
+{%- comment -%} Email Form (conditional) {%- endcomment -%}
+{%- if enable_email_field and popup_mode != 'spin_wheel' and popup_mode != 'announcement' -%}
+  <div class="newsletter-form">
+    {%- form 'customer', class: 'newsletter-form__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="newsletter-form__field-wrapper">
+        <input
+          type="email"
+          name="contact[email]"
+          class="newsletter-form__field"
+          placeholder="{{ section.settings.placeholder | default: 'Votre email' }}"
+          required
+          autocomplete="email"
+          aria-label="Email"
+        >
+        <button type="submit" class="newsletter-form__button button">
+          {{ section.settings.button_text | default: 'S\'abonner' }}
+        </button>
+      </div>
+    {%- endform -%}
+  </div>
+{%- endif -%}

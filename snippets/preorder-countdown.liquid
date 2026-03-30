@@ -1,0 +1,154 @@
+{% if block.settings.enable_countdown %}
+<preorder-countdown>
+  <div class="preorder-countdown-wrapper" {{ block.shopify_attributes }}>
+    <div class="preorder-countdown-content">
+      <p class="preorder-countdown-text">{{ block.settings.countdown_text }}</p>
+      <div class="preorder-countdown-timer" 
+           data-end-date="{{ block.settings.end_date }}"
+           data-expired-text="{{ block.settings.expired_text }}">
+        <div class="countdown-block">
+          <span class="countdown-value" data-days>00</span>
+          <span class="countdown-label">{{ block.settings.days_text }}</span>
+        </div>
+        <span class="countdown-separator">:</span>
+        <div class="countdown-block">
+          <span class="countdown-value" data-hours>00</span>
+          <span class="countdown-label">{{ block.settings.hours_text }}</span>
+        </div>
+        <span class="countdown-separator">:</span>
+        <div class="countdown-block">
+          <span class="countdown-value" data-minutes>00</span>
+          <span class="countdown-label">{{ block.settings.minutes_text }}</span>
+        </div>
+        <span class="countdown-separator">:</span>
+        <div class="countdown-block">
+          <span class="countdown-value" data-seconds>00</span>
+          <span class="countdown-label">{{ block.settings.seconds_text }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</preorder-countdown>
+
+<style>
+  .preorder-countdown-wrapper {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f8f8;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .preorder-countdown-content {
+    text-align: center;
+  }
+
+  .preorder-countdown-text {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .preorder-countdown-timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .countdown-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 45px;
+  }
+
+  .countdown-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    line-height: 1;
+  }
+
+  .countdown-label {
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  .countdown-separator {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
+    margin: 0 4px;
+  }
+
+  .preorder-countdown-expired {
+    font-weight: 600;
+    color: #d32f2f;
+    font-size: 16px;
+  }
+
+  @media screen and (max-width: 767px) {
+    .countdown-value {
+      font-size: 20px;
+    }
+    
+    .countdown-block {
+      min-width: 38px;
+    }
+    
+    .preorder-countdown-wrapper {
+      padding: 12px;
+    }
+  }
+</style>
+
+<script>
+  class PreorderCountdown extends HTMLElement {
+    constructor() {
+      super();
+      this.timer = this.querySelector('.preorder-countdown-timer');
+      this.endDate = new Date(this.timer.dataset.endDate).getTime();
+      this.expiredText = this.timer.dataset.expiredText;
+      this.init();
+    }
+
+    init() {
+      this.updateCountdown();
+      this.interval = setInterval(() => this.updateCountdown(), 1000);
+    }
+
+    updateCountdown() {
+      const now = new Date().getTime();
+      const distance = this.endDate - now;
+
+      if (distance < 0) {
+        clearInterval(this.interval);
+        this.timer.innerHTML = `<p class="preorder-countdown-expired">${this.expiredText}</p>`;
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      this.querySelector('[data-days]').textContent = String(days).padStart(2, '0');
+      this.querySelector('[data-hours]').textContent = String(hours).padStart(2, '0');
+      this.querySelector('[data-minutes]').textContent = String(minutes).padStart(2, '0');
+      this.querySelector('[data-seconds]').textContent = String(seconds).padStart(2, '0');
+    }
+
+    disconnectedCallback() {
+      if (this.interval) {
+        clearInterval(this.interval);
+      }
+    }
+  }
+
+  customElements.define('preorder-countdown', PreorderCountdown);
+</script>
+{% endif %}
