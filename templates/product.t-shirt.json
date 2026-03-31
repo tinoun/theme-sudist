@@ -127,6 +127,290 @@
         "bottom_space_mobile": 40
       }
     },
+    "savoir_faire_pdp": {
+      "type": "savoir-faire",
+      "blocks": {
+        "step_qualite": {
+          "type": "step",
+          "settings": {
+            "image": "shopify://shop_images/tricoloref_82136b3b-b454-4112-8cbf-d1b1335e1895.jpg",
+            "icon": "<svg width=\"24\" height=\"24\" viewbox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4\"></path></svg>",
+            "title": "Qualité premium",
+            "text": "Coton bio peigné 220g/m², surpiqûres double fil, pré-rétréci. Un t-shirt pensé pour durer des années, pas des semaines.",
+            "btn_text": "",
+            "btn_url": ""
+          }
+        },
+        "step_atelier": {
+          "type": "step",
+          "settings": {
+            "image": "shopify://shop_images/coffret-sudistcopie.jpg",
+            "icon": "<svg width=\"24\" height=\"24\" viewbox=\"0 0 24 24\" fill=\"none\"><rect x=\"2\" y=\"4\" width=\"6.67\" height=\"16\" rx=\"2\" fill=\"#002395\"></rect><rect x=\"8.67\" y=\"4\" width=\"6.67\" height=\"16\" fill=\"#FFFFFF\" stroke=\"#e0e0e0\" stroke-width=\"0.5\"></rect><rect x=\"15.33\" y=\"4\" width=\"6.67\" height=\"16\" rx=\"2\" fill=\"#ED2939\"></rect></svg>",
+            "title": "Atelier textile en Provence",
+            "text": "De la coupe à l'impression, chaque pièce prend vie dans notre atelier au cœur de la Provence. Pas d'usine à l'autre bout du monde.",
+            "btn_text": "",
+            "btn_url": ""
+          }
+        },
+        "step_commande": {
+          "type": "step",
+          "settings": {
+            "image": "shopify://shop_images/DSC04926.jpg",
+            "icon": "<svg width=\"24\" height=\"24\" viewbox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"1\" y=\"3\" width=\"15\" height=\"13\" rx=\"2\"></rect><path d=\"M16 8h4l3 3v5a2 2 0 01-2 2h-5\"></path><circle cx=\"5.5\" cy=\"18.5\" r=\"2.5\"></circle><circle cx=\"18.5\" cy=\"18.5\" r=\"2.5\"></circle></svg>",
+            "title": "Imprimé à la commande",
+            "text": "Zéro stock, zéro invendu, zéro gaspillage. Votre t-shirt est confectionné pour vous, au moment où vous le commandez.",
+            "btn_text": "",
+            "btn_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "step_qualite",
+        "step_atelier",
+        "step_commande"
+      ],
+      "settings": {
+        "section_visibility": "always",
+        "color_scheme": "",
+        "section_background": "solid",
+        "section_container_width": "global",
+        "subheading": "L'excellence artisanale",
+        "heading": "Pourquoi [Sudist] ?",
+        "markers_font": "heading-font",
+        "markers_text": "outline--text",
+        "heading_size": "h2",
+        "seo_heading": "h2",
+        "description": "",
+        "description_size": "text-large",
+        "heading_alignment": "center",
+        "enable_slider": false,
+        "columns_desktop": 3,
+        "columns_mobile": "1",
+        "gap": 25,
+        "enable_swipe_mobile": true,
+        "show_navigation": false,
+        "show_pagination": false,
+        "autoplay": false,
+        "loop": true,
+        "show_step_number": false,
+        "image_ratio": "portrait",
+        "image_overlay": false,
+        "card_alignment": "center",
+        "card_title_size": "h5",
+        "card_text_size": "text",
+        "btn_text": "",
+        "btn_url": "",
+        "button_size": "normal-button",
+        "button_style": "solid",
+        "top_space_desktop": 70,
+        "bottom_space_desktop": 70,
+        "top_space_mobile": 40,
+        "bottom_space_mobile": 40
+      }
+    },
+    "media_gallery_pdp": {
+      "type": "media-gallery",
+      "blocks": {
+        "media_1": {
+          "type": "image_grid",
+          "settings": {
+            "gallery_img": "shopify://shop_images/sous_le_mitral_V2.jpg",
+            "product": "",
+            "text": "Coupe",
+            "text_size": "h6"
+          }
+        },
+        "media_2": {
+          "type": "image_grid",
+          "settings": {
+            "product": "",
+            "text": "Confection",
+            "text_size": "h6"
+          }
+        },
+        "media_3": {
+          "type": "image_grid",
+          "settings": {
+            "product": "",
+            "text": "Impression",
+            "text_size": "h6"
+          }
+        },
+        "media_4": {
+          "type": "image_grid",
+          "settings": {
+            "product": "",
+            "text": "Broderie",
+            "text_size": "h6"
+          }
+        }
+      },
+      "block_order": [
+        "media_1",
+        "media_2",
+        "media_3",
+        "media_4"
+      ],
+      "settings": {
+        "section_visibility": "always",
+        "color_scheme": "",
+        "section_background": "solid",
+        "section_container_width": "global",
+        "radius_selector": "d-border-radius-none",
+        "mobile_radius_selector": "m-border-radius-none",
+        "section_corner_radius": "global",
+        "custom_section_corner_radius": 20,
+        "media_style": "default",
+        "hover_style": "animated-border",
+        "animated_border_color": "linear-gradient(90deg, rgba(255, 128, 56, 1), rgba(255, 0, 153, 1) 30.43%, rgba(0, 43, 235, 1) 68.23%, rgba(219, 0, 255, 1) 100%)",
+        "image_ratio": "portrait",
+        "mobile_swipe": true,
+        "heading": "Les [coulisses] de fabrication",
+        "markers_font": "heading-font",
+        "markers_text": "outline--text",
+        "heading_size": "h2",
+        "seo_heading": "h2",
+        "description": "Découvrez comment votre t-shirt prend vie dans notre atelier en Provence.",
+        "description_size": "text-large",
+        "content_alignment": "center",
+        "media_text_visibility": "on-hover",
+        "delay_duration": 3,
+        "disappear_duration": 10,
+        "media_columns_gap": 4,
+        "top_space_desktop": 70,
+        "bottom_space_desktop": 70,
+        "top_space_mobile": 40,
+        "bottom_space_mobile": 40
+      }
+    },
+    "revealing_text_pdp": {
+      "type": "revealing-text",
+      "settings": {
+        "section_visibility": "always",
+        "color_scheme": "",
+        "section_background": "solid",
+        "section_container_width": "global",
+        "revealing_style": "style-1",
+        "revealing_height": "height-auto",
+        "text_to_reveal": "Confectionné à la main dans notre atelier en Provence. Coton bio 220g. Zéro stock, zéro gaspillage.",
+        "font_type": "heading-font",
+        "heading_size": "h2",
+        "seo_heading": "div",
+        "content_width": "large",
+        "content_alignment": "center",
+        "is_parallax": false,
+        "overlay_opacity": 0.3,
+        "text_color": "#000000",
+        "btn_text": "Button",
+        "btn_link": "",
+        "button_size": "normal-button",
+        "button_style": "solid",
+        "top_space_desktop": 70,
+        "bottom_space_desktop": 70,
+        "top_space_mobile": 40,
+        "bottom_space_mobile": 40
+      }
+    },
+    "testimonials_pdp": {
+      "type": "testimonial",
+      "blocks": {
+        "testi_1": {
+          "type": "testimonial_grid",
+          "settings": {
+            "author": "Sophie M.",
+            "testimonial_author_size": "text-medium",
+            "testimonial_heading": "",
+            "testimonial_title_size": "text-xlarge",
+            "testimonial_desc": "La qualité du tissu est incroyable. Après des dizaines de lavages, il est toujours comme neuf. J'ai arrêté d'acheter ailleurs.",
+            "testimonial_description_size": "text",
+            "stars_rating": 5,
+            "stars_rating_color": "#c9a962"
+          }
+        },
+        "testi_2": {
+          "type": "testimonial_grid",
+          "settings": {
+            "author": "Thomas R.",
+            "testimonial_author_size": "text-medium",
+            "testimonial_heading": "",
+            "testimonial_title_size": "text-xlarge",
+            "testimonial_desc": "On sent la différence avec un t-shirt classique. Le coton est épais, les coutures sont solides. Et en plus c'est fait en France !",
+            "testimonial_description_size": "text",
+            "stars_rating": 5,
+            "stars_rating_color": "#c9a962"
+          }
+        },
+        "testi_3": {
+          "type": "testimonial_grid",
+          "settings": {
+            "author": "Marine L.",
+            "testimonial_author_size": "text-medium",
+            "testimonial_heading": "",
+            "testimonial_title_size": "text-xlarge",
+            "testimonial_desc": "J'adore le concept de fabrication à la commande. Ça prend un peu plus de temps mais au moins il n'y a pas de gaspillage. Et le t-shirt est magnifique.",
+            "testimonial_description_size": "text",
+            "stars_rating": 5,
+            "stars_rating_color": "#c9a962"
+          }
+        },
+        "testi_4": {
+          "type": "testimonial_grid",
+          "settings": {
+            "author": "Lucas D.",
+            "testimonial_author_size": "text-medium",
+            "testimonial_heading": "",
+            "testimonial_title_size": "text-xlarge",
+            "testimonial_desc": "Le meilleur t-shirt que j'ai porté. Le 220g se sent tout de suite, c'est un vrai vêtement de qualité. Je recommande les yeux fermés.",
+            "testimonial_description_size": "text",
+            "stars_rating": 5,
+            "stars_rating_color": "#c9a962"
+          }
+        }
+      },
+      "block_order": [
+        "testi_1",
+        "testi_2",
+        "testi_3",
+        "testi_4"
+      ],
+      "settings": {
+        "section_visibility": "always",
+        "color_scheme": "",
+        "section_background": "solid",
+        "testimonial_style": "carousel",
+        "desktop_column_count": 3,
+        "author_image_size": "small",
+        "show_icon": true,
+        "mobile_swipe": true,
+        "heading": "Ce qu'ils en [pensent]",
+        "markers_font": "heading-font",
+        "markers_text": "outline--text",
+        "heading_size": "h2",
+        "seo_heading": "h2",
+        "description": "",
+        "description_size": "text-large",
+        "alignment": "center",
+        "top_space_desktop": 70,
+        "bottom_space_desktop": 70,
+        "top_space_mobile": 40,
+        "bottom_space_mobile": 40
+      }
+    },
+    "1764577793eacf4b94": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_featured_carousel_GXGkqn": {
+          "type": "shopify://apps/judge-me-reviews/blocks/featured_carousel/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "maxwidth": 1080
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_featured_carousel_GXGkqn"
+      ],
+      "settings": {}
+    },
     "featured_collection_8ijQJW": {
       "type": "featured-collection",
       "name": "t:sections.featured-collection.presets.name",
@@ -158,21 +442,6 @@
         "top_space_mobile": 50,
         "bottom_space_mobile": 50
       }
-    },
-    "1764577793eacf4b94": {
-      "type": "apps",
-      "blocks": {
-        "judge_me_reviews_featured_carousel_GXGkqn": {
-          "type": "shopify://apps/judge-me-reviews/blocks/featured_carousel/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {
-            "maxwidth": 1080
-          }
-        }
-      },
-      "block_order": [
-        "judge_me_reviews_featured_carousel_GXGkqn"
-      ],
-      "settings": {}
     },
     "related_product": {
       "type": "related-product",
@@ -404,244 +673,6 @@
         "bottom_space_desktop": 70,
         "top_space_mobile": 40,
         "bottom_space_mobile": 25
-      }
-    },
-    "savoir_faire_pdp": {
-      "type": "savoir-faire",
-      "blocks": {
-        "step_qualite": {
-          "type": "step",
-          "settings": {
-            "icon": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4\"/></svg>",
-            "title": "Qualité premium",
-            "text": "Coton bio peigné 220g/m², surpiqûres double fil, pré-rétréci. Un t-shirt pensé pour durer des années, pas des semaines."
-          }
-        },
-        "step_atelier": {
-          "type": "step",
-          "settings": {
-            "icon": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\"><rect x=\"2\" y=\"4\" width=\"6.67\" height=\"16\" rx=\"2\" fill=\"#002395\"/><rect x=\"8.67\" y=\"4\" width=\"6.67\" height=\"16\" fill=\"#FFFFFF\" stroke=\"#e0e0e0\" stroke-width=\"0.5\"/><rect x=\"15.33\" y=\"4\" width=\"6.67\" height=\"16\" rx=\"2\" fill=\"#ED2939\"/></svg>",
-            "title": "Atelier textile en Provence",
-            "text": "De la coupe à l'impression, chaque pièce prend vie dans notre atelier au cœur de la Provence. Pas d'usine à l'autre bout du monde."
-          }
-        },
-        "step_commande": {
-          "type": "step",
-          "settings": {
-            "icon": "<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"1\" y=\"3\" width=\"15\" height=\"13\" rx=\"2\"/><path d=\"M16 8h4l3 3v5a2 2 0 01-2 2h-5\"/><circle cx=\"5.5\" cy=\"18.5\" r=\"2.5\"/><circle cx=\"18.5\" cy=\"18.5\" r=\"2.5\"/></svg>",
-            "title": "Imprimé à la commande",
-            "text": "Zéro stock, zéro invendu, zéro gaspillage. Votre t-shirt est confectionné pour vous, au moment où vous le commandez."
-          }
-        }
-      },
-      "block_order": [
-        "step_qualite",
-        "step_atelier",
-        "step_commande"
-      ],
-      "settings": {
-        "section_visibility": "always",
-        "color_scheme": "",
-        "section_background": "solid",
-        "section_container_width": "global",
-        "heading": "Pourquoi [Sudist] ?",
-        "markers_font": "heading-font",
-        "markers_text": "outline--text",
-        "heading_size": "h2",
-        "seo_heading": "h2",
-        "description": "",
-        "description_size": "text-large",
-        "heading_alignment": "center",
-        "enable_slider": false,
-        "columns_desktop": 3,
-        "columns_mobile": "1",
-        "gap": 25,
-        "enable_swipe_mobile": true,
-        "show_navigation": false,
-        "show_pagination": false,
-        "show_step_number": false,
-        "image_ratio": "portrait",
-        "image_overlay": false,
-        "card_alignment": "center",
-        "card_title_size": "h5",
-        "card_text_size": "text",
-        "top_space_desktop": 70,
-        "bottom_space_desktop": 70,
-        "top_space_mobile": 40,
-        "bottom_space_mobile": 40
-      }
-    },
-    "media_gallery_pdp": {
-      "type": "media-gallery",
-      "blocks": {
-        "media_1": {
-          "type": "image_grid",
-          "settings": {
-            "product": "",
-            "text": "Coupe",
-            "text_size": "h6"
-          }
-        },
-        "media_2": {
-          "type": "image_grid",
-          "settings": {
-            "product": "",
-            "text": "Confection",
-            "text_size": "h6"
-          }
-        },
-        "media_3": {
-          "type": "image_grid",
-          "settings": {
-            "product": "",
-            "text": "Impression",
-            "text_size": "h6"
-          }
-        },
-        "media_4": {
-          "type": "image_grid",
-          "settings": {
-            "product": "",
-            "text": "Broderie",
-            "text_size": "h6"
-          }
-        }
-      },
-      "block_order": [
-        "media_1",
-        "media_2",
-        "media_3",
-        "media_4"
-      ],
-      "settings": {
-        "section_visibility": "always",
-        "color_scheme": "",
-        "section_background": "solid",
-        "section_container_width": "global",
-        "media_style": "default",
-        "hover_style": "animated-border",
-        "image_ratio": "portrait",
-        "mobile_swipe": true,
-        "heading": "Les [coulisses] de fabrication",
-        "markers_font": "heading-font",
-        "markers_text": "outline--text",
-        "heading_size": "h2",
-        "seo_heading": "h2",
-        "description": "Découvrez comment votre t-shirt prend vie dans notre atelier en Provence.",
-        "description_size": "text-large",
-        "content_alignment": "center",
-        "media_text_visibility": "on-hover",
-        "delay_duration": 3,
-        "disappear_duration": 10,
-        "media_columns_gap": 4,
-        "top_space_desktop": 70,
-        "bottom_space_desktop": 70,
-        "top_space_mobile": 40,
-        "bottom_space_mobile": 40
-      }
-    },
-    "revealing_text_pdp": {
-      "type": "revealing-text",
-      "settings": {
-        "section_visibility": "always",
-        "color_scheme": "",
-        "section_background": "solid",
-        "section_container_width": "global",
-        "revealing_style": "style-1",
-        "revealing_height": "height-auto",
-        "text_to_reveal": "Confectionné à la main dans notre atelier en Provence. Coton bio 220g. Zéro stock, zéro gaspillage.",
-        "font_type": "heading-font",
-        "heading_size": "h2",
-        "seo_heading": "div",
-        "content_width": "large",
-        "content_alignment": "center",
-        "is_parallax": false,
-        "overlay_opacity": 0.3,
-        "top_space_desktop": 70,
-        "bottom_space_desktop": 70,
-        "top_space_mobile": 40,
-        "bottom_space_mobile": 40
-      }
-    },
-    "testimonials_pdp": {
-      "type": "testimonial",
-      "blocks": {
-        "testi_1": {
-          "type": "testimonial_grid",
-          "settings": {
-            "author": "Sophie M.",
-            "testimonial_author_size": "text-medium",
-            "testimonial_heading": "",
-            "testimonial_desc": "La qualité du tissu est incroyable. Après des dizaines de lavages, il est toujours comme neuf. J'ai arrêté d'acheter ailleurs.",
-            "testimonial_description_size": "text",
-            "stars_rating": 5,
-            "stars_rating_color": "#c9a962"
-          }
-        },
-        "testi_2": {
-          "type": "testimonial_grid",
-          "settings": {
-            "author": "Thomas R.",
-            "testimonial_author_size": "text-medium",
-            "testimonial_heading": "",
-            "testimonial_desc": "On sent la différence avec un t-shirt classique. Le coton est épais, les coutures sont solides. Et en plus c'est fait en France !",
-            "testimonial_description_size": "text",
-            "stars_rating": 5,
-            "stars_rating_color": "#c9a962"
-          }
-        },
-        "testi_3": {
-          "type": "testimonial_grid",
-          "settings": {
-            "author": "Marine L.",
-            "testimonial_author_size": "text-medium",
-            "testimonial_heading": "",
-            "testimonial_desc": "J'adore le concept de fabrication à la commande. Ça prend un peu plus de temps mais au moins il n'y a pas de gaspillage. Et le t-shirt est magnifique.",
-            "testimonial_description_size": "text",
-            "stars_rating": 5,
-            "stars_rating_color": "#c9a962"
-          }
-        },
-        "testi_4": {
-          "type": "testimonial_grid",
-          "settings": {
-            "author": "Lucas D.",
-            "testimonial_author_size": "text-medium",
-            "testimonial_heading": "",
-            "testimonial_desc": "Le meilleur t-shirt que j'ai porté. Le 220g se sent tout de suite, c'est un vrai vêtement de qualité. Je recommande les yeux fermés.",
-            "testimonial_description_size": "text",
-            "stars_rating": 5,
-            "stars_rating_color": "#c9a962"
-          }
-        }
-      },
-      "block_order": [
-        "testi_1",
-        "testi_2",
-        "testi_3",
-        "testi_4"
-      ],
-      "settings": {
-        "section_visibility": "always",
-        "color_scheme": "",
-        "section_background": "solid",
-        "testimonial_style": "carousel",
-        "desktop_column_count": 3,
-        "author_image_size": "small",
-        "show_icon": true,
-        "mobile_swipe": true,
-        "heading": "Ce qu'ils en [pensent]",
-        "markers_font": "heading-font",
-        "markers_text": "outline--text",
-        "heading_size": "h2",
-        "seo_heading": "h2",
-        "description": "",
-        "description_size": "text-large",
-        "alignment": "center",
-        "top_space_desktop": 70,
-        "bottom_space_desktop": 70,
-        "top_space_mobile": 40,
-        "bottom_space_mobile": 40
       }
     }
   },
