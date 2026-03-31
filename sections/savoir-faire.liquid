@@ -58,28 +58,29 @@
 
     {% comment %} Étapes / Carrousel {% endcomment %}
     {% if section.blocks.size > 0 %}
-      <div class="savoir-faire--wrapper {% if section.settings.enable_slider %}savoir-faire--slider{% endif %} {% if section.settings.enable_swipe_mobile %}mobile-swipe{% endif %}">
-        
-        {% if section.settings.enable_slider %}
-          <swiper-slider 
-            class="savoir-faire--slider-container"
-            data-slides-desktop="{{ section.settings.columns_desktop }}"
-            data-slides-mobile="{{ section.settings.columns_mobile }}"
-            data-gap="{{ section.settings.gap }}"
-            data-autoplay="{{ section.settings.autoplay }}"
-            data-loop="{{ section.settings.loop }}"
-          >
-            <div class="swiper">
+      {% liquid
+        assign use_slider = section.settings.enable_slider
+        assign use_mobile_carousel = section.settings.enable_swipe_mobile
+        assign use_swiper = false
+        if use_slider or use_mobile_carousel
+          assign use_swiper = true
+        endif
+      %}
+      <div class="savoir-faire--wrapper {% if use_slider %}savoir-faire--slider{% endif %} {% if use_mobile_carousel %}savoir-faire--mobile-carousel{% endif %}">
+
+        {% if use_swiper %}
+          <div class="savoir-faire--slider-container">
+            <div class="swiper savoir-faire--swiper" id="savoir-faire-swiper-{{ section.id }}">
               <div class="swiper-wrapper">
         {% endif %}
 
         {% for block in section.blocks %}
-          {% if section.settings.enable_slider %}
+          {% if use_swiper %}
             <div class="swiper-slide">
           {% endif %}
-          
+
           <div class="savoir-faire--item {% if section.settings.show_step_number %}has-step-number{% endif %}" {{ block.shopify_attributes }} {% if settings.is_layout_animation %}data-saos="slide-up"{% endif %}>
-            
+
             {% comment %} Numéro d'étape {% endcomment %}
             {% if section.settings.show_step_number %}
               <div class="savoir-faire--step-number heading-font">
@@ -101,7 +102,7 @@
                   {{ 'detailed-apparel-' | append: placeholderIndex | placeholder_svg_tag: 'placeholder-svg' }}
                 {% endif %}
               </div>
-              
+
               {% comment %} Overlay optionnel {% endcomment %}
               {% if section.settings.image_overlay %}
                 <div class="savoir-faire--overlay"></div>
@@ -115,11 +116,11 @@
                   {{ block.settings.icon }}
                 </div>
               {% endif %}
-              
+
               {% if block.settings.title != blank %}
                 <h3 class="savoir-faire--title {{ section.settings.card_title_size }}">{{ block.settings.title }}</h3>
               {% endif %}
-              
+
               {% if block.settings.text != blank %}
                 <p class="savoir-faire--text {{ section.settings.card_text_size }}">{{ block.settings.text }}</p>
               {% endif %}
@@ -136,26 +137,26 @@
             </div>
           </div>
 
-          {% if section.settings.enable_slider %}
+          {% if use_swiper %}
             </div>
           {% endif %}
         {% endfor %}
 
-        {% if section.settings.enable_slider %}
+        {% if use_swiper %}
               </div>
             </div>
-            
+
             {% if section.settings.show_navigation %}
               <div class="swiper-button-prev savoir-faire--nav"></div>
               <div class="swiper-button-next savoir-faire--nav"></div>
             {% endif %}
-            
-            {% if section.settings.show_pagination %}
+
+            {% if section.settings.show_pagination or use_mobile_carousel %}
               <div class="swiper-pagination savoir-faire--pagination"></div>
             {% endif %}
-          </swiper-slider>
+          </div>
         {% endif %}
-        
+
       </div>
     {% endif %}
 
@@ -205,6 +206,33 @@
 
   #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--slider {
     display: block;
+  }
+
+  /* Mobile carousel: on desktop, disable swiper and show as grid */
+  #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) {
+    display: grid;
+    grid-template-columns: repeat(var(--columns_desktop), 1fr);
+    gap: var(--card_gap);
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) .savoir-faire--slider-container {
+    display: contents;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) .swiper {
+    display: contents;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) .swiper-wrapper {
+    display: contents;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) .swiper-slide {
+    width: auto !important;
+  }
+
+  #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) .savoir-faire--pagination {
+    display: none;
   }
 
   #shopify-section-{{ section.id }} .savoir-faire--item {
@@ -351,8 +379,30 @@
       --bottom_spacing: {{ section.settings.bottom_space_mobile }}px;
     }
 
-    #shopify-section-{{ section.id }} .savoir-faire--wrapper:not(.savoir-faire--slider) {
+    #shopify-section-{{ section.id }} .savoir-faire--wrapper:not(.savoir-faire--slider):not(.savoir-faire--mobile-carousel) {
       grid-template-columns: repeat(var(--columns_mobile), 1fr);
+    }
+
+    /* Mobile carousel: enable swiper layout on mobile */
+    #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) {
+      display: block;
+    }
+
+    #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) .savoir-faire--slider-container {
+      display: block;
+    }
+
+    #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) .swiper {
+      display: block;
+    }
+
+    #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) .swiper-wrapper {
+      display: flex;
+    }
+
+    #shopify-section-{{ section.id }} .savoir-faire--wrapper.savoir-faire--mobile-carousel:not(.savoir-faire--slider) .savoir-faire--pagination {
+      display: block;
+      margin-top: 15px;
     }
 
     #shopify-section-{{ section.id }} .savoir-faire--nav {
@@ -380,11 +430,13 @@
 </style>
 
 <script>
-  {% if section.settings.enable_slider %}
   document.addEventListener('DOMContentLoaded', function() {
-    const swiperContainer = document.querySelector('#shopify-section-{{ section.id }} .swiper');
-    if (swiperContainer && typeof Swiper !== 'undefined') {
-      new Swiper(swiperContainer, {
+    var swiperEl = document.querySelector('#savoir-faire-swiper-{{ section.id }}');
+    if (!swiperEl || typeof Swiper === 'undefined') return;
+
+    {% if section.settings.enable_slider %}
+      {%- comment -%} Full slider mode: always active {%- endcomment -%}
+      new Swiper(swiperEl, {
         slidesPerView: {{ section.settings.columns_mobile }},
         spaceBetween: {{ section.settings.gap }},
         loop: {{ section.settings.loop }},
@@ -404,9 +456,28 @@
           }
         }
       });
-    }
+    {% elsif section.settings.enable_swipe_mobile %}
+      {%- comment -%} Mobile-only carousel {%- endcomment -%}
+      var swiperInstance = null;
+      function initMobileSwiper() {
+        if (window.innerWidth < 768 && !swiperInstance) {
+          swiperInstance = new Swiper(swiperEl, {
+            slidesPerView: 1.15,
+            spaceBetween: 15,
+            pagination: {
+              el: '#shopify-section-{{ section.id }} .swiper-pagination',
+              clickable: true
+            }
+          });
+        } else if (window.innerWidth >= 768 && swiperInstance) {
+          swiperInstance.destroy(true, true);
+          swiperInstance = null;
+        }
+      }
+      initMobileSwiper();
+      window.addEventListener('resize', initMobileSwiper);
+    {% endif %}
   });
-  {% endif %}
 </script>
 
 {% schema %}
