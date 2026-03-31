@@ -1973,6 +1973,15 @@ form.installment {
   }
 }
 
+/* Judge.me : masquer le badge auto-injecté par le JS Judge.me
+   On garde uniquement notre badge placé manuellement après le titre (.product-title-heading + .jdgm-preview-badge) */
+.product-app-block .jdgm-preview-badge {
+  display: none !important;
+}
+.main--product-content-inner > .product-app-block {
+  display: none !important;
+}
+
 /* custom icon css end */
 
 /* product inventory css start */
