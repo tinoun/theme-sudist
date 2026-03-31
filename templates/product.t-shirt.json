@@ -679,11 +679,16 @@
         "top_space_mobile": 40,
         "bottom_space_mobile": 25
       }
+    },
+    "tshirt_comparaison": {
+      "type": "tshirt-comparaison",
+      "settings": {}
     }
   },
   "order": [
     "main",
     "savoir_faire_pdp",
+    "tshirt_comparaison",
     "media_gallery_pdp",
     "revealing_text_pdp",
     "testimonials_pdp",
