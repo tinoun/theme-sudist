@@ -1822,7 +1822,7 @@ option.disabled {
 }
 
 .product-title-heading {
-  padding-bottom: 5px;
+  padding-bottom: 0;
 }
 
 .price-wrapper {
@@ -1975,15 +1975,15 @@ form.installment {
 
 /* custom icon css end */
 
-/* Judge.me stars — center in product block */
+/* Judge.me stars — align left, uniform spacing with title & price */
 .product-app-block {
-  text-align: center;
+  margin: 0;
+  padding: 8px 0;
 }
 .product-app-block .jdgm-preview-badge {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 4px 0;
+  margin: 0;
+  padding: 0;
+  justify-content: flex-start;
 }
 
 /* Sticky add-to-cart / scroll-to-top overlap fix */
