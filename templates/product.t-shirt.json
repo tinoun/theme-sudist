@@ -18,6 +18,10 @@
             "title_size": "h6"
           }
         },
+        "judge_me_badge": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        },
         "price_WNr4Qj": {
           "type": "price",
           "settings": {
@@ -94,10 +98,6 @@
             "heading": "Complétez votre sélection",
             "products_count": 5
           }
-        },
-        "judge_me_badge": {
-          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {}
         }
       },
       "block_order": [
@@ -256,6 +256,7 @@
         "media_3",
         "media_4"
       ],
+      "disabled": true,
       "settings": {
         "section_visibility": "always",
         "color_scheme": "",
@@ -378,6 +379,7 @@
         "testi_3",
         "testi_4"
       ],
+      "disabled": true,
       "settings": {
         "section_visibility": "always",
         "color_scheme": "",
@@ -414,6 +416,7 @@
       "block_order": [
         "judge_me_reviews_featured_carousel_GXGkqn"
       ],
+      "disabled": true,
       "settings": {}
     },
     "featured_collection_8ijQJW": {
@@ -679,16 +682,11 @@
         "top_space_mobile": 40,
         "bottom_space_mobile": 25
       }
-    },
-    "tshirt_comparaison": {
-      "type": "tshirt-comparaison",
-      "settings": {}
     }
   },
   "order": [
     "main",
     "savoir_faire_pdp",
-    "tshirt_comparaison",
     "media_gallery_pdp",
     "revealing_text_pdp",
     "testimonials_pdp",
