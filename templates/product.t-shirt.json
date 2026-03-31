@@ -188,7 +188,7 @@
         "description": "",
         "description_size": "text-large",
         "heading_alignment": "center",
-        "enable_slider": false,
+        "enable_slider": true,
         "columns_desktop": 3,
         "columns_mobile": "1",
         "gap": 25,
