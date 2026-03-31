@@ -94,10 +94,15 @@
             "heading": "Complétez votre sélection",
             "products_count": 5
           }
+        },
+        "judge_me_badge": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
         }
       },
       "block_order": [
         "title_3gqkQJ",
+        "judge_me_badge",
         "price_WNr4Qj",
         "variant_picker_XeUkCd",
         "quantity_picker_7aMGaR",
