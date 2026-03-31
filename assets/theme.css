@@ -1977,14 +1977,17 @@ form.installment {
 
 /* Judge.me stars — align left, uniform spacing with title & price */
 .product-app-block {
-  margin: 4px 0;
-  padding: 0;
+  margin: 4px 0 !important;
+  padding: 0 !important;
   line-height: 1;
 }
-.product-app-block .jdgm-preview-badge {
+.product-app-block *,
+.product-app-block .jdgm-preview-badge,
+.product-app-block .jdgm-prev-badge {
   margin: 0 !important;
   padding: 0 !important;
-  justify-content: flex-start;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 /* Remove extra gap between stars and price */
 .product-app-block + .price-wrapper {
