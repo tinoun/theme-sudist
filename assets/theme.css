@@ -1975,6 +1975,30 @@ form.installment {
 
 /* custom icon css end */
 
+/* Judge.me stars — center in product block */
+.product-app-block {
+  text-align: center;
+}
+.product-app-block .jdgm-preview-badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 4px 0;
+}
+
+/* Sticky add-to-cart / scroll-to-top overlap fix */
+.scroll-to-top {
+  transition: bottom 0.3s ease, opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+body.sticky-bar-visible .scroll-to-top.show {
+  bottom: 130px !important;
+}
+@media (max-width: 767px) {
+  body.sticky-bar-visible .scroll-to-top.show {
+    bottom: 80px !important;
+  }
+}
+
 /* product inventory css start */
 
 .product-inventory-text {
