@@ -118,6 +118,69 @@
   </script>
 {% endunless %}
 
+{% comment %} FAQ Schema for collapsible/accordion content {% endcomment %}
+{%- liquid
+  assign faq_blocks = ''
+  assign faq_count = 0
+  for block in section.blocks
+    if block.type == 'collapsible_content' and block.settings.heading != blank
+      assign has_content = false
+      if block.settings.collapsible_content_type == 'page'
+        assign faq_page = pages[block.settings.page_content]
+        if faq_page.content != blank
+          assign has_content = true
+        endif
+      elsif block.settings.description != blank
+        assign has_content = true
+      endif
+      if has_content
+        assign faq_count = faq_count | plus: 1
+      endif
+    endif
+  endfor
+-%}
+{%- if faq_count > 0 -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- assign faq_index = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'collapsible_content' and block.settings.heading != blank -%}
+            {%- if block.settings.collapsible_content_type == 'page' -%}
+              {%- assign faq_page = pages[block.settings.page_content] -%}
+              {%- if faq_page.content != blank -%}
+                {%- if faq_index > 0 -%},{%- endif -%}
+                {
+                  "@type": "Question",
+                  "name": {{ block.settings.heading | json }},
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": {{ faq_page.content | strip_html | truncate: 500 | json }}
+                  }
+                }
+                {%- assign faq_index = faq_index | plus: 1 -%}
+              {%- endif -%}
+            {%- elsif block.settings.description != blank -%}
+              {%- if faq_index > 0 -%},{%- endif -%}
+              {
+                "@type": "Question",
+                "name": {{ block.settings.heading | json }},
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": {{ block.settings.description | strip_html | truncate: 500 | json }}
+                }
+              }
+              {%- assign faq_index = faq_index | plus: 1 -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- endif -%}
+
 <style>
   #shopify-section-{{ section.id }} {
     --top_spacing: {{ section.settings.top_space_desktop }}px;
