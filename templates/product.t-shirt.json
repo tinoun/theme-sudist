@@ -321,66 +321,54 @@
     "testimonials_pdp": {
       "type": "testimonial",
       "blocks": {
-        "testi_1": {
-          "type": "testimonial_grid",
-          "settings": {
-            "author": "Sophie M.",
-            "testimonial_author_size": "text-medium",
-            "testimonial_heading": "",
-            "testimonial_title_size": "text-xlarge",
-            "testimonial_desc": "La qualité du tissu est incroyable. Après des dizaines de lavages, il est toujours comme neuf. J'ai arrêté d'acheter ailleurs.",
-            "testimonial_description_size": "text",
-            "stars_rating": 5,
-            "stars_rating_color": "#c9a962"
-          }
-        },
         "testi_2": {
           "type": "testimonial_grid",
           "settings": {
-            "author": "Thomas R.",
+            "author": "TF1 JT 13H",
             "testimonial_author_size": "text-medium",
+            "author_image": "shopify://shop_images/logo-tf1-300x300.png",
             "testimonial_heading": "",
             "testimonial_title_size": "text-xlarge",
-            "testimonial_desc": "On sent la différence avec un t-shirt classique. Le coton est épais, les coutures sont solides. Et en plus c'est fait en France !",
+            "testimonial_desc": "Face à la fast fashion, cet atelier Provençal produit des vêtements de qualité en Provence et misent sur la durabilité.",
             "testimonial_description_size": "text",
             "stars_rating": 5,
-            "stars_rating_color": "#c9a962"
+            "stars_rating_color": "#000000"
+          }
+        },
+        "testi_1": {
+          "type": "testimonial_grid",
+          "settings": {
+            "author": "La Provence",
+            "testimonial_author_size": "text-medium",
+            "author_image": "shopify://shop_images/images.png",
+            "testimonial_heading": "",
+            "testimonial_title_size": "text-xlarge",
+            "testimonial_desc": "La marque provençale éco-responsable qui produit ses créations à Saint-Cannat",
+            "testimonial_description_size": "text",
+            "stars_rating": 5,
+            "stars_rating_color": "#000000"
           }
         },
         "testi_3": {
           "type": "testimonial_grid",
           "settings": {
-            "author": "Marine L.",
+            "author": "Var Matin",
             "testimonial_author_size": "text-medium",
+            "author_image": "shopify://shop_images/var-matin-logo-png_seeklogo-147537.png",
             "testimonial_heading": "",
             "testimonial_title_size": "text-xlarge",
-            "testimonial_desc": "J'adore le concept de fabrication à la commande. Ça prend un peu plus de temps mais au moins il n'y a pas de gaspillage. Et le t-shirt est magnifique.",
+            "testimonial_desc": "Sudist, une marque pour raconter Toulon sur des vêtements de qualité fabriqués dans la région.",
             "testimonial_description_size": "text",
             "stars_rating": 5,
-            "stars_rating_color": "#c9a962"
-          }
-        },
-        "testi_4": {
-          "type": "testimonial_grid",
-          "settings": {
-            "author": "Lucas D.",
-            "testimonial_author_size": "text-medium",
-            "testimonial_heading": "",
-            "testimonial_title_size": "text-xlarge",
-            "testimonial_desc": "Le meilleur t-shirt que j'ai porté. Le 220g se sent tout de suite, c'est un vrai vêtement de qualité. Je recommande les yeux fermés.",
-            "testimonial_description_size": "text",
-            "stars_rating": 5,
-            "stars_rating_color": "#c9a962"
+            "stars_rating_color": "#000000"
           }
         }
       },
       "block_order": [
-        "testi_1",
         "testi_2",
-        "testi_3",
-        "testi_4"
+        "testi_1",
+        "testi_3"
       ],
-      "disabled": true,
       "settings": {
         "section_visibility": "always",
         "color_scheme": "",
@@ -388,7 +376,7 @@
         "testimonial_style": "carousel",
         "desktop_column_count": 3,
         "author_image_size": "small",
-        "show_icon": true,
+        "show_icon": false,
         "mobile_swipe": true,
         "heading": "Ce qu'ils en [pensent]",
         "markers_font": "heading-font",
