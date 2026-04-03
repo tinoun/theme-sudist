@@ -23,6 +23,8 @@
             {% render 'password-form', section: section %}
           {% when 'size-chart' %}
             {{ content }}
+          {% when 'collection-password' %}
+            {% render 'collection-password-form', section: section %}
           {% when 'video' %}
             <video
               class="promotional-bar--popup-video"
