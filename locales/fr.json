@@ -503,7 +503,8 @@
         "persistence_duration": "Durée personnalisée",
         "persistence_duration_label": "Durée d'accès (heures)",
         "session_key_label": "Clé de session",
-        "session_key_info": "Clé unique pour cette collection. Différentes collections peuvent avoir des clés différentes."
+        "session_key_info": "Clé unique pour cette collection. Différentes collections peuvent avoir des clés différentes.",
+        "color_scheme_label": "Palette de couleurs"
       }
     }
   },

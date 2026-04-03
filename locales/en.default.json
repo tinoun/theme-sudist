@@ -502,7 +502,8 @@
         "persistence_duration": "Custom duration",
         "persistence_duration_label": "Access duration (hours)",
         "session_key_label": "Session key",
-        "session_key_info": "Unique key for this collection. Different collections can have different keys."
+        "session_key_info": "Unique key for this collection. Different collections can have different keys.",
+        "color_scheme_label": "Color scheme"
       }
     }
   },
