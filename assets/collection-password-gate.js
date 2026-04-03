@@ -196,21 +196,19 @@ class CollectionPasswordGate extends HTMLElement {
       });
     }
 
-    // Prevent closing the popup while not authenticated
+    // Close popup → redirect to home if not authenticated
+    const redirectUrl = this.dataset.redirectUrl || '/';
     modal.querySelectorAll('[data-popup-close]').forEach(el => {
-      el.addEventListener('click', (e) => {
+      el.addEventListener('click', () => {
         if (!this.isAuthenticated()) {
-          e.stopImmediatePropagation();
-          e.preventDefault();
+          window.location.href = redirectUrl;
         }
       }, true);
     });
 
-    // Prevent Escape key from closing the popup
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !this.isAuthenticated()) {
-        e.stopImmediatePropagation();
-        e.preventDefault();
+        window.location.href = redirectUrl;
       }
     }, true);
   }
