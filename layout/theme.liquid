@@ -163,11 +163,14 @@
     function loadWidgets() {
       if (loaded) return;
       loaded = true;
+      {% unless request.page_type == 'product' %}
       var chat = document.createElement('script');
       chat.src = 'https://sav-assistant-next.vercel.app/widget/chat.js';
       chat.dataset.server = 'https://sav-assistant-next.vercel.app';
       chat.dataset.brand = 'Sudist';
+      chat.dataset.accent = '#c8a46e';
       document.body.appendChild(chat);
+      {% endunless %}
       var b2b = document.createElement('script');
       b2b.src = 'https://sav-assistant-next.vercel.app/widget/b2b-pricing.js';
       b2b.dataset.server = 'https://sav-assistant-next.vercel.app';
