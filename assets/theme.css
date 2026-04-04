@@ -1822,7 +1822,7 @@ option.disabled {
 }
 
 .product-title-heading {
-  padding-bottom: 5px;
+  padding-bottom: 0;
 }
 
 .price-wrapper {
@@ -1974,6 +1974,39 @@ form.installment {
 }
 
 /* custom icon css end */
+
+/* Judge.me stars — align left, uniform spacing with title & price */
+.product-app-block {
+  margin: 4px 0 !important;
+  padding: 0 !important;
+  line-height: 1;
+}
+.product-app-block *,
+.product-app-block .jdgm-preview-badge,
+.product-app-block .jdgm-prev-badge {
+  margin: 0 !important;
+  padding: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+/* Remove extra gap between stars and price */
+.product-app-block + .price-wrapper {
+  margin-top: 0;
+  padding-top: 4px;
+}
+
+/* Sticky add-to-cart / scroll-to-top overlap fix */
+.scroll-to-top {
+  transition: bottom 0.3s ease, opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+body.sticky-bar-visible .scroll-to-top.show {
+  bottom: 130px !important;
+}
+@media (max-width: 767px) {
+  body.sticky-bar-visible .scroll-to-top.show {
+    bottom: 80px !important;
+  }
+}
 
 /* product inventory css start */
 

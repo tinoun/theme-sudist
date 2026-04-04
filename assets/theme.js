@@ -5339,6 +5339,7 @@ class StickyFeature extends HTMLDivElement {
     if (!this.classList.contains('fade-out')) {
       this.classList.add('fade-out');
       this.classList.remove('fade-in');
+      document.body.classList.remove('sticky-bar-visible');
     }
   }
 
@@ -5346,6 +5347,7 @@ class StickyFeature extends HTMLDivElement {
     if (!this.classList.contains('fade-in')) {
       this.classList.add('fade-in');
       this.classList.remove('fade-out');
+      document.body.classList.add('sticky-bar-visible');
     }
   }
 }
@@ -5390,6 +5392,7 @@ class StickyBuyButton extends HTMLElement {
     if (!this.classList.contains('fade-out')) {
       this.classList.add('fade-out');
       this.classList.remove('fade-in');
+      document.body.classList.remove('sticky-bar-visible');
     }
   }
 
@@ -5397,6 +5400,7 @@ class StickyBuyButton extends HTMLElement {
     if (!this.classList.contains('fade-in')) {
       this.classList.add('fade-in');
       this.classList.remove('fade-out');
+      document.body.classList.add('sticky-bar-visible');
     }
   }
 }
