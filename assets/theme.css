@@ -640,6 +640,10 @@ button.shopify-payment-button__button--hidden {
   display: none !important;
 }
 
+.shopify-payment-button__more-options {
+  display: none !important;
+}
+
 .button.button-block {
   width: 100%;
   min-width: auto !important;

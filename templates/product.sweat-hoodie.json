@@ -47,16 +47,6 @@
           "type": "quantity_picker",
           "settings": {}
         },
-        "inventory_status_UUDyVT": {
-          "type": "inventory_status",
-          "settings": {
-            "minimun_inventory": 20,
-            "show_inventory_bar": false,
-            "inventory_available_status": "Disponible",
-            "inventory_less_status": "Dernières pièces",
-            "inventory_unavailable_status": "Victime de son succès"
-          }
-        },
         "buy_button_Yn76FC": {
           "type": "buy_button",
           "settings": {
@@ -122,6 +112,15 @@
             "icon_list_3": "return",
             "text_3": "14 jours pour changer d'avis"
           }
+        },
+        "social_proof_viewers_std": {
+          "type": "social_proof_viewers",
+          "settings": {
+            "min_viewers": 1,
+            "max_viewers": 6,
+            "update_interval": 30,
+            "viewer_text": "{count} personnes consultent ce produit"
+          }
         }
       },
       "block_order": [
@@ -130,7 +129,7 @@
         "price_WNr4Qj",
         "variant_picker_XeUkCd",
         "quantity_picker_7aMGaR",
-        "inventory_status_UUDyVT",
+        "social_proof_viewers_std",
         "buy_button_Yn76FC",
         "icon_with_text_MkeeC4",
         "icon_with_text_bgH3Ge",
