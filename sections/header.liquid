@@ -312,6 +312,26 @@
     }
   </script>
 
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ClothingStore",
+      "name": {{ shop.name | json }},
+      "url": {{ request.origin | json }},
+      {% if section.settings.logo %}
+        "image": {{ section.settings.logo | image_url: width: 500 | prepend: "https:" | json }},
+      {% endif %}
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "6 Rue Concert",
+        "addressLocality": "Salon-de-Provence",
+        "postalCode": "13300",
+        "addressCountry": "FR"
+      },
+      "priceRange": "€€"
+    }
+  </script>
+
   {%- if request.page_type == 'index' -%}
     {% assign potential_action_target = request.origin | append: routes.search_url | append: "?q={search_term_string}" %}
     <script type="application/ld+json">

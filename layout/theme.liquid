@@ -153,16 +153,31 @@
     {% render 'scroll-to-top' %}
    
  
- <script src="https://sav-assistant-next.vercel.app/widget/chat.js" data-server="https://sav-assistant-next.vercel.app" data-brand="Sudist"></script>
-
 <script>
   window.b2bCustomer = {
     loggedIn: {% if customer %}true{% else %}false{% endif %},
     email: "{{ customer.email | escape }}"
   };
-</script>
-<script src="https://sav-assistant-next.vercel.app/widget/b2b-pricing.js"
-  data-server="https://sav-assistant-next.vercel.app">
+  (function() {
+    var loaded = false;
+    function loadWidgets() {
+      if (loaded) return;
+      loaded = true;
+      var chat = document.createElement('script');
+      chat.src = 'https://sav-assistant-next.vercel.app/widget/chat.js';
+      chat.dataset.server = 'https://sav-assistant-next.vercel.app';
+      chat.dataset.brand = 'Sudist';
+      document.body.appendChild(chat);
+      var b2b = document.createElement('script');
+      b2b.src = 'https://sav-assistant-next.vercel.app/widget/b2b-pricing.js';
+      b2b.dataset.server = 'https://sav-assistant-next.vercel.app';
+      document.body.appendChild(b2b);
+    }
+    setTimeout(loadWidgets, 3000);
+    ['scroll', 'click', 'touchstart', 'mousemove'].forEach(function(evt) {
+      document.addEventListener(evt, loadWidgets, { once: true, passive: true });
+    });
+  })();
 </script>
   
 </body>

@@ -1,0 +1,32 @@
+/* Social Proof Viewers */
+.social-proof-viewers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: var(--small_text);
+  color: var(--text_color);
+  opacity: 0.85;
+}
+
+.social-proof-viewers--dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: socialProofPulse 2s ease-in-out infinite;
+}
+
+.social-proof-viewers--count {
+  font-weight: 600;
+  transition: opacity 0.3s ease;
+}
+
+.social-proof-viewers--count.is-updating {
+  opacity: 0.4;
+}
+
+@keyframes socialProofPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}

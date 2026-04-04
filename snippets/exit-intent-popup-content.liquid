@@ -1,0 +1,95 @@
+<div class="exit-intent-popup--content">
+  {%- if section.settings.exit_image != blank -%}
+    <div class="exit-intent-popup--image">
+      {{ section.settings.exit_image | image_url: width: 800 | image_tag:
+        class: 'exit-intent-popup--img',
+        loading: 'eager',
+        widths: '400, 600, 800'
+      }}
+    </div>
+  {%- endif -%}
+
+  <div data-exit-intent-form-view>
+    {%- if section.settings.exit_heading != blank -%}
+      <h5 class="h4 heading-font exit-intent-popup--heading">
+        {{ section.settings.exit_heading }}
+      </h5>
+    {%- endif -%}
+
+    {%- if section.settings.exit_description != blank -%}
+      <p class="exit-intent-popup--desc">
+        {{ section.settings.exit_description | newline_to_br }}
+      </p>
+    {%- endif -%}
+
+    <div class="exit-intent-popup--form">
+      {% form 'customer', id: 'ExitIntentForm' %}
+        <input type="hidden" name="contact[tags]" value="exit-intent,newsletter">
+        <div class="form-group">
+          <label class="hidden" for="ExitIntentEmail--{{ section.id }}">Email</label>
+          <input
+            type="email"
+            id="ExitIntentEmail--{{ section.id }}"
+            name="contact[email]"
+            class="form-control"
+            data-exit-intent-form
+            autocomplete="email"
+            placeholder="{{ section.settings.exit_email_placeholder | default: 'Votre adresse email' }}"
+            required
+          >
+        </div>
+        <button
+          type="submit"
+          class="button medium-button button-block"
+          aria-label="{{ section.settings.exit_button_text | default: 'Recevoir mon code' }}"
+        >
+          {{ section.settings.exit_button_text | default: 'Recevoir mon code' }}
+        </button>
+      {% endform %}
+    </div>
+
+    <button type="button" class="exit-intent-popup--dismiss" data-exit-intent-dismiss>
+      {{ section.settings.exit_dismiss_text | default: 'Non merci' }}
+    </button>
+  </div>
+
+  <div data-exit-intent-success-view style="display: none;">
+    <div class="exit-intent-popup--success">
+      <div class="exit-intent-popup--success-icon">&#10003;</div>
+
+      {%- if section.settings.exit_success_heading != blank -%}
+        <h5 class="h4 heading-font exit-intent-popup--heading">
+          {{ section.settings.exit_success_heading }}
+        </h5>
+      {%- endif -%}
+
+      {%- if section.settings.exit_success_text != blank -%}
+        <p class="exit-intent-popup--desc">
+          {{ section.settings.exit_success_text | newline_to_br }}
+        </p>
+      {%- endif -%}
+
+      {%- if section.settings.exit_promo_code != blank -%}
+        <div class="exit-intent-popup--promo-code">
+          <span>{{ section.settings.exit_promo_code }}</span>
+          <button
+            type="button"
+            class="exit-intent-popup--copy-btn"
+            data-exit-intent-copy
+            data-code="{{ section.settings.exit_promo_code }}"
+            aria-label="Copier le code"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+            </svg>
+          </button>
+        </div>
+      {%- endif -%}
+
+      <button type="button" class="exit-intent-popup--dismiss" data-popup-close>
+        {{ section.settings.exit_continue_text | default: 'Continuer mes achats' }}
+      </button>
+    </div>
+  </div>
+</div>
