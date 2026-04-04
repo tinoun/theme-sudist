@@ -49,6 +49,13 @@
             "inventory_unavailable_status": "Victime de son succès"
           }
         },
+        "buy_button_Yn76FC": {
+          "type": "buy_button",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
         "social_proof_viewers_4e7JDr": {
           "type": "social_proof_viewers",
           "settings": {
@@ -56,13 +63,6 @@
             "max_viewers": 6,
             "update_interval": 30,
             "viewer_text": "{count} personnes consultent ce produit"
-          }
-        },
-        "buy_button_Yn76FC": {
-          "type": "buy_button",
-          "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
           }
         },
         "icon_with_text_Fe7qDy": {
@@ -116,8 +116,8 @@
         "variant_picker_XeUkCd",
         "quantity_picker_7aMGaR",
         "inventory_status_UUDyVT",
-        "social_proof_viewers_4e7JDr",
         "buy_button_Yn76FC",
+        "social_proof_viewers_4e7JDr",
         "icon_with_text_Fe7qDy",
         "description_nLVMwz",
         "collapsible_content_jzLijB",
