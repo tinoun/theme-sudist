@@ -1215,6 +1215,47 @@
       ]
     },
     {
+      "type": "social_proof_viewers",
+      "name": "t:sections.main-product.blocks.social_proof_viewers.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "min_viewers",
+          "label": "t:sections.main-product.blocks.social_proof_viewers.settings.min_viewers.label",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "default": 3
+        },
+        {
+          "type": "range",
+          "id": "max_viewers",
+          "label": "t:sections.main-product.blocks.social_proof_viewers.settings.max_viewers.label",
+          "min": 5,
+          "max": 50,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "type": "range",
+          "id": "update_interval",
+          "label": "t:sections.main-product.blocks.social_proof_viewers.settings.update_interval.label",
+          "min": 10,
+          "max": 120,
+          "step": 5,
+          "unit": "s",
+          "default": 30
+        },
+        {
+          "type": "text",
+          "id": "viewer_text",
+          "label": "t:sections.main-product.blocks.social_proof_viewers.settings.viewer_text.label",
+          "default": "{count} personnes consultent ce produit"
+        }
+      ]
+    },
+    {
       "type": "atc_popup",
       "name": "Popup Ajout Panier",
       "limit": 1,

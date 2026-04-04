@@ -1,0 +1,118 @@
+/* Exit Intent Popup */
+.exit-intent-popup--content {
+  padding: 24px 20px;
+  text-align: center;
+}
+
+.exit-intent-popup--image {
+  margin: -24px -20px 20px;
+  overflow: hidden;
+  border-radius: var(--card_radius, 12px) var(--card_radius, 12px) 0 0;
+}
+
+.exit-intent-popup--img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.exit-intent-popup--heading {
+  margin-bottom: 8px;
+}
+
+.exit-intent-popup--desc {
+  margin-bottom: 20px;
+  line-height: 1.7;
+  font-size: var(--text);
+  opacity: 0.85;
+}
+
+.exit-intent-popup--form {
+  margin-bottom: 12px;
+}
+
+.exit-intent-popup--form .form-group {
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+.exit-intent-popup--form .button {
+  margin-top: 4px;
+}
+
+.exit-intent-popup--dismiss {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: var(--small_text);
+  opacity: 0.6;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  color: var(--text_color);
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.exit-intent-popup--dismiss:hover {
+  opacity: 1;
+}
+
+.exit-intent-popup--success {
+  padding: 20px 0;
+}
+
+.exit-intent-popup--success-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.exit-intent-popup--promo-code {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  margin: 16px 0;
+  background: var(--body_alternate_background, rgba(0,0,0,0.04));
+  border-radius: 6px;
+  font-family: var(--heading_font_family);
+  font-size: var(--medium_text);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.exit-intent-popup--copy-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text_color);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.exit-intent-popup--copy-btn:hover {
+  opacity: 1;
+}
+
+.exit-intent-popup--copy-btn.is-copied {
+  opacity: 1;
+  color: #22c55e;
+}
+
+/* Tablet+ */
+@media (min-width: 576px) {
+  .exit-intent-popup--content {
+    padding: 36px 40px;
+  }
+
+  .exit-intent-popup--image {
+    margin: -36px -40px 24px;
+  }
+
+  .exit-intent-popup--img {
+    max-height: 240px;
+  }
+}

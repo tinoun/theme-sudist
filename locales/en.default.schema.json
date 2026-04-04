@@ -2844,6 +2844,23 @@
         "payment_icons": {
           "name": "Payment icons",
           "settings": {}
+        },
+        "social_proof_viewers": {
+          "name": "Social proof viewers",
+          "settings": {
+            "min_viewers": {
+              "label": "Minimum viewers"
+            },
+            "max_viewers": {
+              "label": "Maximum viewers"
+            },
+            "update_interval": {
+              "label": "Update interval"
+            },
+            "viewer_text": {
+              "label": "Display text"
+            }
+          }
         }
       },
       "presets": {
@@ -4251,6 +4268,34 @@
       },
       "presets": {
         "name": "Multicolumn"
+      }
+    },
+    "exit_intent_popup": {
+      "name": "Exit intent popup",
+      "settings": {
+        "header_general": "General",
+        "display_mode_label": "Display mode",
+        "display_mode_enabled": "Enabled",
+        "display_mode_test": "Test mode",
+        "display_mode_disabled": "Disabled",
+        "color_scheme_label": "Color scheme",
+        "delay_label": "Delay before activation",
+        "delay_info": "Seconds after page load before tracking exit intent",
+        "cookie_duration_label": "Do not show again for",
+        "cookie_duration_info": "Days before showing the popup again after dismissal",
+        "header_content": "Content",
+        "image_label": "Image",
+        "heading_label": "Heading",
+        "description_label": "Description",
+        "email_placeholder_label": "Email placeholder",
+        "button_text_label": "Button text",
+        "dismiss_text_label": "Dismiss text",
+        "header_success": "After subscription",
+        "success_heading_label": "Success heading",
+        "success_text_label": "Success text",
+        "promo_code_label": "Promo code",
+        "promo_code_info": "Displayed after subscription. Leave empty to hide.",
+        "continue_text_label": "Continue button text"
       }
     },
     "newsletter-popup": {

@@ -55,7 +55,7 @@
         "buy_button_Yn76FC": {
           "type": "buy_button",
           "settings": {
-            "show_dynamic_checkout": false,
+            "show_dynamic_checkout": true,
             "show_gift_card_recipient": true
           }
         },
@@ -68,7 +68,7 @@
         "collapsible_content_dpnYTU": {
           "type": "collapsible_content",
           "settings": {
-            "heading": "Composition & entretien",
+            "heading": "Fabrication & composition",
             "collapsible_content_type": "description",
             "description": "<p><strong>• Matière :</strong> 100% Coton Bio<br/><strong>• Tissu : </strong>Jersey premium densité 200g<br/><br/>Lavage à 30 degrés à l'envers pour préserver les impressions. Ne pas mettre au sèche-linge & ne pas repasser sur le motif.</p>",
             "page_content": ""
@@ -78,30 +78,48 @@
           "type": "collapsible_content",
           "settings": {
             "heading": "Quelle taille choisir",
-            "collapsible_content_type": "description",
-            "description": "<p>Notre coupe unisexe taille plutôt petit. En cas de doute, nous vous conseillons de prendre une taille au dessus.</p>",
-            "page_content": ""
+            "collapsible_content_type": "page",
+            "description": "<p>Notre coupe enfant correspond aux tailles standards. En cas de doute, nous vous conseillons de prendre une taille au dessus.</p>",
+            "page_content": "guide-des-tailles"
           }
         },
         "complementary_products_hAjdci": {
           "type": "complementary_products",
           "settings": {
-            "heading": "Ne les oubliez pas",
+            "heading": "Complétez votre sélection",
             "products_count": 5
+          }
+        },
+        "judge_me_badge": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        },
+        "icon_with_text_Fe7qDy": {
+          "type": "icon-with-text",
+          "settings": {
+            "icon_list_1": "gift",
+            "icon_1": "shopify://shop_images/france_1.png",
+            "text_1": "Atelier textile en Provence",
+            "icon_list_2": "shipping",
+            "text_2": "Expédition sous 24H",
+            "icon_list_3": "return",
+            "text_3": "14 jours pour changer d'avis"
           }
         }
       },
       "block_order": [
         "title_3gqkQJ",
+        "judge_me_badge",
         "price_WNr4Qj",
         "variant_picker_XeUkCd",
         "quantity_picker_7aMGaR",
         "inventory_status_UUDyVT",
-        "custom_text_GGtCaf",
         "buy_button_Yn76FC",
+        "custom_text_GGtCaf",
+        "icon_with_text_Fe7qDy",
         "description_nLVMwz",
-        "collapsible_content_dpnYTU",
         "collapsible_content_jzLijB",
+        "collapsible_content_dpnYTU",
         "complementary_products_hAjdci"
       ],
       "settings": {

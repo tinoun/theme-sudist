@@ -2844,6 +2844,23 @@
         "payment_icons": {
           "name": "Icônes de paiement",
           "settings": {}
+        },
+        "social_proof_viewers": {
+          "name": "Preuve sociale visiteurs",
+          "settings": {
+            "min_viewers": {
+              "label": "Nombre minimum de visiteurs"
+            },
+            "max_viewers": {
+              "label": "Nombre maximum de visiteurs"
+            },
+            "update_interval": {
+              "label": "Intervalle de mise à jour"
+            },
+            "viewer_text": {
+              "label": "Texte affiché"
+            }
+          }
         }
       },
       "presets": {
@@ -4251,6 +4268,34 @@
       },
       "presets": {
         "name": "Multicolonne"
+      }
+    },
+    "exit_intent_popup": {
+      "name": "Popup exit-intent",
+      "settings": {
+        "header_general": "Général",
+        "display_mode_label": "Mode d'affichage",
+        "display_mode_enabled": "Activé",
+        "display_mode_test": "Mode test",
+        "display_mode_disabled": "Désactivé",
+        "color_scheme_label": "Palette de couleurs",
+        "delay_label": "Délai avant activation",
+        "delay_info": "Secondes après le chargement avant de détecter l'intention de sortie",
+        "cookie_duration_label": "Ne plus afficher pendant",
+        "cookie_duration_info": "Jours avant de réafficher la popup après fermeture",
+        "header_content": "Contenu",
+        "image_label": "Image",
+        "heading_label": "Titre",
+        "description_label": "Description",
+        "email_placeholder_label": "Placeholder email",
+        "button_text_label": "Texte du bouton",
+        "dismiss_text_label": "Texte de fermeture",
+        "header_success": "Après inscription",
+        "success_heading_label": "Titre de confirmation",
+        "success_text_label": "Texte de confirmation",
+        "promo_code_label": "Code promo",
+        "promo_code_info": "Affiché après l'inscription. Laisser vide pour masquer.",
+        "continue_text_label": "Texte du bouton continuer"
       }
     },
     "newsletter-popup": {

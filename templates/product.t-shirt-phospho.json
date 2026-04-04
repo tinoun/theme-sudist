@@ -12,10 +12,6 @@
     "main": {
       "type": "main-product",
       "blocks": {
-        "judge_me_reviews_preview_badge_aytybd": {
-          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {}
-        },
         "title_3gqkQJ": {
           "type": "title",
           "settings": {
@@ -54,17 +50,17 @@
         "inventory_status_UUDyVT": {
           "type": "inventory_status",
           "settings": {
-            "minimun_inventory": 10,
+            "minimun_inventory": 20,
             "show_inventory_bar": false,
             "inventory_available_status": "Disponible",
-            "inventory_less_status": "Stock faible",
+            "inventory_less_status": "Dernières pièces",
             "inventory_unavailable_status": "Victime de son succès"
           }
         },
         "buy_button_Yn76FC": {
           "type": "buy_button",
           "settings": {
-            "show_dynamic_checkout": false,
+            "show_dynamic_checkout": true,
             "show_gift_card_recipient": true
           }
         },
@@ -77,9 +73,9 @@
         "collapsible_content_dpnYTU": {
           "type": "collapsible_content",
           "settings": {
-            "heading": "Composition & entretien",
+            "heading": "Fabrication & composition",
             "collapsible_content_type": "description",
-            "description": "<p><strong>• Matière :</strong>100% Coton Bio<br/><strong>• Tissu :</strong>Jersey premium densité 200g<br/><br/>Lavage à 30 degrés à l'envers pour préserver les impressions. Ne pas mettre au sèche-linge & ne pas repasser sur le motif.</p>",
+            "description": "<p><strong>• Matière :</strong> 100% Coton Bio<br/><strong>• Tissu : </strong>Jersey premium densité 200g<br/><br/><strong>• Encre phosphorescente :</strong> L'impression brille dans le noir après exposition à la lumière.<br/><br/>Lavage à 30 degrés à l'envers pour préserver les impressions. Ne pas mettre au sèche-linge & ne pas repasser sur le motif.</p>",
             "page_content": ""
           }
         },
@@ -87,31 +83,48 @@
           "type": "collapsible_content",
           "settings": {
             "heading": "Quelle taille choisir",
-            "collapsible_content_type": "description",
-            "description": "<p>Notre coupe unisexe taille plutôt petit. En cas de doute, nous vous conseillons de prendre une taille au dessus.</p>",
-            "page_content": ""
+            "collapsible_content_type": "page",
+            "description": "<p>Notre coupe unisexe correspond aux tailles standards, avec une base de taille homme.</p><p>Nous vous recommandons de prendre votre taille habituelle.</p>",
+            "page_content": "guide-des-tailles"
           }
         },
         "complementary_products_hAjdci": {
           "type": "complementary_products",
           "settings": {
-            "heading": "Ne les oubliez pas",
+            "heading": "Complétez votre sélection",
             "products_count": 5
+          }
+        },
+        "judge_me_badge": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        },
+        "icon_with_text_Fe7qDy": {
+          "type": "icon-with-text",
+          "settings": {
+            "icon_list_1": "gift",
+            "icon_1": "shopify://shop_images/france_1.png",
+            "text_1": "Atelier textile en Provence",
+            "icon_list_2": "shipping",
+            "text_2": "Expédition sous 24H",
+            "icon_list_3": "return",
+            "text_3": "14 jours pour changer d'avis"
           }
         }
       },
       "block_order": [
-        "judge_me_reviews_preview_badge_aytybd",
         "title_3gqkQJ",
-        "icon_with_text_MkeeC4",
+        "judge_me_badge",
         "price_WNr4Qj",
         "variant_picker_XeUkCd",
         "quantity_picker_7aMGaR",
         "inventory_status_UUDyVT",
         "buy_button_Yn76FC",
+        "icon_with_text_MkeeC4",
+        "icon_with_text_Fe7qDy",
         "description_nLVMwz",
-        "collapsible_content_dpnYTU",
         "collapsible_content_jzLijB",
+        "collapsible_content_dpnYTU",
         "complementary_products_hAjdci"
       ],
       "settings": {

@@ -25,6 +25,8 @@
             {{ content }}
           {% when 'collection-password' %}
             {% render 'collection-password-form', section: section %}
+          {% when 'exit-intent' %}
+            {% render 'exit-intent-popup-content', section: section %}
           {% when 'video' %}
             <video
               class="promotional-bar--popup-video"

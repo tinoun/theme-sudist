@@ -1,0 +1,156 @@
+{{ 'exit-intent-popup.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.exit_display_mode != 'disabled' -%}
+  <exit-intent-popup
+    data-section-id="{{ section.id }}"
+    data-mode="{{ section.settings.exit_display_mode }}"
+    data-cookie-duration="{{ section.settings.exit_cookie_duration }}"
+    data-delay-before-active="{{ section.settings.exit_delay_before_active }}"
+  ></exit-intent-popup>
+
+  {% render 'popup',
+    modal_name: 'exit-intent',
+    modal_position: 'center',
+    modal_size: 'small',
+    section: section,
+    popup_color_scheme: section.settings.color_scheme
+  %}
+
+  <script src="{{ 'exit-intent-popup.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.exit_intent_popup.name",
+  "tag": "section",
+  "class": "exit-intent-popup-section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.exit_intent_popup.settings.header_general"
+    },
+    {
+      "type": "select",
+      "id": "exit_display_mode",
+      "label": "t:sections.exit_intent_popup.settings.display_mode_label",
+      "default": "enabled",
+      "options": [
+        {
+          "label": "t:sections.exit_intent_popup.settings.display_mode_enabled",
+          "value": "enabled"
+        },
+        {
+          "label": "t:sections.exit_intent_popup.settings.display_mode_test",
+          "value": "test_mode"
+        },
+        {
+          "label": "t:sections.exit_intent_popup.settings.display_mode_disabled",
+          "value": "disabled"
+        }
+      ]
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.exit_intent_popup.settings.color_scheme_label",
+      "default": "primary"
+    },
+    {
+      "type": "range",
+      "id": "exit_delay_before_active",
+      "label": "t:sections.exit_intent_popup.settings.delay_label",
+      "info": "t:sections.exit_intent_popup.settings.delay_info",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "exit_cookie_duration",
+      "label": "t:sections.exit_intent_popup.settings.cookie_duration_label",
+      "info": "t:sections.exit_intent_popup.settings.cookie_duration_info",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "unit": "j",
+      "default": 7
+    },
+    {
+      "type": "header",
+      "content": "t:sections.exit_intent_popup.settings.header_content"
+    },
+    {
+      "type": "image_picker",
+      "id": "exit_image",
+      "label": "t:sections.exit_intent_popup.settings.image_label"
+    },
+    {
+      "type": "text",
+      "id": "exit_heading",
+      "label": "t:sections.exit_intent_popup.settings.heading_label",
+      "default": "Attendez !"
+    },
+    {
+      "type": "textarea",
+      "id": "exit_description",
+      "label": "t:sections.exit_intent_popup.settings.description_label",
+      "default": "Inscrivez-vous à notre newsletter et recevez un code promo exclusif pour votre première commande."
+    },
+    {
+      "type": "text",
+      "id": "exit_email_placeholder",
+      "label": "t:sections.exit_intent_popup.settings.email_placeholder_label",
+      "default": "Votre adresse email"
+    },
+    {
+      "type": "text",
+      "id": "exit_button_text",
+      "label": "t:sections.exit_intent_popup.settings.button_text_label",
+      "default": "Recevoir mon code"
+    },
+    {
+      "type": "text",
+      "id": "exit_dismiss_text",
+      "label": "t:sections.exit_intent_popup.settings.dismiss_text_label",
+      "default": "Non merci"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.exit_intent_popup.settings.header_success"
+    },
+    {
+      "type": "text",
+      "id": "exit_success_heading",
+      "label": "t:sections.exit_intent_popup.settings.success_heading_label",
+      "default": "Merci !"
+    },
+    {
+      "type": "textarea",
+      "id": "exit_success_text",
+      "label": "t:sections.exit_intent_popup.settings.success_text_label",
+      "default": "Votre code promo est prêt. Utilisez-le lors de votre prochaine commande."
+    },
+    {
+      "type": "text",
+      "id": "exit_promo_code",
+      "label": "t:sections.exit_intent_popup.settings.promo_code_label",
+      "info": "t:sections.exit_intent_popup.settings.promo_code_info",
+      "default": "BIENVENUE10"
+    },
+    {
+      "type": "text",
+      "id": "exit_continue_text",
+      "label": "t:sections.exit_intent_popup.settings.continue_text_label",
+      "default": "Continuer mes achats"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.exit_intent_popup.name"
+    }
+  ]
+}
+{% endschema %}
