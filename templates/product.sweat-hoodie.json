@@ -18,16 +18,17 @@
             "title_size": "h4"
           }
         },
-        "icon_with_text_MkeeC4": {
-          "type": "icon-with-text",
+        "judge_me_badge": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        },
+        "social_proof_viewers_std": {
+          "type": "social_proof_viewers",
           "settings": {
-            "icon_list_1": "folder",
-            "icon_1": "shopify://shop_images/france_1.png",
-            "text_1": "Fabriqué en Provence",
-            "icon_list_2": "gift",
-            "text_2": "",
-            "icon_list_3": "gift",
-            "text_3": ""
+            "min_viewers": 1,
+            "max_viewers": 6,
+            "update_interval": 30,
+            "viewer_text": "{count} personnes consultent ce produit"
           }
         },
         "price_WNr4Qj": {
@@ -66,41 +67,6 @@
             "text_3": ""
           }
         },
-        "description_nLVMwz": {
-          "type": "description",
-          "settings": {
-            "description_style": "accordion"
-          }
-        },
-        "collapsible_content_dpnYTU": {
-          "type": "collapsible_content",
-          "settings": {
-            "heading": "Fabrication & composition",
-            "collapsible_content_type": "description",
-            "description": "<p><strong>• Matière :</strong> 80% Coton Bio / 20% Polyester recyclé<br/><strong>• Tissu : </strong>Molleton brossé 350g<br/><br/>Lavage à 30 degrés, évitez le sèche-linge.<br/><br/>La majorité de nos sweatshirts et hoodies sont entièrement fabriqués dans notre atelier en Provence.<br/><br/></p>",
-            "page_content": ""
-          }
-        },
-        "collapsible_content_jzLijB": {
-          "type": "collapsible_content",
-          "settings": {
-            "heading": "Quelle taille choisir",
-            "collapsible_content_type": "page",
-            "description": "<p>Nos sweatshirts & hoodies unisexe taillent normalement, prenez votre taille habituelle.</p>",
-            "page_content": "guide-des-tailles"
-          }
-        },
-        "complementary_products_hAjdci": {
-          "type": "complementary_products",
-          "settings": {
-            "heading": "Complétez votre sélection",
-            "products_count": 5
-          }
-        },
-        "judge_me_badge": {
-          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {}
-        },
         "icon_with_text_Fe7qDy": {
           "type": "icon-with-text",
           "settings": {
@@ -113,13 +79,35 @@
             "text_3": "14 jours pour changer d'avis"
           }
         },
-        "social_proof_viewers_std": {
-          "type": "social_proof_viewers",
+        "description_nLVMwz": {
+          "type": "description",
           "settings": {
-            "min_viewers": 1,
-            "max_viewers": 6,
-            "update_interval": 30,
-            "viewer_text": "{count} personnes consultent ce produit"
+            "description_style": "accordion"
+          }
+        },
+        "collapsible_content_jzLijB": {
+          "type": "collapsible_content",
+          "settings": {
+            "heading": "Quelle taille choisir",
+            "collapsible_content_type": "page",
+            "description": "<p>Nos sweatshirts & hoodies unisexe taillent normalement, prenez votre taille habituelle.</p>",
+            "page_content": "guide-des-tailles"
+          }
+        },
+        "collapsible_content_dpnYTU": {
+          "type": "collapsible_content",
+          "settings": {
+            "heading": "Fabrication & composition",
+            "collapsible_content_type": "description",
+            "description": "<p><strong>• Matière :</strong> 80% Coton Bio / 20% Polyester recyclé<br/><strong>• Tissu : </strong>Molleton brossé 350g<br/><br/>Lavage à 30 degrés, évitez le sèche-linge.<br/><br/>La majorité de nos sweatshirts et hoodies sont entièrement fabriqués dans notre atelier en Provence.<br/><br/></p>",
+            "page_content": ""
+          }
+        },
+        "complementary_products_hAjdci": {
+          "type": "complementary_products",
+          "settings": {
+            "heading": "Complétez votre sélection",
+            "products_count": 5
           }
         }
       },
@@ -131,7 +119,6 @@
         "variant_picker_XeUkCd",
         "quantity_picker_7aMGaR",
         "buy_button_Yn76FC",
-        "icon_with_text_MkeeC4",
         "icon_with_text_bgH3Ge",
         "icon_with_text_Fe7qDy",
         "description_nLVMwz",
