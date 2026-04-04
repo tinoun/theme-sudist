@@ -3905,6 +3905,23 @@
               "label": "Maximum products to show"
             }
           }
+        },
+        "social_proof_viewers": {
+          "name": "Social proof viewers",
+          "settings": {
+            "min_viewers": {
+              "label": "Minimum viewers"
+            },
+            "max_viewers": {
+              "label": "Maximum viewers"
+            },
+            "update_interval": {
+              "label": "Update interval"
+            },
+            "viewer_text": {
+              "label": "Display text"
+            }
+          }
         }
       }
     },
