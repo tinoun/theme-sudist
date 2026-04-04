@@ -318,6 +318,17 @@
 
     {% when 'inventory_status' %}
       {% render 'product-inventory', product: product, currentVariant: currentVariant, block: block %}
+    {% when 'social_proof_viewers' %}
+      {{ 'social-proof-viewers.css' | asset_url | stylesheet_tag }}
+      <social-proof-viewers
+        class="social-proof-viewers"
+        data-min="{{ block.settings.min_viewers }}"
+        data-max="{{ block.settings.max_viewers }}"
+        data-interval="{{ block.settings.update_interval }}"
+        data-text="{{ block.settings.viewer_text | escape }}"
+        {{ block.shopify_attributes }}
+      ></social-proof-viewers>
+      <script src="{{ 'social-proof-viewers.js' | asset_url }}" defer="defer"></script>
       {% comment %}
         {% when 'collapsible_content' %}
         {% unless pdp_layout_style == 'layout_1' %}

@@ -104,7 +104,7 @@
       "porte-cle-cigale",
       "autocollant-cigale"
     ],
-    "cart_recommendations": "inside-cart",
+    "cart_recommendations": "none",
     "recommendation_heading": "À ne pas oublier dans votre commande !",
     "recommendations_product_list": [
       "coffret-sudist",
@@ -2444,7 +2444,7 @@
       "account_behaviour": "drawer",
       "enable_gift_wrap": false,
       "gift_wrap_product": "",
-      "cart_recommendations": "inside-cart",
+      "cart_recommendations": "none",
       "recommendations_product_list": [],
       "cart_drawer_color_scheme": "duodenary",
       "share_facebook": true,
