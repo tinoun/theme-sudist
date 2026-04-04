@@ -49,6 +49,15 @@
             "inventory_unavailable_status": "Victime de son succès"
           }
         },
+        "social_proof_viewers_4e7JDr": {
+          "type": "social_proof_viewers",
+          "settings": {
+            "min_viewers": 1,
+            "max_viewers": 6,
+            "update_interval": 30,
+            "viewer_text": "{count} personnes consultent ce produit"
+          }
+        },
         "buy_button_Yn76FC": {
           "type": "buy_button",
           "settings": {
@@ -107,6 +116,7 @@
         "variant_picker_XeUkCd",
         "quantity_picker_7aMGaR",
         "inventory_status_UUDyVT",
+        "social_proof_viewers_4e7JDr",
         "buy_button_Yn76FC",
         "icon_with_text_Fe7qDy",
         "description_nLVMwz",
