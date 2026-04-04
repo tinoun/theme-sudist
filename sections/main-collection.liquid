@@ -33,6 +33,9 @@
   class="section-wrapper section-spacing scheme-{{ section.settings.color_scheme }} section-{{ section.settings.section_background }}"
 >
   <div class="{{ settings.container_width }}">
+    {% if collection.title != blank %}
+      <h1 class="visually-hidden">{{ collection.title | escape }}</h1>
+    {% endif %}
     <div
       class="main-collection--wrapper{% if isfiltersSidebar %}{% if section.settings.filter_layout == 'horizontal-bottom'%} filter-layout-horizontal {{ section.settings.filter_layout }}{% else %} filter-layout-{{ section.settings.filter_layout }}{% endif %}{% endif %}"
       data-collection-wrapper
@@ -491,6 +494,21 @@
       }
     }
 </style>
+
+{% if collection %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": {{ collection.title | json }},
+      "description": {{ collection.description | strip_html | json }},
+      "url": {{ request.origin | append: collection.url | json }}
+      {% if collection.image %},
+      "image": {{ collection.image | image_url: width: 1200 | prepend: "https:" | json }}
+      {% endif %}
+    }
+  </script>
+{% endif %}
 
 {% schema %}
 {

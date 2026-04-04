@@ -129,20 +129,19 @@
       </div>
     {% when 'title' %}
       {% if product != blank %}
-        <a
-          href="{{ product.url }}"
+        <h1
           class="{{ block.settings.title_size }} heading-font d-block product-title-heading"
           {{ block.shopify_attributes }}
         >
           {{- product.title | escape -}}
-        </a>
+        </h1>
       {% else %}
-        <h6
+        <h1
           class="{{ block.settings.title_size }} heading-font d-block product-title-heading"
           {{ block.shopify_attributes }}
         >
           {{ 'onboarding.product_title' | t }}
-        </h6>
+        </h1>
       {% endif %}
     {% when 'rating' %}
       {% render 'review-rating', product: product, currentVariant: currentVariant %}
